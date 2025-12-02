@@ -32,13 +32,13 @@ const App = () => (
             <Routes>
               {/* Edu Loan Guide Routes with Header/Footer Layout */}
               <Route element={<EduLoanGuideLayout />}>
-                <Route path="/" element={<Home />} />
                 <Route path="/loans" element={<LoanAggregator />} />
                 <Route path="/loans/:id" element={<LoanDetails />} />
               </Route>
 
               {/* AI Loan Path Routes with Minimal Layout */}
               <Route element={<AILoanPathLayout />}>
+                <Route path="/" element={<Home />} />
                 <Route path="/ai-loan-path" element={<AILoanPath />} />
               </Route>
 
