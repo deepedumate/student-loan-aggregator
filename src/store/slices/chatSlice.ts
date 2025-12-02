@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export type Step = 'welcome' | 'study-level' | 'admit-status' | 'intended-date' | 'university' | 'programs' | 'loan-amount' | 'otp' | 'loans';
+export type Step = 'welcome' | 'study-level' | 'admit-status' | 'intended-date' | 'university' | 'programs' | 'loan-amount' | 'loan-type' | 'otp' | 'verified' | 'loans';
 
 export interface ChatMessage {
   text: string;
@@ -18,6 +18,7 @@ export interface FormData {
   programId: string;
   totalCost: number;
   loanAmount: number;
+  loanType: string;
   phone: string;
   otp: string;
   currency: string;
@@ -71,6 +72,7 @@ const initialState: ChatState = {
     programId: '',
     totalCost: 0,
     loanAmount: 0,
+    loanType: '',
     phone: '',
     otp: '',
     currency: 'USD'
