@@ -1,5 +1,13 @@
 import { useState, useEffect } from "react";
-import { Filter, X, ChevronDown, Search, Save, Bookmark, Trash2 } from "lucide-react";
+import {
+  Filter,
+  X,
+  ChevronDown,
+  Search,
+  Save,
+  Bookmark,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,6 +28,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { LoanProductFilters } from "@/types/loanProduct";
 
 export interface FilterValues {
   intakeMonth?: string;
@@ -35,10 +44,11 @@ export interface FilterValues {
   searchQuery?: string;
 }
 
+// ✅ FIXED: Update FilterPreset to use LoanProductFilters instead of FilterValues
 export interface FilterPreset {
   id: string;
   name: string;
-  filters: FilterValues;
+  filters: LoanProductFilters; // ✅ Changed from FilterValues
   createdAt: string;
 }
 
@@ -47,7 +57,7 @@ interface LoanFiltersProps {
   onFilterChange: (filters: FilterValues) => void;
   appliedFiltersCount: number;
   presets: FilterPreset[];
-  onSavePreset: (name: string, filters: FilterValues) => void;
+  onSavePreset: (name: string, filters: LoanProductFilters) => void;
   onLoadPreset: (preset: FilterPreset) => void;
   onDeletePreset: (presetId: string) => void;
 }
@@ -69,13 +79,23 @@ const STATUS_OPTIONS = [
 ];
 
 const MONTHS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
-export function LoanFilters({ 
-  filters, 
-  onFilterChange, 
+export function LoanFilters({
+  filters,
+  onFilterChange,
   appliedFiltersCount,
   presets,
   onSavePreset,
@@ -97,35 +117,48 @@ export function LoanFilters({
     onFilterChange(newFilters);
   };
 
+  // ✅ FIXED: Convert FilterValues to LoanProductFilters before saving
   const handleSavePreset = () => {
     if (!presetName.trim()) {
       toast.error("Please enter a preset name");
       return;
     }
-    
+
     if (appliedFiltersCount === 0) {
       toast.error("No filters applied to save");
       return;
     }
 
-    const filtersToSave = { ...filters };
-    delete filtersToSave.searchQuery; // Don't save search query
-    
-    onSavePreset(presetName.trim(), filtersToSave);
+    // Convert component filters (camelCase) to API filters (snake_case)
+    const apiFilters: LoanProductFilters = {};
+
+    if (filters.intakeMonth) apiFilters.intake_month = filters.intakeMonth;
+    if (filters.intakeYear)
+      apiFilters.intake_year = parseInt(filters.intakeYear);
+    if (filters.studyLevel) apiFilters.study_level = filters.studyLevel;
+    if (filters.school) apiFilters.school_name = filters.school;
+    if (filters.program) apiFilters.program_name = filters.program;
+    if (filters.minLoanAmount)
+      apiFilters.loan_amount_min = filters.minLoanAmount;
+    if (filters.maxLoanAmount)
+      apiFilters.loan_amount_max = filters.maxLoanAmount;
+    if (filters.totalTuitionFee)
+      apiFilters.total_tuition_fee = filters.totalTuitionFee;
+    if (filters.totalCostOfLiving)
+      apiFilters.cost_of_living = filters.totalCostOfLiving;
+
+    onSavePreset(presetName.trim(), apiFilters);
     setPresetName("");
     setShowSavePreset(false);
-    toast.success(`Preset "${presetName}" saved successfully`);
   };
 
   const handleLoadPreset = (preset: FilterPreset) => {
     onLoadPreset(preset);
     setShowPresetsList(false);
-    toast.success(`Preset "${preset.name}" loaded`);
   };
 
   const handleDeletePreset = (presetId: string, presetName: string) => {
     onDeletePreset(presetId);
-    toast.success(`Preset "${presetName}" deleted`);
   };
 
   const currentYear = new Date().getFullYear();
@@ -141,7 +174,9 @@ export function LoanFilters({
             type="text"
             placeholder="Search lenders, features..."
             value={filters.searchQuery || ""}
-            onChange={(e) => onFilterChange({ ...filters, searchQuery: e.target.value })}
+            onChange={(e) =>
+              onFilterChange({ ...filters, searchQuery: e.target.value })
+            }
             className="h-12 pl-10 pr-4 rounded-xl bg-card border-border/50 hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300"
           />
         </div>
@@ -182,7 +217,9 @@ export function LoanFilters({
           </SheetTrigger>
           <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
             <SheetHeader>
-              <SheetTitle className="text-2xl font-heading">Filter Loans</SheetTitle>
+              <SheetTitle className="text-2xl font-heading">
+                Filter Loans
+              </SheetTitle>
               <SheetDescription>
                 Refine your search to find the perfect loan match
               </SheetDescription>
@@ -195,7 +232,9 @@ export function LoanFilters({
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <Save className="w-4 h-4 text-accent" />
-                      <span className="text-sm font-semibold text-foreground">Save Current Filters</span>
+                      <span className="text-sm font-semibold text-foreground">
+                        Save Current Filters
+                      </span>
                     </div>
                   </div>
                   {showSavePreset ? (
@@ -206,7 +245,7 @@ export function LoanFilters({
                         value={presetName}
                         onChange={(e) => setPresetName(e.target.value)}
                         onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
+                          if (e.key === "Enter") {
                             handleSavePreset();
                           }
                         }}
@@ -246,6 +285,7 @@ export function LoanFilters({
                   )}
                 </div>
               )}
+
               {/* Intake Period */}
               <div className="space-y-3">
                 <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
@@ -309,7 +349,10 @@ export function LoanFilters({
                   </SelectTrigger>
                   <SelectContent>
                     {STUDY_LEVELS.map((level) => (
-                      <SelectItem key={level} value={level.toLowerCase().replace(/\s+/g, '_')}>
+                      <SelectItem
+                        key={level}
+                        value={level.toLowerCase().replace(/\s+/g, "_")}
+                      >
                         {level}
                       </SelectItem>
                     ))}
@@ -333,7 +376,10 @@ export function LoanFilters({
                   </SelectTrigger>
                   <SelectContent>
                     {STATUS_OPTIONS.map((status) => (
-                      <SelectItem key={status} value={status.toLowerCase().replace(/\s+/g, '_')}>
+                      <SelectItem
+                        key={status}
+                        value={status.toLowerCase().replace(/\s+/g, "_")}
+                      >
                         {status}
                       </SelectItem>
                     ))}
@@ -496,7 +542,11 @@ export function LoanFilters({
                       <span className="font-medium text-sm">{preset.name}</span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">
-                      {Object.keys(preset.filters).length} filter{Object.keys(preset.filters).length !== 1 ? 's' : ''} • {new Date(preset.createdAt).toLocaleDateString()}
+                      {Object.keys(preset.filters).length} filter
+                      {Object.keys(preset.filters).length !== 1
+                        ? "s"
+                        : ""} •{" "}
+                      {new Date(preset.createdAt).toLocaleDateString()}
                     </p>
                   </button>
                   <Button
@@ -518,7 +568,7 @@ export function LoanFilters({
       {appliedFiltersCount > 0 && (
         <div className="flex flex-wrap gap-2">
           {Object.entries(filters).map(([key, value]) => {
-            if (!value || key === 'searchQuery') return null;
+            if (!value || key === "searchQuery") return null;
             return (
               <Badge
                 key={key}
@@ -526,7 +576,7 @@ export function LoanFilters({
                 className="px-3 py-1.5 rounded-lg bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors"
               >
                 <span className="text-xs font-medium">
-                  {key.replace(/([A-Z])/g, ' $1').trim()}: {value}
+                  {key.replace(/([A-Z])/g, " $1").trim()}: {value}
                 </span>
                 <button
                   onClick={() => handleRemoveFilter(key as keyof FilterValues)}

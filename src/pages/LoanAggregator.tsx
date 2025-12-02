@@ -1,11 +1,18 @@
-import { useState, useMemo, useEffect } from "react";
-// import { Header } from "@/components/edu-loan-guide/Header";
+import { useState, useMemo, useEffect, useRef } from "react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+
 import { Footer } from "@/components/edu-loan-guide/Footer";
-import { LoanCard, LoanData } from "@/components/edu-loan-guide/LoanCard";
+import { LoanCard } from "@/components/edu-loan-guide/LoanCard";
 import { LoanCardSkeleton } from "@/components/edu-loan-guide/LoanCardSkeleton";
-import { LoanFilters, FilterValues, FilterPreset } from "@/components/edu-loan-guide/LoanFilters";
+import {
+  LoanFilters,
+  FilterPreset,
+} from "@/components/edu-loan-guide/LoanFilters";
 import { LoanComparison } from "@/components/edu-loan-guide/LoanComparison";
-import { SortControls, SortOptions } from "@/components/edu-loan-guide/SortControls";
+import {
+  SortControls,
+  SortOptions,
+} from "@/components/edu-loan-guide/SortControls";
 import { InterestedModal } from "@/components/edu-loan-guide/InterestedModal";
 import { ProductTour } from "@/components/edu-loan-guide/ProductTour";
 import { Button } from "@/components/ui/button";
@@ -19,281 +26,179 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { GraduationCap, TrendingUp, ArrowRight, CheckCircle2, Heart, X } from "lucide-react";
+import {
+  GraduationCap,
+  TrendingUp,
+  ArrowRight,
+  X,
+  Heart,
+  AlertCircle,
+} from "lucide-react";
 import { toast } from "@/components/ui/sonner";
-
-// Mock loan data - in production this would come from an API
-const MOCK_LOANS: LoanData[] = [
-  {
-    id: "1",
-    lenderName: "Education Finance Corp",
-    interestRate: 6.5,
-    maxLoanAmount: 150000,
-    repaymentPeriod: "15 years",
-    processingFee: 1.5,
-    rating: 5,
-    features: [
-      "No collateral required",
-      "Flexible repayment options",
-      "Grace period of 6 months",
-      "Part-payment without penalties"
-    ],
-    eligibilityCriteria: [
-      "Valid admission letter required",
-      "Co-signer may be needed",
-      "Minimum credit score: 650"
-    ]
-  },
-  {
-    id: "2",
-    lenderName: "Global Student Finance",
-    interestRate: 7.2,
-    maxLoanAmount: 125000,
-    repaymentPeriod: "12 years",
-    processingFee: 2.0,
-    rating: 4,
-    features: [
-      "Quick approval in 48 hours",
-      "No prepayment penalty",
-      "Online application process",
-      "Dedicated loan advisor"
-    ],
-    eligibilityCriteria: [
-      "Enrollment verification required",
-      "Proof of income or co-signer",
-      "Valid student visa"
-    ]
-  },
-  {
-    id: "3",
-    lenderName: "Scholar Funding Solutions",
-    interestRate: 5.9,
-    maxLoanAmount: 200000,
-    repaymentPeriod: "20 years",
-    processingFee: 1.0,
-    rating: 5,
-    features: [
-      "Lowest interest rates",
-      "Interest-only payments while studying",
-      "Unemployment protection",
-      "Death and disability coverage"
-    ],
-    eligibilityCriteria: [
-      "Must be admitted to partner schools",
-      "Minimum GPA of 3.0",
-      "U.S. co-signer required for international students"
-    ]
-  },
-  {
-    id: "4",
-    lenderName: "Future Academic Bank",
-    interestRate: 7.8,
-    maxLoanAmount: 100000,
-    repaymentPeriod: "10 years",
-    processingFee: 2.5,
-    rating: 3,
-    features: [
-      "Same-day approval available",
-      "Mobile app for tracking",
-      "Automatic payment discount",
-      "Refinancing options available"
-    ],
-    eligibilityCriteria: [
-      "Credit check required",
-      "Employment history verification",
-      "Valid identification documents"
-    ]
-  },
-  {
-    id: "5",
-    lenderName: "Merit-Based Lending",
-    interestRate: 6.8,
-    maxLoanAmount: 175000,
-    repaymentPeriod: "18 years",
-    processingFee: 1.75,
-    rating: 4,
-    features: [
-      "Rate reductions for excellent grades",
-      "No origination fees",
-      "Cosigner release after 24 months",
-      "Financial literacy resources"
-    ],
-    eligibilityCriteria: [
-      "Academic merit considered",
-      "Institution must be accredited",
-      "Demonstrate financial need"
-    ]
-  },
-  {
-    id: "6",
-    lenderName: "International Study Fund",
-    interestRate: 8.2,
-    maxLoanAmount: 90000,
-    repaymentPeriod: "8 years",
-    processingFee: 3.0,
-    rating: 4,
-    features: [
-      "Supports study in 50+ countries",
-      "Multi-currency disbursement",
-      "Travel insurance included",
-      "Emergency financial assistance"
-    ],
-    eligibilityCriteria: [
-      "International students welcome",
-      "Passport verification required",
-      "Admission to recognized institution"
-    ]
-  }
-];
-
-const PRESETS_STORAGE_KEY = "loan-filter-presets";
-const FAVORITES_STORAGE_KEY = "loan-favorites";
-const DUMMY_API_URL = "https://jsonplaceholder.typicode.com/posts";
+import {
+  selectLoanProducts,
+  selectIsLoading,
+  selectError,
+  selectPagination,
+  selectSort,
+  selectSearch,
+  selectFilters,
+  selectFilterOptions,
+  selectSelectedLoanIds,
+  selectSelectedLoans,
+  selectFavoriteLoanIds,
+  selectShowFavoritesOnly,
+  selectAppliedFiltersCount,
+  fetchLoanProducts,
+  setFilters,
+  setSearch,
+  setSort,
+  setPage,
+  resetFilters,
+  removeLoanFromComparison,
+  addLoanToComparison,
+  clearComparison,
+  toggleFavorite,
+  toggleShowFavoritesOnly,
+} from "@/store/slices/loanProductSlice";
+import { LoanProduct, LoanProductFilters } from "@/types/loanProduct";
 
 export default function LoanAggregator() {
-  const [filters, setFilters] = useState<FilterValues>({});
-  const [selectedLoanIds, setSelectedLoanIds] = useState<string[]>([]);
+  const dispatch = useAppDispatch();
+
+  // Redux state
+  const loans = useAppSelector(selectLoanProducts);
+  const isLoading = useAppSelector(selectIsLoading);
+  const error = useAppSelector(selectError);
+  const pagination = useAppSelector(selectPagination);
+  const sort = useAppSelector(selectSort);
+  const search = useAppSelector(selectSearch);
+  const filters = useAppSelector(selectFilters);
+  const filterOptions = useAppSelector(selectFilterOptions);
+  const selectedLoanIds = useAppSelector(selectSelectedLoanIds);
+  const selectedLoans = useAppSelector(selectSelectedLoans);
+  const favoriteLoanIds = useAppSelector(selectFavoriteLoanIds);
+  const showFavoritesOnly = useAppSelector(selectShowFavoritesOnly);
+  const appliedFiltersCount = useAppSelector(selectAppliedFiltersCount);
+
+  // Local UI state only (no persistence)
   const [showComparison, setShowComparison] = useState(false);
-  const [sortOptions, setSortOptions] = useState<SortOptions>({
-    field: "interestRate",
-    direction: "asc",
-  });
-  const [presets, setPresets] = useState<FilterPreset[]>([]);
-  const [favoriteLoanIds, setFavoriteLoanIds] = useState<string[]>([]);
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [showInterestedModal, setShowInterestedModal] = useState(false);
-  const [selectedLoan, setSelectedLoan] = useState<LoanData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [loans, setLoans] = useState<LoanData[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 9;
+  const [selectedLoan, setSelectedLoan] = useState<LoanProduct | null>(null);
+  const [presets, setPresets] = useState<FilterPreset[]>([]); // Runtime only, no persistence
+  const previousSearch = useRef(search);
+  // Debounce timer ref
+  const searchDebounceTimer = useRef<NodeJS.Timeout | null>(null);
 
-  // Simulate data fetching on mount
   useEffect(() => {
-    const fetchLoans = async () => {
-      setIsLoading(true);
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1200));
-      setLoans(MOCK_LOANS);
-      setIsLoading(false);
+    // Check if only search changed
+    const searchChanged = previousSearch.current !== search;
+    previousSearch.current = search;
+
+    // Clear any existing timer
+    if (searchDebounceTimer.current) {
+      clearTimeout(searchDebounceTimer.current);
+    }
+
+    // If ONLY search changed AND it's not empty, debounce it
+    if (searchChanged && search !== "") {
+      searchDebounceTimer.current = setTimeout(() => {
+        dispatch(fetchLoanProducts());
+      }, 500); // 500ms debounce for search
+    } else {
+      // For everything else (filters, sort, pagination) or empty search, fetch immediately
+      dispatch(fetchLoanProducts());
+    }
+
+    // Cleanup
+    return () => {
+      if (searchDebounceTimer.current) {
+        clearTimeout(searchDebounceTimer.current);
+      }
     };
-    
-    fetchLoans();
-  }, []);
+  }, [
+    dispatch,
+    pagination.page,
+    pagination.size,
+    sort,
+    filters,
+    search,
+    showFavoritesOnly,
+  ]);
 
-  // Load presets from localStorage on mount
-  useEffect(() => {
-    const savedPresets = localStorage.getItem(PRESETS_STORAGE_KEY);
-    if (savedPresets) {
-      try {
-        setPresets(JSON.parse(savedPresets));
-      } catch (error) {
-        console.error("Error loading presets:", error);
-      }
+  // Convert filters to component format
+  const componentFilters = useMemo(() => {
+    return {
+      intakeMonth: filters.intake_month,
+      intakeYear: filters.intake_year?.toString(),
+      studyLevel: filters.study_level,
+      school: filters.school_name,
+      program: filters.program_name,
+      minLoanAmount: filters.loan_amount_min,
+      maxLoanAmount: filters.loan_amount_max,
+      totalTuitionFee: filters.total_tuition_fee,
+      totalCostOfLiving: filters.cost_of_living,
+      searchQuery: search,
+    };
+  }, [filters, search]);
+
+  // Convert component filters back to API format
+  const handleComponentFilterChange = (newFilters: any) => {
+    const apiFilters: LoanProductFilters = {};
+
+    if (newFilters.intakeMonth)
+      apiFilters.intake_month = newFilters.intakeMonth;
+    if (newFilters.intakeYear)
+      apiFilters.intake_year = parseInt(newFilters.intakeYear);
+    if (newFilters.studyLevel) apiFilters.study_level = newFilters.studyLevel;
+    if (newFilters.school) apiFilters.school_name = newFilters.school;
+    if (newFilters.program) apiFilters.program_name = newFilters.program;
+    if (newFilters.minLoanAmount)
+      apiFilters.loan_amount_min = newFilters.minLoanAmount;
+    if (newFilters.maxLoanAmount)
+      apiFilters.loan_amount_max = newFilters.maxLoanAmount;
+    if (newFilters.totalTuitionFee)
+      apiFilters.total_tuition_fee = newFilters.totalTuitionFee;
+    if (newFilters.totalCostOfLiving)
+      apiFilters.cost_of_living = newFilters.totalCostOfLiving;
+
+    dispatch(setFilters(apiFilters));
+
+    // Handle search separately for debouncing
+    if (newFilters.searchQuery !== search) {
+      dispatch(setSearch(newFilters.searchQuery || ""));
     }
-  }, []);
+  };
 
-  // Load favorites from localStorage on mount
-  useEffect(() => {
-    const savedFavorites = localStorage.getItem(FAVORITES_STORAGE_KEY);
-    if (savedFavorites) {
-      try {
-        setFavoriteLoanIds(JSON.parse(savedFavorites));
-      } catch (error) {
-        console.error("Error loading favorites:", error);
-      }
-    }
-  }, []);
+  // Convert sort options
+  const componentSortOptions = useMemo(
+    () => ({
+      field: sort.sortKey,
+      direction: sort.sortDir,
+    }),
+    [sort]
+  );
 
-  // Save presets to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem(PRESETS_STORAGE_KEY, JSON.stringify(presets));
-  }, [presets]);
+  const handleSortChange = (sortOptions: SortOptions) => {
+    dispatch(
+      setSort({
+        sortKey: sortOptions.field as any,
+        sortDir: sortOptions.direction,
+      })
+    );
+  };
 
-  // Save favorites to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favoriteLoanIds));
-  }, [favoriteLoanIds]);
+  const handlePageChange = (page: number) => {
+    dispatch(setPage({ page }));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
-  // Filter and sort loans based on current filters and sort options
-  const filteredAndSortedLoans = useMemo(() => {
-    // First, filter loans
-    let filtered = loans.filter(loan => {
-      // Favorites filter
-      if (showFavoritesOnly && !favoriteLoanIds.includes(loan.id)) {
-        return false;
-      }
+  const handleClearAllFilters = () => {
+    dispatch(resetFilters());
+  };
 
-      // Search query filter
-      if (filters.searchQuery) {
-        const query = filters.searchQuery.toLowerCase();
-        const searchableText = `${loan.lenderName} ${loan.features.join(' ')}`.toLowerCase();
-        if (!searchableText.includes(query)) return false;
-      }
-
-      // Loan amount filters
-      if (filters.minLoanAmount && loan.maxLoanAmount < filters.minLoanAmount) {
-        return false;
-      }
-      if (filters.maxLoanAmount && loan.maxLoanAmount > filters.maxLoanAmount) {
-        return false;
-      }
-
-      // Note: In a real application, you would filter based on other criteria like
-      // studyLevel, status, school, program, etc. by matching against loan eligibility
-
-      return true;
-    });
-
-    // Then, sort the filtered results
-    const sorted = [...filtered].sort((a, b) => {
-      const { field, direction } = sortOptions;
-      let comparison = 0;
-
-      switch (field) {
-        case "interestRate":
-          comparison = a.interestRate - b.interestRate;
-          break;
-        case "maxLoanAmount":
-          comparison = a.maxLoanAmount - b.maxLoanAmount;
-          break;
-        case "processingFee":
-          comparison = a.processingFee - b.processingFee;
-          break;
-        case "rating":
-          comparison = a.rating - b.rating;
-          break;
-      }
-
-      return direction === "asc" ? comparison : -comparison;
-    });
-
-    return sorted;
-  }, [filters, sortOptions, showFavoritesOnly, favoriteLoanIds, loans]);
-
-  // Pagination calculations
-  const totalPages = Math.ceil(filteredAndSortedLoans.length / ITEMS_PER_PAGE);
-  const paginatedLoans = useMemo(() => {
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
-    return filteredAndSortedLoans.slice(startIndex, endIndex);
-  }, [filteredAndSortedLoans, currentPage, ITEMS_PER_PAGE]);
-
-  // Reset to page 1 when filters or sort changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filters, sortOptions, showFavoritesOnly]);
-
-  const selectedLoans = useMemo(() => {
-    return loans.filter(loan => selectedLoanIds.includes(loan.id));
-  }, [selectedLoanIds, loans]);
-
-  const appliedFiltersCount = Object.keys(filters).filter(
-    key => filters[key as keyof FilterValues] && key !== 'searchQuery'
-  ).length;
-
-  // Preset management functions
-  const handleSavePreset = (name: string, filterValues: FilterValues) => {
+  // Preset management (runtime only - no localStorage)
+  const handleSavePreset = (name: string, filterValues: LoanProductFilters) => {
     const newPreset: FilterPreset = {
       id: Date.now().toString(),
       name,
@@ -301,18 +206,23 @@ export default function LoanAggregator() {
       createdAt: new Date().toISOString(),
     };
     setPresets([...presets, newPreset]);
+    toast.success(`Preset "${name}" saved`, {
+      description: "Note: Presets are cleared on page refresh",
+    });
   };
 
   const handleLoadPreset = (preset: FilterPreset) => {
-    setFilters(preset.filters);
+    dispatch(setFilters(preset.filters));
+    toast.success(`Preset "${preset.name}" loaded`);
   };
 
   const handleDeletePreset = (presetId: string) => {
-    setPresets(presets.filter(p => p.id !== presetId));
+    setPresets(presets.filter((p) => p.id !== presetId));
+    toast.success("Preset deleted");
   };
 
   const handleInterested = (loanId: string) => {
-    const loan = loans.find(l => l.id === loanId);
+    const loan = loans.find((l) => l.id.toString() === loanId);
     if (loan) {
       setSelectedLoan(loan);
       setShowInterestedModal(true);
@@ -321,18 +231,18 @@ export default function LoanAggregator() {
 
   const handleCompare = (loanId: string) => {
     if (selectedLoanIds.includes(loanId)) {
-      setSelectedLoanIds(selectedLoanIds.filter(id => id !== loanId));
+      dispatch(removeLoanFromComparison(loanId));
       toast.info("Loan removed from comparison");
     } else if (selectedLoanIds.length >= 4) {
       toast.error("You can compare up to 4 loans at a time");
     } else {
-      setSelectedLoanIds([...selectedLoanIds, loanId]);
+      dispatch(addLoanToComparison(loanId));
       toast.success("Loan added to comparison");
     }
   };
 
   const handleRemoveFromComparison = (loanId: string) => {
-    setSelectedLoanIds(selectedLoanIds.filter(id => id !== loanId));
+    dispatch(removeLoanFromComparison(loanId));
   };
 
   const handleOpenComparison = () => {
@@ -344,58 +254,35 @@ export default function LoanAggregator() {
   };
 
   const handleClearSelection = () => {
-    setSelectedLoanIds([]);
+    dispatch(clearComparison());
     toast.info("Selection cleared", {
       description: "All loans removed from comparison.",
     });
   };
 
-  const handleToggleFavorite = async (loanId: string) => {
-    const loan = loans.find(l => l.id === loanId);
+  const handleToggleFavorite = (loanId: string) => {
+    const loan = loans.find((l) => l.id.toString() === loanId);
     const isFavorite = favoriteLoanIds.includes(loanId);
 
+    dispatch(toggleFavorite(loanId));
+
     if (isFavorite) {
-      setFavoriteLoanIds(favoriteLoanIds.filter(id => id !== loanId));
       toast.success("Removed from favorites", {
-        description: `${loan?.lenderName} has been removed from your bookmarks.`,
+        description: `${loan?.lender_name} has been removed from your bookmarks.`,
       });
     } else {
-      setFavoriteLoanIds([...favoriteLoanIds, loanId]);
       toast.success("Added to favorites! ❤️", {
-        description: `${loan?.lenderName} has been bookmarked for easy access.`,
+        description: `${loan?.lender_name} has been bookmarked for easy access.`,
       });
-
-      // Send to dummy API (demonstration only)
-      try {
-        await fetch(DUMMY_API_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            title: 'Loan Favorited',
-            loanId: loanId,
-            lenderName: loan?.lenderName,
-            userId: 'demo-user',
-            timestamp: new Date().toISOString(),
-          }),
-        });
-      } catch (error) {
-        console.error("Error sending to API:", error);
-      }
     }
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    // Smooth scroll to top of results
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handleToggleShowFavorites = () => {
+    dispatch(toggleShowFavoritesOnly());
   };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* <Header /> */}
-      
       {/* Hero Header */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-accent/10 border-b border-border/50">
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />
@@ -409,7 +296,8 @@ export default function LoanAggregator() {
                 Find Your Perfect Education Loan
               </h1>
               <p className="text-base sm:text-lg text-muted-foreground max-w-3xl leading-relaxed">
-                Compare loans from top lenders, get personalized recommendations, and secure funding for your academic journey. Enterprise-grade tools for students.
+                Compare loans from top lenders, get personalized
+                recommendations, and secure funding for your academic journey.
               </p>
             </div>
           </div>
@@ -417,20 +305,28 @@ export default function LoanAggregator() {
           {/* Stats */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8">
             <div className="p-4 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50">
-              <p className="text-2xl font-bold text-primary">{isLoading ? "..." : loans.length}</p>
+              <p className="text-2xl font-bold text-primary">
+                {isLoading ? "..." : pagination.total}
+              </p>
+              <p className="text-sm text-muted-foreground">Loan Products</p>
+            </div>
+            <div className="p-4 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50">
+              <p className="text-2xl font-bold text-accent">
+                {isLoading ? "..." : filterOptions?.lenders.length || 0}
+              </p>
               <p className="text-sm text-muted-foreground">Lenders</p>
             </div>
             <div className="p-4 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50">
-              <p className="text-2xl font-bold text-accent">$200K</p>
-              <p className="text-sm text-muted-foreground">Max Loan</p>
+              <p className="text-2xl font-bold text-success">
+                {appliedFiltersCount}
+              </p>
+              <p className="text-sm text-muted-foreground">Filters Active</p>
             </div>
             <div className="p-4 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50">
-              <p className="text-2xl font-bold text-success">5.9%</p>
-              <p className="text-sm text-muted-foreground">Best Rate</p>
-            </div>
-            <div className="p-4 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50">
-              <p className="text-2xl font-bold text-primary">24hrs</p>
-              <p className="text-sm text-muted-foreground">Avg Approval</p>
+              <p className="text-2xl font-bold text-primary">
+                {favoriteLoanIds.length}
+              </p>
+              <p className="text-sm text-muted-foreground">Favorites</p>
             </div>
           </div>
         </div>
@@ -441,8 +337,8 @@ export default function LoanAggregator() {
         {/* Filters */}
         <div className="mb-6 filter-section">
           <LoanFilters
-            filters={filters}
-            onFilterChange={setFilters}
+            filters={componentFilters}
+            onFilterChange={handleComponentFilterChange}
             appliedFiltersCount={appliedFiltersCount}
             presets={presets}
             onSavePreset={handleSavePreset}
@@ -451,23 +347,33 @@ export default function LoanAggregator() {
           />
         </div>
 
-        {/* Sort Controls and Favorites Toggle */}
+        {/* Sort Controls */}
         <div className="mb-6 flex items-center justify-between flex-wrap gap-4 sort-controls">
           <SortControls
-            sortOptions={sortOptions}
-            onSortChange={setSortOptions}
+            sortOptions={componentSortOptions}
+            onSortChange={handleSortChange}
           />
           <Button
             variant={showFavoritesOnly ? "default" : "outline"}
-            onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-            className={`transition-all duration-300 hover:scale-105 group ${showFavoritesOnly ? "bg-gradient-to-r from-accent to-accent-light" : ""}`}
+            onClick={handleToggleShowFavorites}
+            className={`transition-all duration-300 hover:scale-105 group ${
+              showFavoritesOnly
+                ? "bg-gradient-to-r from-accent to-accent-light"
+                : ""
+            }`}
           >
-            <Heart className={`w-4 h-4 mr-2 transition-all duration-300 group-hover:scale-125 ${showFavoritesOnly ? "fill-current animate-pulse" : ""}`} />
-            {showFavoritesOnly ? `Favorites (${favoriteLoanIds.length})` : "Show Favorites"}
+            <Heart
+              className={`w-4 h-4 mr-2 transition-all duration-300 group-hover:scale-125 ${
+                showFavoritesOnly ? "fill-current animate-pulse" : ""
+              }`}
+            />
+            {showFavoritesOnly
+              ? `Favorites (${favoriteLoanIds.length})`
+              : "Show Favorites"}
           </Button>
         </div>
 
-        {/* Compare Button - Fixed */}
+        {/* Compare Button */}
         {selectedLoanIds.length > 0 && (
           <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-scale-in w-full max-w-md px-4 comparison-button">
             <div className="flex items-center gap-3">
@@ -485,18 +391,23 @@ export default function LoanAggregator() {
                   size="lg"
                   className="w-full h-16 px-8 rounded-2xl bg-gradient-to-r from-accent via-accent-light to-accent hover:from-accent-light hover:via-accent hover:to-accent-light !text-white hover:!text-white font-bold transition-all duration-300 hover:scale-105 active:scale-95 text-lg border-2 border-accent/30 group"
                   style={{
-                    boxShadow: `0 0 ${20 + (selectedLoanIds.length * 15)}px hsl(var(--accent) / ${0.4 + (selectedLoanIds.length * 0.15)}), 0 10px 40px -10px hsl(var(--accent) / ${0.3 + (selectedLoanIds.length * 0.1)})`
+                    boxShadow: `0 0 ${
+                      20 + selectedLoanIds.length * 15
+                    }px hsl(var(--accent) / ${
+                      0.4 + selectedLoanIds.length * 0.15
+                    }), 0 10px 40px -10px hsl(var(--accent) / ${
+                      0.3 + selectedLoanIds.length * 0.1
+                    })`,
                   }}
                 >
                   <TrendingUp className="w-6 h-6 mr-3 transition-transform duration-300 group-hover:scale-125 group-hover:rotate-12" />
                   <span className="transition-transform duration-300 group-hover:scale-105">
-                    Compare {selectedLoanIds.length} Loan{selectedLoanIds.length > 1 ? 's' : ''}
+                    Compare {selectedLoanIds.length} Loan
+                    {selectedLoanIds.length > 1 ? "s" : ""}
                   </span>
                   <ArrowRight className="w-6 h-6 ml-3 transition-transform duration-300 group-hover:translate-x-1" />
                 </Button>
-                <Badge 
-                  className="absolute -top-2 -right-2 h-8 px-3 text-sm font-bold bg-primary text-primary-foreground shadow-lg border-2 border-background animate-bounce-subtle"
-                >
+                <Badge className="absolute -top-2 -right-2 h-8 px-3 text-sm font-bold bg-primary text-primary-foreground shadow-lg border-2 border-background animate-bounce-subtle">
                   {selectedLoanIds.length}/4
                 </Badge>
               </div>
@@ -504,20 +415,46 @@ export default function LoanAggregator() {
           </div>
         )}
 
+        {/* Error handling */}
+        {error && (
+          <div className="mb-6 p-4 rounded-xl bg-destructive/10 border border-destructive/20 flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-destructive" />
+            <div className="flex-1">
+              <p className="font-semibold text-destructive">
+                Error loading loans
+              </p>
+              <p className="text-sm text-destructive/80">{error}</p>
+            </div>
+            <Button
+              onClick={() => dispatch(fetchLoanProducts())}
+              variant="outline"
+              size="sm"
+              className="ml-auto"
+            >
+              Retry
+            </Button>
+          </div>
+        )}
+
         {/* Results Header */}
-        {!isLoading && (
+        {!isLoading && !error && (
           <div className="flex items-center justify-between mb-6 animate-fade-in">
             <div>
               <h2 className="text-xl font-bold font-heading">
-                {filteredAndSortedLoans.length} Loan Options Available
+                {pagination.total} Loan Options Available
               </h2>
               <p className="text-sm text-muted-foreground mt-1">
-                {totalPages > 1 && (
+                {pagination.totalPages > 1 && (
                   <>
-                    Showing {((currentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, filteredAndSortedLoans.length)} of {filteredAndSortedLoans.length} • 
+                    Showing {(pagination.page - 1) * pagination.size + 1}-
+                    {Math.min(
+                      pagination.page * pagination.size,
+                      pagination.total
+                    )}{" "}
+                    of {pagination.total} •{" "}
                   </>
                 )}
-                {" "}Sorted by {sortOptions.field.replace(/([A-Z])/g, ' $1').toLowerCase()}
+                Sorted by {sort.sortKey.replace(/_/g, " ")}
               </p>
             </div>
           </div>
@@ -526,14 +463,14 @@ export default function LoanAggregator() {
         {/* Loan Grid */}
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(ITEMS_PER_PAGE)].map((_, index) => (
+            {[...Array(pagination.size)].map((_, index) => (
               <LoanCardSkeleton key={index} />
             ))}
           </div>
-        ) : paginatedLoans.length > 0 ? (
+        ) : loans.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
-              {paginatedLoans.map((loan, index) => (
+              {loans.map((loan, index) => (
                 <div
                   key={loan.id}
                   className="animate-fade-in"
@@ -544,27 +481,33 @@ export default function LoanAggregator() {
                     onInterested={handleInterested}
                     onCompare={handleCompare}
                     onToggleFavorite={handleToggleFavorite}
-                    isSelected={selectedLoanIds.includes(loan.id)}
-                    isFavorite={favoriteLoanIds.includes(loan.id)}
+                    isSelected={selectedLoanIds.includes(loan.id.toString())}
+                    isFavorite={favoriteLoanIds.includes(loan.id.toString())}
                   />
                 </div>
               ))}
             </div>
 
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
+            {/* Pagination */}
+            {pagination.totalPages > 1 && (
               <div className="mt-12 mb-8 flex justify-center animate-fade-in">
                 <Pagination>
                   <PaginationContent>
                     <PaginationItem>
                       <PaginationPrevious
-                        onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
-                        className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer hover:bg-primary/10 transition-colors"}
+                        onClick={() =>
+                          pagination.page > 1 &&
+                          handlePageChange(pagination.page - 1)
+                        }
+                        className={
+                          pagination.page === 1
+                            ? "pointer-events-none opacity-50"
+                            : "cursor-pointer hover:bg-primary/10 transition-colors"
+                        }
                       />
                     </PaginationItem>
 
-                    {/* First page */}
-                    {currentPage > 3 && (
+                    {pagination.page > 3 && (
                       <>
                         <PaginationItem>
                           <PaginationLink
@@ -574,7 +517,7 @@ export default function LoanAggregator() {
                             1
                           </PaginationLink>
                         </PaginationItem>
-                        {currentPage > 4 && (
+                        {pagination.page > 4 && (
                           <PaginationItem>
                             <PaginationEllipsis />
                           </PaginationItem>
@@ -582,22 +525,27 @@ export default function LoanAggregator() {
                       </>
                     )}
 
-                    {/* Page numbers around current page */}
-                    {Array.from({ length: totalPages }, (_, i) => i + 1)
-                      .filter(page => {
-                        return page === currentPage || 
-                               page === currentPage - 1 || 
-                               page === currentPage + 1 ||
-                               (currentPage <= 2 && page <= 3) ||
-                               (currentPage >= totalPages - 1 && page >= totalPages - 2);
+                    {Array.from(
+                      { length: pagination.totalPages },
+                      (_, i) => i + 1
+                    )
+                      .filter((page) => {
+                        return (
+                          page === pagination.page ||
+                          page === pagination.page - 1 ||
+                          page === pagination.page + 1 ||
+                          (pagination.page <= 2 && page <= 3) ||
+                          (pagination.page >= pagination.totalPages - 1 &&
+                            page >= pagination.totalPages - 2)
+                        );
                       })
-                      .map(page => (
+                      .map((page) => (
                         <PaginationItem key={page}>
                           <PaginationLink
                             onClick={() => handlePageChange(page)}
-                            isActive={currentPage === page}
+                            isActive={pagination.page === page}
                             className={`cursor-pointer transition-all duration-300 ${
-                              currentPage === page
+                              pagination.page === page
                                 ? "bg-primary text-primary-foreground hover:bg-primary/90"
                                 : "hover:bg-primary/10"
                             }`}
@@ -607,20 +555,21 @@ export default function LoanAggregator() {
                         </PaginationItem>
                       ))}
 
-                    {/* Last page */}
-                    {currentPage < totalPages - 2 && (
+                    {pagination.page < pagination.totalPages - 2 && (
                       <>
-                        {currentPage < totalPages - 3 && (
+                        {pagination.page < pagination.totalPages - 3 && (
                           <PaginationItem>
                             <PaginationEllipsis />
                           </PaginationItem>
                         )}
                         <PaginationItem>
                           <PaginationLink
-                            onClick={() => handlePageChange(totalPages)}
+                            onClick={() =>
+                              handlePageChange(pagination.totalPages)
+                            }
                             className="cursor-pointer hover:bg-primary/10 transition-colors"
                           >
-                            {totalPages}
+                            {pagination.totalPages}
                           </PaginationLink>
                         </PaginationItem>
                       </>
@@ -628,8 +577,15 @@ export default function LoanAggregator() {
 
                     <PaginationItem>
                       <PaginationNext
-                        onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
-                        className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer hover:bg-primary/10 transition-colors"}
+                        onClick={() =>
+                          pagination.page < pagination.totalPages &&
+                          handlePageChange(pagination.page + 1)
+                        }
+                        className={
+                          pagination.page === pagination.totalPages
+                            ? "pointer-events-none opacity-50"
+                            : "cursor-pointer hover:bg-primary/10 transition-colors"
+                        }
                       />
                     </PaginationItem>
                   </PaginationContent>
@@ -642,12 +598,14 @@ export default function LoanAggregator() {
             <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
               <GraduationCap className="w-8 h-8 text-muted-foreground" />
             </div>
-            <h3 className="text-xl font-bold mb-2">No loans match your criteria</h3>
+            <h3 className="text-xl font-bold mb-2">
+              No loans match your criteria
+            </h3>
             <p className="text-muted-foreground mb-6">
               Try adjusting your filters to see more options
             </p>
             <Button
-              onClick={() => setFilters({})}
+              onClick={handleClearAllFilters}
               variant="outline"
               className="border-primary/40 hover:bg-primary/5"
             >
@@ -676,7 +634,7 @@ export default function LoanAggregator() {
       {/* Product Tour */}
       <ProductTour />
 
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

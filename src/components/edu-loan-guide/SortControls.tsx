@@ -8,7 +8,15 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
-export type SortField = "interestRate" | "maxLoanAmount" | "processingFee" | "rating";
+// ✅ FIXED: Changed to match API field names (snake_case)
+export type SortField =
+  | "interest_rate"
+  | "max_loan_amount"
+  | "processing_fee"
+  | "rating"
+  | "lender_name"
+  | "product_name"
+  | "created_at";
 export type SortDirection = "asc" | "desc";
 
 export interface SortOptions {
@@ -21,11 +29,15 @@ interface SortControlsProps {
   onSortChange: (options: SortOptions) => void;
 }
 
+// ✅ FIXED: Updated sort fields to match API
 const SORT_FIELDS = [
-  { value: "interestRate", label: "Interest Rate" },
-  { value: "maxLoanAmount", label: "Max Loan Amount" },
-  { value: "processingFee", label: "Processing Fee" },
+  { value: "interest_rate", label: "Interest Rate" },
+  { value: "max_loan_amount", label: "Max Loan Amount" },
+  { value: "processing_fee", label: "Processing Fee" },
   { value: "rating", label: "Rating" },
+  { value: "lender_name", label: "Lender Name" },
+  { value: "product_name", label: "Product Name" },
+  { value: "created_at", label: "Recently Added" },
 ] as const;
 
 export function SortControls({ sortOptions, onSortChange }: SortControlsProps) {
@@ -37,13 +49,25 @@ export function SortControls({ sortOptions, onSortChange }: SortControlsProps) {
   };
 
   const getSortLabel = () => {
-    const field = SORT_FIELDS.find(f => f.value === sortOptions.field);
+    const field = SORT_FIELDS.find((f) => f.value === sortOptions.field);
     return field?.label || "Sort by";
   };
 
   const getDirectionLabel = () => {
-    if (sortOptions.field === "interestRate" || sortOptions.field === "processingFee") {
+    if (
+      sortOptions.field === "interest_rate" ||
+      sortOptions.field === "processing_fee"
+    ) {
       return sortOptions.direction === "asc" ? "Low to High" : "High to Low";
+    }
+    if (
+      sortOptions.field === "lender_name" ||
+      sortOptions.field === "product_name"
+    ) {
+      return sortOptions.direction === "asc" ? "A to Z" : "Z to A";
+    }
+    if (sortOptions.field === "created_at") {
+      return sortOptions.direction === "asc" ? "Oldest First" : "Newest First";
     }
     return sortOptions.direction === "asc" ? "Lowest First" : "Highest First";
   };
@@ -52,9 +76,11 @@ export function SortControls({ sortOptions, onSortChange }: SortControlsProps) {
     <div className="flex items-center gap-3">
       <div className="flex items-center gap-2">
         <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
-        <span className="text-sm font-medium text-muted-foreground">Sort by:</span>
+        <span className="text-sm font-medium text-muted-foreground">
+          Sort by:
+        </span>
       </div>
-      
+
       <Select
         value={sortOptions.field}
         onValueChange={(value) =>

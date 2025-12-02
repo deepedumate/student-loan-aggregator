@@ -1,12 +1,18 @@
 import { configureStore } from '@reduxjs/toolkit';
-import loanReducer from './slices/loanSlice';
-import chatReducer from './slices/chatSlice';
+import loanProductReducer from "./slices/loanProductSlice";
+import chatReducer from "./slices/chatSlice";
 
 export const store = configureStore({
   reducer: {
-    loan: loanReducer,
+    loanProducts: loanProductReducer,
     chat: chatReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
+      },
+    }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
