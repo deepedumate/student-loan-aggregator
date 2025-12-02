@@ -1946,17 +1946,7 @@ export default function LoanDetails() {
       <InterestedModal
         open={showInterestedModal}
         onClose={() => setShowInterestedModal(false)}
-        loan={{
-          id: loan.id.toString(),
-          lenderName,
-          interestRate,
-          maxLoanAmount: maxLoanAmountValue,
-          repaymentPeriod,
-          processingFee,
-          rating,
-          features,
-          eligibilityCriteria,
-        }}
+        loan={loan}
       />
 
       <Footer />

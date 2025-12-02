@@ -5,18 +5,18 @@
 // import { Badge } from "@/components/ui/badge";
 // import { LoanProduct } from "@/types/loanProduct";
 
-// export interface LoanData {
-//   id: string;
-//   lenderName: string;
-//   lenderLogo?: string;
-//   interestRate: number;
-//   maxLoanAmount: number;
-//   repaymentPeriod: string;
-//   processingFee: number;
-//   features: string[];
-//   eligibilityCriteria: string[];
-//   rating: number;
-// }
+export interface LoanData {
+  id: string;
+  lenderName: string;
+  lenderLogo?: string;
+  interestRate: number;
+  maxLoanAmount: number;
+  repaymentPeriod: string;
+  processingFee: number;
+  features: string[];
+  eligibilityCriteria: string[];
+  rating: number;
+}
 
 // interface LoanCardProps {
 //   loan: LoanProduct[];
@@ -209,7 +209,7 @@ import { Badge } from "@/components/ui/badge";
 import { LoanProduct } from "@/types/loanProduct";
 
 interface LoanCardProps {
-  loan: LoanProduct; // ✅ FIXED: Changed from LoanProduct[] to LoanProduct
+  loan: LoanProduct;
   onInterested: (loanId: string) => void;
   onCompare: (loanId: string) => void;
   onToggleFavorite: (loanId: string) => void;
