@@ -26,10 +26,47 @@ const API_BASE_URL_LOAN =
   getEnvVar('REACT_APP_API_BASE_URL_LOAN') || 
   getEnvVar('NEXT_PUBLIC_API_BASE_URL_LOAN') || 
     '';
+
+const API_BASE_URL_CONTACTS = 
+  getEnvVar('VITE_API_BASE_URL_CONTACTS') || 
+  getEnvVar('REACT_APP_API_BASE_URL_CONTACTS') || 
+  getEnvVar('NEXT_PUBLIC_API_BASE_URL_CONTACTS') || 
+  'http://localhost:3031';
     
 interface LoanChatRequest {
   action: string;
   data?: any;
+}
+
+interface ContactUpsertPayload {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phoneNumber?: string;
+  baseCurrency?: string;
+  studyDestinationCurrency?: string;
+  selectedLoanCurrency?: string;
+  levelOfEducation?: string;
+  studyDestination?: string;
+  courseType?: string;
+  loanPreference?: string;
+  intakeMonth?: string;
+  intakeYear?: string;
+  loanAmount?: string;
+  analyticalExam?: Record<string, string>;
+  languageExam?: Record<string, string>;
+  coApplicant?: string;
+  coApplicantIncomeType?: string;
+  coApplicantAnnualIncome?: string;
+  coApplicantMobile?: string;
+  coApplicantEmail?: string;
+  utm_source?: string;
+  utm_campaign?: string;
+  utm_medium?: string;
+  formType?: string;
+  submissionDate?: string;
+  userAgent?: string;
+  referrer?: string;
 }
 
 interface LoanChatResponse {
@@ -355,6 +392,54 @@ export const apiService = {
             AED: 3.67,
           }
         }
+      };
+    }
+  },
+
+  // Upsert contact - save user data after OTP verification
+  upsertContact: async (payload: ContactUpsertPayload): Promise<LoanChatResponse> => {
+    try {
+      // Filter out undefined/null/empty values from payload
+      const filteredPayload = Object.entries(payload).reduce((acc, [key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+          acc[key] = value;
+        }
+        return acc;
+      }, {} as Record<string, any>);
+
+      console.log('Upserting contact with payload:', filteredPayload);
+
+      const response = await fetch(`${API_BASE_URL_CONTACTS}/contacts/upsert`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(filteredPayload),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`API error: ${response.status} - ${errorText}`);
+      }
+
+      const responseData = await response.json();
+
+      return {
+        data: {
+          success: true,
+          message: 'Contact saved successfully',
+          ...responseData
+        }
+      };
+    } catch (error: any) {
+      console.error('Contact upsert error:', error);
+      return {
+        data: {
+          success: false,
+          message: 'Failed to save contact data'
+        },
+        error: { message: error.message }
       };
     }
   },

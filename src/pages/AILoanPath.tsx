@@ -1,4 +1,29 @@
 import { useState, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "@/store";
+import {
+  addMessage,
+  setStep,
+  setIsTyping,
+  updateFormData,
+  setCountryCode,
+  setProgramData,
+  setUserInput,
+  setPhoneValidation,
+  setOtpCountdown,
+  setUniversitySuggestions,
+  setIsLoadingSuggestions,
+  setShowSuggestions,
+  setPreferredCurrency,
+  setExchangeRates,
+  setShowCurrencySelector,
+  setCurrencyDisplayMode,
+  setCostBreakdown,
+  setIsOtherProgramSelected,
+  setCustomProgramName,
+  resetChat,
+  type Step
+} from "@/store/slices/chatSlice";
 import { ChatBubble } from "@/components/ai-loan-path/ChatBubble";
 import { OptionButton } from "@/components/ai-loan-path/OptionButton";
 import { LoanCard, LoanProduct } from "@/components/ai-loan-path/LoanCard";
@@ -22,59 +47,32 @@ const GOOGLE_MAPS_API_KEY =
   import.meta.env.REACT_APP_GOOGLE_MAPS_API_KEY ||
   '';
 
-type ChatMessage = {
-  text: string;
-  isUser: boolean;
-  step?: Step;
-  id?: string;
-};
-
-type Step = 'welcome' | 'study-level' | 'admit-status' | 'intended-date' | 'university' | 'programs' | 'loan-amount' | 'loan-type' | 'otp' | 'verified' | 'loans';
-
 const Index = () => {
   const { toast } = useToast();
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    { text: "Welcome to Edumate. We help smart students make smarter funding decisions.\n\nLet's find the best education financing options tailored to your needs.", isUser: false }
-  ]);
-  const [step, setStep] = useState<Step>('welcome');
-  const [isTyping, setIsTyping] = useState(false);
-  const [formData, setFormData] = useState({
-    studyLevel: '',
-    admitStatus: '',
-    intendedMonth: 0,
-    intendedYear: 0,
-    universityName: '',
-    programId: '',
-    totalCost: 0,
-    loanAmount: 0,
-    loanType: '',
-    phone: '',
-    otp: '',
-    currency: 'USD'
-  });
-  const [countryCode, setCountryCode] = useState('+91');
-  const [programData, setProgramData] = useState<any>(null);
-  const [userInput, setUserInput] = useState('');
-  const [phoneValidation, setPhoneValidation] = useState<{ isValid: boolean; error?: string } | null>(null);
-  const [otpCountdown, setOtpCountdown] = useState(0);
-  const [universitySuggestions, setUniversitySuggestions] = useState<string[]>([]);
-  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [preferredCurrency, setPreferredCurrency] = useState('USD');
-  const [exchangeRates, setExchangeRates] = useState<Record<string, number>>({});
-  const [showCurrencySelector, setShowCurrencySelector] = useState(false);
-  const [currencyDisplayMode, setCurrencyDisplayMode] = useState<'original' | 'converted' | 'both'>('both');
-  const [costBreakdown, setCostBreakdown] = useState<{
-    totalCost: string;
-    duration: string;
-    tuition: string;
-    tuitionPerYear?: string;
-    living: string;
-    livingPerYear?: string;
-    showPerYear: boolean;
-  } | null>(null);
-  const [isOtherProgramSelected, setIsOtherProgramSelected] = useState(false);
-  const [customProgramName, setCustomProgramName] = useState('');
+  const dispatch = useDispatch();
+  
+  // Redux state selectors
+  const messages = useSelector((state: RootState) => state.chat.messages);
+  const step = useSelector((state: RootState) => state.chat.step);
+  const isTyping = useSelector((state: RootState) => state.chat.isTyping);
+  const formData = useSelector((state: RootState) => state.chat.formData);
+  const countryCode = useSelector((state: RootState) => state.chat.countryCode);
+  const programData = useSelector((state: RootState) => state.chat.programData);
+  const userInput = useSelector((state: RootState) => state.chat.userInput);
+  const phoneValidation = useSelector((state: RootState) => state.chat.phoneValidation);
+  const otpCountdown = useSelector((state: RootState) => state.chat.otpCountdown);
+  const universitySuggestions = useSelector((state: RootState) => state.chat.universitySuggestions);
+  const isLoadingSuggestions = useSelector((state: RootState) => state.chat.isLoadingSuggestions);
+  const showSuggestions = useSelector((state: RootState) => state.chat.showSuggestions);
+  const preferredCurrency = useSelector((state: RootState) => state.chat.preferredCurrency);
+  const exchangeRates = useSelector((state: RootState) => state.chat.exchangeRates);
+  const showCurrencySelector = useSelector((state: RootState) => state.chat.showCurrencySelector);
+  const currencyDisplayMode = useSelector((state: RootState) => state.chat.currencyDisplayMode);
+  const costBreakdown = useSelector((state: RootState) => state.chat.costBreakdown);
+  const isOtherProgramSelected = useSelector((state: RootState) => state.chat.isOtherProgramSelected);
+  const customProgramName = useSelector((state: RootState) => state.chat.customProgramName);
+  
+  // Local state only for Google Maps
   const [isGoogleMapsLoaded, setIsGoogleMapsLoaded] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const universityInputRef = useRef<HTMLInputElement>(null);
@@ -86,11 +84,9 @@ const Index = () => {
 
   // Auto-scroll to bottom when messages, typing state, or step changes
   useEffect(() => {
-    // Small delay to ensure DOM has updated with new content
     const timer = setTimeout(() => {
       scrollToBottom();
     }, 100);
-
     return () => clearTimeout(timer);
   }, [messages, isTyping, step]);
 
@@ -122,51 +118,158 @@ const Index = () => {
   useEffect(() => {
     if (otpCountdown > 0) {
       const timer = setTimeout(() => {
-        setOtpCountdown(otpCountdown - 1);
+        dispatch(setOtpCountdown(otpCountdown - 1));
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [otpCountdown]);
+  }, [otpCountdown, dispatch]);
 
-  const addMessage = (text: string, isUser: boolean, stepInfo?: Step) => {
-    setMessages(prev => [...prev, {
+  const addMessageHelper = (text: string, isUser: boolean, stepInfo?: Step) => {
+    dispatch(addMessage({
       text,
       isUser,
       step: stepInfo,
       id: `msg-${Date.now()}-${Math.random()}`
-    }]);
+    }));
   };
 
   const addTypingMessage = async (text: string) => {
-    setIsTyping(true);
-    await new Promise(resolve => setTimeout(resolve, 400)); // Reduced from 800ms
-    setIsTyping(false);
-    addMessage(text, false);
+    dispatch(setIsTyping(true));
+    await new Promise(resolve => setTimeout(resolve, 400));
+    dispatch(setIsTyping(false));
+    addMessageHelper(text, false);
   };
 
   const handleNewConversation = () => {
-    setMessages([
-      { text: "Welcome to Edumate. We help smart students make smarter funding decisions.\n\nLet's find the best education financing options tailored to your needs.", isUser: false }
-    ]);
-    setStep('welcome');
-    setIsTyping(false);
-    setFormData({
-      studyLevel: '',
-      admitStatus: '',
-      intendedMonth: 0,
-      intendedYear: 0,
-      universityName: '',
-      programId: '',
-      totalCost: 0,
-      loanAmount: 0,
-      loanType: '',
-      phone: '',
-      otp: '',
-      currency: 'USD'
-    });
-    setProgramData(null);
-    setCostBreakdown(null);
-    setUserInput('');
+    dispatch(resetChat());
+  };
+
+  // Helper function to extract study destination from university name
+  const extractStudyDestination = (universityName: string): string => {
+    const university = universityName.toLowerCase();
+    
+    if (university.includes('harvard') || university.includes('mit') || 
+        university.includes('stanford') || university.includes('yale') ||
+        university.includes('princeton') || university.includes('columbia') ||
+        university.includes('berkeley') || university.includes('caltech') ||
+        university.includes('chicago') || university.includes('pennsylvania') ||
+        university.includes('cornell') || university.includes('duke') ||
+        university.includes('northwestern') || university.includes('brown') ||
+        university.includes('vanderbilt') || university.includes('rice') ||
+        university.includes('notre dame') || university.includes('ucla') ||
+        university.includes('usc') || university.includes('michigan') ||
+        university.includes('virginia') || university.includes('carolina') ||
+        university.includes('texas') || university.includes('washington') ||
+        university.includes('georgia') || university.includes('florida') ||
+        university.includes('wisconsin') || university.includes('illinois') ||
+        university.includes('boston') || university.includes('nyu') ||
+        university.includes('new york university')) {
+      return 'US';
+    }
+    
+    if (university.includes('oxford') || university.includes('cambridge') ||
+        university.includes('imperial') || university.includes('ucl') ||
+        university.includes('london') || university.includes('edinburgh') ||
+        university.includes('manchester') || university.includes('king\'s') ||
+        university.includes('warwick') || university.includes('bristol') ||
+        university.includes('glasgow') || university.includes('durham') ||
+        university.includes('birmingham') || university.includes('leeds') ||
+        university.includes('southampton') || university.includes('sheffield') ||
+        university.includes('nottingham') || university.includes('liverpool')) {
+      return 'UK';
+    }
+    
+    if (university.includes('toronto') || university.includes('mcgill') ||
+        university.includes('british columbia') || university.includes('ubc') ||
+        university.includes('waterloo') || university.includes('montreal') ||
+        university.includes('alberta') || university.includes('mcmaster') ||
+        university.includes('queens') || university.includes('calgary') ||
+        university.includes('ottawa') || university.includes('western') ||
+        university.includes('dalhousie') || university.includes('simon fraser')) {
+      return 'Canada';
+    }
+    
+    if (university.includes('melbourne') || university.includes('sydney') ||
+        university.includes('queensland') || university.includes('unsw') ||
+        university.includes('anu') || university.includes('monash') ||
+        university.includes('adelaide') || university.includes('western australia') ||
+        university.includes('uwa') || university.includes('rmit') ||
+        university.includes('macquarie') || university.includes('deakin')) {
+      return 'Australia';
+    }
+    
+    if (university.includes('munich') || university.includes('heidelberg') ||
+        university.includes('berlin') || university.includes('bonn') ||
+        university.includes('freiburg') || university.includes('hamburg') ||
+        university.includes('cologne') || university.includes('frankfurt')) {
+      return 'Germany';
+    }
+    
+    if (university.includes('sorbonne') || university.includes('paris') ||
+        university.includes('ecole') || university.includes('lyon') ||
+        university.includes('marseille') || university.includes('toulouse')) {
+      return 'France';
+    }
+    
+    if (university.includes('singapore') || university.includes('nus') ||
+        university.includes('ntu') || university.includes('smu')) {
+      return 'Singapore';
+    }
+    
+    return 'Other';
+  };
+
+  // Helper function to map study level
+  const mapStudyLevel = (studyLevel: string): string => {
+    const mapping: Record<string, string> = {
+      'undergraduate': 'Bachelor',
+      'graduate_mba': 'MBA',
+      'graduate_masters': 'Master',
+      'phd': 'PhD'
+    };
+    return mapping[studyLevel] || 'Bachelor';
+  };
+
+  // Helper function to get month name
+  const getMonthName = (monthNumber: number): string => {
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    return monthNames[monthNumber - 1] || "";
+  };
+
+  // Helper function to prepare contact payload
+  const prepareContactPayload = (formData: any) => {
+    const phoneNumber = formData.phone.replace(/\+/g, '');
+    const submissionDate = new Date().toISOString();
+    const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '';
+    const referrer = typeof document !== 'undefined' ? document.referrer : '';
+    const studyDestination = extractStudyDestination(formData.universityName);
+    const levelOfEducation = mapStudyLevel(formData.studyLevel);
+    const intakeMonth = getMonthName(formData.intendedMonth);
+    const intakeYear = formData.intendedYear.toString();
+    
+    const payload: Record<string, any> = {
+      phoneNumber,
+      baseCurrency: formData.currency || 'USD',
+      studyDestinationCurrency: formData.currency || 'USD',
+      selectedLoanCurrency: formData.currency || 'USD',
+      levelOfEducation,
+      studyDestination,
+      loanAmount: formData.loanAmount.toString(),
+      utm_campaign: 'loan_eligibility',
+      formType: 'loan_eligibility_checker',
+      submissionDate,
+      userAgent,
+      referrer
+    };
+    
+    if (intakeMonth) payload.intakeMonth = intakeMonth;
+    if (intakeYear) payload.intakeYear = intakeYear;
+    if (formData.loanType) payload.loanPreference = formData.loanType === 'secured' ? 'Secured' : 'Unsecured';
+    
+    return payload;
   };
 
   const handleEditMessage = (messageId: string) => {
@@ -176,61 +279,9 @@ const Index = () => {
     const editedMessage = messages[messageIndex];
     if (!editedMessage.step) return;
 
-    // Keep messages up to the edited one
-    setMessages(prev => prev.slice(0, messageIndex + 1));
-
-    // Reset data based on the step being edited
-    const stepOrder: Step[] = ['welcome', 'study-level', 'admit-status', 'intended-date', 'university', 'programs', 'loan-amount', 'otp', 'loans'];
-    const editedStepIndex = stepOrder.indexOf(editedMessage.step);
-
-    // Reset form data for steps after the edited one
-    setFormData(prev => {
-      const reset: any = { ...prev };
-
-      if (editedStepIndex < stepOrder.indexOf('admit-status')) {
-        reset.admitStatus = '';
-      }
-      if (editedStepIndex < stepOrder.indexOf('intended-date')) {
-        reset.intendedMonth = 0;
-        reset.intendedYear = 0;
-      }
-      if (editedStepIndex < stepOrder.indexOf('university')) {
-        reset.universityName = '';
-      }
-      if (editedStepIndex < stepOrder.indexOf('programs')) {
-        reset.programId = '';
-        reset.totalCost = 0;
-        reset.currency = 'USD';
-      }
-      if (editedStepIndex < stepOrder.indexOf('loan-amount')) {
-        reset.loanAmount = 0;
-      }
-      if (editedStepIndex < stepOrder.indexOf('otp')) {
-        reset.phone = '';
-        reset.otp = '';
-      }
-
-      return reset;
-    });
-
-    // Reset other state - conditionally based on edited step
-    if (editedStepIndex < stepOrder.indexOf('programs')) {
-      // If editing university or earlier, clear program data
-      setProgramData(null);
-    }
-    if (editedStepIndex < stepOrder.indexOf('loan-amount')) {
-      // If editing program or earlier, clear cost breakdown
-      setCostBreakdown(null);
-    }
-
-    setUserInput('');
-    setShowSuggestions(false);
-    setUniversitySuggestions([]);
-    setPhoneValidation(null);
-
-    // Set the step to allow re-selection
-    setStep(editedMessage.step);
-
+    // Reset to that step
+    dispatch(setStep(editedMessage.step));
+    
     toast({
       title: "Editing Response",
       description: "You can now update your selection.",
@@ -264,7 +315,7 @@ const Index = () => {
       if (error) throw error;
 
       if (data && data.rates) {
-        setExchangeRates(data.rates);
+        dispatch(setExchangeRates(data.rates));
       }
     } catch (error) {
       console.error('Error fetching exchange rates:', error);
@@ -279,8 +330,6 @@ const Index = () => {
   const convertCurrency = (amount: number, fromCurrency: string, toCurrency: string): number => {
     if (fromCurrency === toCurrency) return amount;
     if (!exchangeRates[toCurrency]) return amount;
-
-    // Convert from base currency to target currency
     return amount * exchangeRates[toCurrency];
   };
 
@@ -296,7 +345,6 @@ const Index = () => {
     const preferredSymbol = getCurrencySymbol(preferredCurrency);
     const convertedAmount = `${preferredSymbol}${Math.round(converted).toLocaleString()}`;
 
-    // Return based on display mode
     if (currencyDisplayMode === 'original') {
       return originalAmount;
     } else if (currencyDisplayMode === 'converted') {
@@ -314,8 +362,8 @@ const Index = () => {
       phd: "PhD"
     };
 
-    addMessage(labels[level], true, 'study-level');
-    setFormData(prev => ({ ...prev, studyLevel: level }));
+    addMessageHelper(labels[level], true, 'study-level');
+    dispatch(updateFormData({ studyLevel: level }));
 
     const tips: Record<string, string> = {
       undergraduate: "Bachelor's programs typically range from **3-4 years** with **flexible repayment options**.",
@@ -325,7 +373,7 @@ const Index = () => {
     };
 
     await addTypingMessage(tips[level] + "\n\nWhat is your current admission status?");
-    setStep('admit-status');
+    dispatch(setStep('admit-status'));
   };
 
   const handleAdmitStatus = async (status: string) => {
@@ -336,8 +384,8 @@ const Index = () => {
       deferred: "Deferred"
     };
 
-    addMessage(labels[status], true, 'admit-status');
-    setFormData(prev => ({ ...prev, admitStatus: status }));
+    addMessageHelper(labels[status], true, 'admit-status');
+    dispatch(updateFormData({ admitStatus: status }));
 
     const responses: Record<string, string> = {
       applied: "Understood. We'll prioritize **pre-approved loan options** for your application timeline.",
@@ -347,7 +395,7 @@ const Index = () => {
     };
 
     await addTypingMessage(responses[status] + "\n\nWhen do you intend to start your program?");
-    setStep('intended-date');
+    dispatch(setStep('intended-date'));
   };
 
   const handleIntendedDate = async (month: number, year: number) => {
@@ -356,61 +404,56 @@ const Index = () => {
       "July", "August", "September", "October", "November", "December"
     ];
 
-    addMessage(`${monthNames[month - 1]} ${year}`, true, 'intended-date');
-    setFormData(prev => ({ ...prev, intendedMonth: month, intendedYear: year }));
+    addMessageHelper(`${monthNames[month - 1]} ${year}`, true, 'intended-date');
+    dispatch(updateFormData({ intendedMonth: month, intendedYear: year }));
 
     await addTypingMessage("Perfect. Now, please enter your university name.");
-    setStep('university');
+    dispatch(setStep('university'));
   };
 
   const fetchUniversitySuggestions = async (query: string) => {
     if (query.length < 2) {
-      setUniversitySuggestions([]);
-      setShowSuggestions(false);
+      dispatch(setUniversitySuggestions([]));
+      dispatch(setShowSuggestions(false));
       return;
     }
 
-    // Check if Google Maps API is loaded
     if (!isGoogleMapsLoaded || !googleMapsService.isLoaded()) {
       console.warn('Google Maps API not loaded yet');
       return;
     }
 
-    setIsLoadingSuggestions(true);
+    dispatch(setIsLoadingSuggestions(true));
 
     try {
-      // Fetch suggestions from Google Maps Places API
       const suggestions = await googleMapsService.getUniversitySuggestions(query);
-
-      setUniversitySuggestions(suggestions);
-      setShowSuggestions(suggestions.length > 0);
+      dispatch(setUniversitySuggestions(suggestions));
+      dispatch(setShowSuggestions(suggestions.length > 0));
     } catch (error) {
       console.error('Error fetching university suggestions:', error);
-      setUniversitySuggestions([]);
-      setShowSuggestions(false);
+      dispatch(setUniversitySuggestions([]));
+      dispatch(setShowSuggestions(false));
     } finally {
-      setIsLoadingSuggestions(false);
+      dispatch(setIsLoadingSuggestions(false));
     }
   };
 
   const handleUniversityInputChange = (value: string) => {
-    setUserInput(value);
+    dispatch(setUserInput(value));
 
-    // Clear existing timer
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
     }
 
-    // Set new timer for debounced search
     debounceTimerRef.current = window.setTimeout(() => {
       fetchUniversitySuggestions(value);
-    }, 300); // 300ms debounce
+    }, 300);
   };
 
   const handleSuggestionSelect = (universityName: string) => {
-    setUserInput(universityName);
-    setShowSuggestions(false);
-    setUniversitySuggestions([]);
+    dispatch(setUserInput(universityName));
+    dispatch(setShowSuggestions(false));
+    dispatch(setUniversitySuggestions([]));
     handleUniversitySearch(universityName);
   };
 
@@ -418,15 +461,15 @@ const Index = () => {
     const universityName = selectedUniversity || userInput.trim();
     if (!universityName) return;
 
-    addMessage(universityName, true, 'university');
-    setUserInput('');
-    setShowSuggestions(false);
-    setUniversitySuggestions([]);
-    setFormData(prev => ({ ...prev, universityName }));
+    addMessageHelper(universityName, true, 'university');
+    dispatch(setUserInput(''));
+    dispatch(setShowSuggestions(false));
+    dispatch(setUniversitySuggestions([]));
+    dispatch(updateFormData({ universityName }));
 
     await addTypingMessage(`Searching for **${universityName}**. Retrieving available programs...`);
 
-    setIsTyping(true);
+    dispatch(setIsTyping(true));
 
     try {
       const programResponse = await apiService.invokeLoanChat({
@@ -439,26 +482,22 @@ const Index = () => {
 
       if (programResponse.error) throw programResponse.error;
 
-      setProgramData(programResponse.data);
-      setIsTyping(false);
+      dispatch(setProgramData(programResponse.data));
+      dispatch(setIsTyping(false));
 
       if (programResponse.data.success && programResponse.data.data.programs.length > 0) {
-        // Extract and store currency from API response
         const currency = programResponse.data.data.currency || 'USD';
-        setFormData(prev => ({ ...prev, currency }));
-
-        // Fetch exchange rates when programs are loaded
+        dispatch(updateFormData({ currency }));
         await fetchExchangeRates(currency);
-
         await addTypingMessage(`Found ${programResponse.data.data.programs.length} programs at ${universityName}. Total costs include tuition and living expenses.\n\nSelect your program:`);
-        setStep('programs');
+        dispatch(setStep('programs'));
       } else {
         await addTypingMessage(`Sorry, no programs found for ${universityName} at ${formData.studyLevel} level. Please try another university.`);
-        setStep('university');
+        dispatch(setStep('university'));
       }
     } catch (error) {
       console.error('Program fetch error:', error);
-      setIsTyping(false);
+      dispatch(setIsTyping(false));
       toast({
         title: "Error",
         description: "Failed to fetch programs. Please try again.",
@@ -468,26 +507,23 @@ const Index = () => {
   };
 
   const handleProgramSelect = async (program: any) => {
-    addMessage(program.program_name, true, 'programs');
+    addMessageHelper(program.program_name, true, 'programs');
     const totalCost = program.total_program_cost;
-    setFormData(prev => ({ ...prev, programId: program.program_name, totalCost }));
+    dispatch(updateFormData({ programId: program.program_name, totalCost }));
 
     const durationYears = program.duration_years || 0;
     const duration = durationYears > 0 ? `${durationYears} ${durationYears === 1 ? 'year' : 'years'}` : 'N/A';
 
-    // Format with currency conversion
     const totalCostStr = formatCurrencyWithConversion(totalCost, formData.currency);
     const tuitionStr = formatCurrencyWithConversion(program.total_tuition, formData.currency);
     const livingStr = formatCurrencyWithConversion(program.total_cost_of_living, formData.currency);
 
-    // Prepare per-year data
     const tuitionPerYear = program.tuition_per_year || 0;
     const livingPerYear = program.cost_of_living_per_year || 0;
     const tuitionPerYearStr = tuitionPerYear > 0 ? formatCurrencyWithConversion(tuitionPerYear, formData.currency) : undefined;
     const livingPerYearStr = livingPerYear > 0 ? formatCurrencyWithConversion(livingPerYear, formData.currency) : undefined;
 
-    // Store cost breakdown data for visual card
-    setCostBreakdown({
+    dispatch(setCostBreakdown({
       totalCost: totalCostStr,
       duration,
       tuition: tuitionStr,
@@ -495,14 +531,14 @@ const Index = () => {
       living: livingStr,
       livingPerYear: livingPerYearStr,
       showPerYear: durationYears > 1
-    });
+    }));
 
     await addTypingMessage("Program selected. Review the cost breakdown below and enter your desired loan amount:");
-    setStep('loan-amount');
+    dispatch(setStep('loan-amount'));
   };
 
   const handleOtherProgramClick = () => {
-    setIsOtherProgramSelected(true);
+    dispatch(setIsOtherProgramSelected(true));
   };
 
   const handleCustomProgramSubmit = async () => {
@@ -515,8 +551,8 @@ const Index = () => {
       return;
     }
 
-    addMessage(customProgramName, true, 'programs');
-    setIsTyping(true);
+    addMessageHelper(customProgramName, true, 'programs');
+    dispatch(setIsTyping(true));
 
     try {
       const response = await apiService.invokeLoanChat({
@@ -529,40 +565,31 @@ const Index = () => {
 
       if (response.error) throw response.error;
 
-      setIsTyping(false);
+      dispatch(setIsTyping(false));
 
       if (response.data.success && response.data.data) {
         const apiData = response.data.data;
         const program = apiData.program;
-
-        // Extract currency from the API response
         const currency = apiData.currency || formData.currency;
-
-        // Update form data with currency from API
         const totalCost = program.total_program_cost;
-        setFormData(prev => ({ ...prev, programId: program.program_name, totalCost, currency }));
+        
+        dispatch(updateFormData({ programId: program.program_name, totalCost, currency }));
 
-        // Fetch exchange rates for the new currency if different
         if (currency !== formData.currency) {
           await fetchExchangeRates(currency);
         }
 
         const durationYears = program.duration_years || 0;
         const duration = durationYears > 0 ? `${durationYears} ${durationYears === 1 ? 'year' : 'years'}` : 'N/A';
-
-        // Format with currency conversion using the API's currency
         const totalCostStr = formatCurrencyWithConversion(totalCost, currency);
         const tuitionStr = formatCurrencyWithConversion(program.total_tuition, currency);
         const livingStr = formatCurrencyWithConversion(program.total_cost_of_living, currency);
-
-        // Prepare per-year data
         const tuitionPerYear = program.tuition_per_year || 0;
         const livingPerYear = program.cost_of_living_per_year || 0;
         const tuitionPerYearStr = tuitionPerYear > 0 ? formatCurrencyWithConversion(tuitionPerYear, currency) : undefined;
         const livingPerYearStr = livingPerYear > 0 ? formatCurrencyWithConversion(livingPerYear, currency) : undefined;
 
-        // Store cost breakdown data for visual card
-        setCostBreakdown({
+        dispatch(setCostBreakdown({
           totalCost: totalCostStr,
           duration,
           tuition: tuitionStr,
@@ -570,27 +597,27 @@ const Index = () => {
           living: livingStr,
           livingPerYear: livingPerYearStr,
           showPerYear: durationYears > 1
-        });
+        }));
 
-        setIsOtherProgramSelected(false);
-        setCustomProgramName('');
+        dispatch(setIsOtherProgramSelected(false));
+        dispatch(setCustomProgramName(''));
         await addTypingMessage("Program details retrieved. Review the cost breakdown below and enter your desired loan amount:");
-        setStep('loan-amount');
+        dispatch(setStep('loan-amount'));
       } else {
         await addTypingMessage(`Sorry, couldn't retrieve details for ${customProgramName}. Please try selecting from the list or enter another program name.`);
-        setIsOtherProgramSelected(false);
-        setCustomProgramName('');
+        dispatch(setIsOtherProgramSelected(false));
+        dispatch(setCustomProgramName(''));
       }
     } catch (error) {
       console.error('Custom program fetch error:', error);
-      setIsTyping(false);
+      dispatch(setIsTyping(false));
       toast({
         title: "Error",
         description: "Failed to fetch program details. Please try again.",
         variant: "destructive"
       });
-      setIsOtherProgramSelected(false);
-      setCustomProgramName('');
+      dispatch(setIsOtherProgramSelected(false));
+      dispatch(setCustomProgramName(''));
     }
   };
 
@@ -606,12 +633,12 @@ const Index = () => {
     }
 
     const amountStr = formatCurrencyWithConversion(amount, formData.currency);
-    addMessage(amountStr, true, 'loan-amount');
-    setFormData(prev => ({ ...prev, loanAmount: amount }));
+    addMessageHelper(amountStr, true, 'loan-amount');
+    dispatch(updateFormData({ loanAmount: amount }));
 
     await addTypingMessage(`Loan amount: ${amountStr}\n\n**What type of loan are you looking for?**`);
-    setStep('loan-type');
-    setUserInput('');
+    dispatch(setStep('loan-type'));
+    dispatch(setUserInput(''));
   };
 
   const handleLoanType = async (type: 'secured' | 'unsecured') => {
@@ -620,30 +647,25 @@ const Index = () => {
       unsecured: 'Unsecured Loan',
     };
 
-    addMessage(labels[type], true, 'loan-type');
-    setFormData(prev => ({ ...prev, loanType: type }));
+    addMessageHelper(labels[type], true, 'loan-type');
+    dispatch(updateFormData({ loanType: type }));
 
     const responses: Record<string, string> = {
-      secured:
-        '**Secured Loan** selected. You\'ll typically get **lower interest rates** and **higher loan amounts** with this option.\n\nFor identity verification and personalized offers, please enter your mobile number. **A verification code will be sent to you on WhatsApp.**',
-      unsecured:
-        '**Unsecured Loan** selected. Enjoy **faster approval** and **no collateral risk** with this option.\n\nFor identity verification and personalized offers, please enter your mobile number. **A verification code will be sent to you on WhatsApp.**',
+      secured: '**Secured Loan** selected. You\'ll typically get **lower interest rates** and **higher loan amounts** with this option.\n\nFor identity verification and personalized offers, please enter your mobile number. **A verification code will be sent to you on WhatsApp.**',
+      unsecured: '**Unsecured Loan** selected. Enjoy **faster approval** and **no collateral risk** with this option.\n\nFor identity verification and personalized offers, please enter your mobile number. **A verification code will be sent to you on WhatsApp.**',
     };
 
     await addTypingMessage(responses[type]);
-    setStep('otp');
+    dispatch(setStep('otp'));
   };
 
   const validatePhoneNumber = (phone: string): { isValid: boolean; error?: string } => {
-    // Don't validate empty input
     if (!phone.trim()) {
       return { isValid: false, error: '' };
     }
 
-    // Remove all spaces and dashes
     const cleaned = phone.replace(/[\s-]/g, '');
 
-    // Only numbers allowed
     if (!/^\d+$/.test(cleaned)) {
       return {
         isValid: false,
@@ -651,9 +673,7 @@ const Index = () => {
       };
     }
 
-    // Check length based on common country code patterns
     if (countryCode === '+91') {
-      // Indian format: 10 digits
       if (cleaned.length < 10) {
         return {
           isValid: false,
@@ -666,7 +686,6 @@ const Index = () => {
           error: 'Indian mobile number must be 10 digits'
         };
       }
-      // Check if starts with valid Indian mobile prefix (6-9)
       if (!/^[6-9]/.test(cleaned)) {
         return {
           isValid: false,
@@ -674,7 +693,6 @@ const Index = () => {
         };
       }
     } else {
-      // International format: 7-14 digits
       if (cleaned.length < 7) {
         return {
           isValid: false,
@@ -693,12 +711,11 @@ const Index = () => {
   };
 
   const handlePhoneInputChange = (value: string) => {
-    setUserInput(value);
+    dispatch(setUserInput(value));
 
-    // Only validate if in OTP step and phone hasn't been submitted yet
     if (step === 'otp' && !formData.phone) {
       const validation = validatePhoneNumber(value);
-      setPhoneValidation(validation);
+      dispatch(setPhoneValidation(validation));
     }
   };
 
@@ -715,13 +732,12 @@ const Index = () => {
       return;
     }
 
-    // Combine country code with phone number
     const formattedPhone = countryCode + cleaned;
 
-    addMessage(`${countryCode} ${userInput}`, true, 'otp');
-    setFormData(prev => ({ ...prev, phone: formattedPhone }));
-    setPhoneValidation(null); // Reset validation
-    setIsTyping(true);
+    addMessageHelper(`${countryCode} ${userInput}`, true, 'otp');
+    dispatch(updateFormData({ phone: formattedPhone }));
+    dispatch(setPhoneValidation(null));
+    dispatch(setIsTyping(true));
 
     try {
       const { data, error } = await apiService.invokeLoanChat({
@@ -734,13 +750,13 @@ const Index = () => {
 
       console.log('OTP send response:', data);
 
-      setIsTyping(false);
-      setOtpCountdown(30); // Start 30 second countdown
+      dispatch(setIsTyping(false));
+      dispatch(setOtpCountdown(30));
       await addTypingMessage("**Verification code sent on WhatsApp.** Please enter the 6-digit code.");
-      setUserInput('');
+      dispatch(setUserInput(''));
     } catch (error) {
       console.error('Phone submit error:', error);
-      setIsTyping(false);
+      dispatch(setIsTyping(false));
       toast({
         title: "Error",
         description: "Failed to send OTP. Please try again.",
@@ -750,9 +766,9 @@ const Index = () => {
   };
 
   const handleResendOTP = async () => {
-    if (otpCountdown > 0) return; // Prevent resend during countdown
+    if (otpCountdown > 0) return;
 
-    setIsTyping(true);
+    dispatch(setIsTyping(true));
     try {
       const { data, error } = await apiService.invokeLoanChat({
         action: 'send-otp', data: { phone: formData.phone }
@@ -762,15 +778,15 @@ const Index = () => {
         throw error;
       }
 
-      setIsTyping(false);
-      setOtpCountdown(30); // Restart 30 second countdown
+      dispatch(setIsTyping(false));
+      dispatch(setOtpCountdown(30));
       toast({
         title: "OTP Resent",
         description: "A new verification code has been sent to your WhatsApp.",
       });
     } catch (error) {
       console.error('OTP resend error:', error);
-      setIsTyping(false);
+      dispatch(setIsTyping(false));
       toast({
         title: "Error",
         description: "Failed to resend OTP. Please try again.",
@@ -780,9 +796,9 @@ const Index = () => {
   };
 
   const handleEditPhone = () => {
-    setFormData(prev => ({ ...prev, phone: '' }));
-    setUserInput('');
-    setOtpCountdown(0);
+    dispatch(updateFormData({ phone: '' }));
+    dispatch(setUserInput(''));
+    dispatch(setOtpCountdown(0));
     toast({
       title: "Phone Number Reset",
       description: "You can now enter a different phone number.",
@@ -799,8 +815,8 @@ const Index = () => {
       return;
     }
 
-    addMessage(userInput, true);
-    setIsTyping(true);
+    addMessageHelper(userInput, true);
+    dispatch(setIsTyping(true));
 
     try {
       const { data, error } = await apiService.invokeLoanChat({
@@ -813,19 +829,41 @@ const Index = () => {
         throw error;
       }
 
-      setIsTyping(false);
+      dispatch(setIsTyping(false));
 
       if (data && data.valid) {
+        // OTP verified successfully - now save contact data
+        dispatch(setIsTyping(true));
+        
+        try {
+          // Prepare contact payload
+          const contactPayload = prepareContactPayload(formData);
+          console.log('Saving contact data:', contactPayload);
+          
+          // Call contact upsert API
+          const contactResponse = await apiService.upsertContact(contactPayload);
+          
+          if (contactResponse.data?.success) {
+            console.log('Contact saved successfully:', contactResponse.data);
+          } else {
+            console.error('Failed to save contact:', contactResponse.error);
+          }
+        } catch (contactError) {
+          console.error('Error saving contact:', contactError);
+        }
+        
+        // Continue with verification success regardless of contact save result
+        dispatch(setIsTyping(false));
         await addTypingMessage("✅ **Verification successful!**\n\nYour profile is now verified. Choose an option below to continue:");
-        setStep('verified');
+        dispatch(setStep('verified'));
       } else {
         await addTypingMessage(data?.message || "Invalid code. Please verify and try again.");
       }
 
-      setUserInput('');
+      dispatch(setUserInput(''));
     } catch (error) {
       console.error('OTP verification error:', error);
-      setIsTyping(false);
+      dispatch(setIsTyping(false));
       toast({
         title: "Error",
         description: "Failed to verify OTP. Please try again.",
@@ -834,11 +872,9 @@ const Index = () => {
     }
   };
 
-  // Handle post-verification button clicks
   const handleCheckEligibleLoans = async () => {
     const url = '/loans';
     if (typeof window !== 'undefined') {
-      // Redirect to internal loans page
       window.location.assign(url);
     }
   };
@@ -846,7 +882,6 @@ const Index = () => {
   const handleCalculateRepayment = () => {
     const url = 'https://edumateglobal.com/resources/tools/loan-emi-calculator';
     if (typeof window !== 'undefined') {
-      // Redirect the user to the external eligibility checker page
       window.location.assign(url);
     }
   };
@@ -913,7 +948,7 @@ const Index = () => {
                       <Button
                         onClick={async () => {
                           await addTypingMessage("What level of study are you pursuing?");
-                          setStep('study-level');
+                          dispatch(setStep('study-level'));
                         }}
                         className="gradient-primary px-6 py-3 text-base font-semibold rounded-lg transition-all duration-300 hover:shadow-glow transform hover:scale-105 active:scale-95"
                       >
@@ -976,7 +1011,7 @@ const Index = () => {
                               const modes: Array<'original' | 'converted' | 'both'> = ['original', 'converted', 'both'];
                               const currentIndex = modes.indexOf(currencyDisplayMode);
                               const nextMode = modes[(currentIndex + 1) % modes.length];
-                              setCurrencyDisplayMode(nextMode);
+                              dispatch(setCurrencyDisplayMode(nextMode));
                             }}
                             className="h-8 px-3 text-xs transition-all duration-300 hover:bg-primary/10 hover:border-primary/40 hover:shadow-sm group"
                             title="Toggle currency display"
@@ -989,7 +1024,7 @@ const Index = () => {
                             </span>
                           </Button>
                           <span className="text-xs text-muted-foreground">Convert to:</span>
-                          <Select value={preferredCurrency} onValueChange={(value) => setPreferredCurrency(value)}>
+                          <Select value={preferredCurrency} onValueChange={(value) => dispatch(setPreferredCurrency(value))}>
                             <SelectTrigger className="w-28 h-8 text-xs">
                               <SelectValue />
                             </SelectTrigger>
@@ -1052,7 +1087,7 @@ const Index = () => {
                             <Input
                               placeholder="e.g., Master of Finance"
                               value={customProgramName}
-                              onChange={(e) => setCustomProgramName(e.target.value)}
+                              onChange={(e) => dispatch(setCustomProgramName(e.target.value))}
                               onKeyPress={(e) => e.key === 'Enter' && handleCustomProgramSubmit()}
                               className="flex-1 h-11 transition-all duration-300 focus:shadow-sm"
                             />
@@ -1065,8 +1100,8 @@ const Index = () => {
                             </Button>
                             <Button
                               onClick={() => {
-                                setIsOtherProgramSelected(false);
-                                setCustomProgramName('');
+                                dispatch(setIsOtherProgramSelected(false));
+                                dispatch(setCustomProgramName(''));
                               }}
                               variant="outline"
                               className="h-11 px-4"
@@ -1079,14 +1114,82 @@ const Index = () => {
                     </>
                   )}
 
-                  {/* Cost Breakdown Card - Styled as Edumate message */}
-                  {step === 'loan-amount' && !isTyping && costBreakdown && (
-                    <div className="flex justify-start py-4">
-                      <CostBreakdownCard {...costBreakdown} />
+                  {step === 'university' && !isTyping && (
+                    <div className="relative py-4">
+                      <div className="flex gap-2">
+                        <div className="relative flex-1">
+                          <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                          <Input
+                            ref={universityInputRef}
+                            type="text"
+                            placeholder="Start typing university name..."
+                            value={userInput}
+                            onChange={(e) => handleUniversityInputChange(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && handleUniversitySearch()}
+                            className="pl-10 h-12 rounded-lg transition-all duration-300 focus:shadow-sm hover:border-primary/40"
+                          />
+                          {isLoadingSuggestions && (
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
+                            </div>
+                          )}
+                        </div>
+                        <Button
+                          onClick={() => handleUniversitySearch()}
+                          disabled={!userInput.trim()}
+                          className="gradient-primary px-6 h-12 rounded-lg font-semibold transition-all duration-300 hover:shadow-glow transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                        >
+                          Search
+                        </Button>
+                      </div>
+
+                      {showSuggestions && universitySuggestions.length > 0 && (
+                        <Card className="absolute bottom-full left-0 right-0 mb-1 bg-card border border-border rounded-lg shadow-lg z-50 max-h-60 overflow-auto">
+                          <div className="py-1">
+                            {universitySuggestions.map((suggestion, idx) => (
+                              <div
+                                key={idx}
+                                className="px-4 py-3 hover:bg-primary/10 cursor-pointer transition-colors duration-200 border-b border-border last:border-0"
+                                onClick={() => handleSuggestionSelect(suggestion)}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <Building2 className="w-4 h-4 text-primary" />
+                                  <span className="text-sm">{suggestion}</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </Card>
+                      )}
                     </div>
                   )}
 
-                  {/* Loan Type Selection Cards - Styled as Edumate message */}
+                  {step === 'loan-amount' && !isTyping && costBreakdown && (
+                    <div className="py-4 space-y-4">
+                      <CostBreakdownCard {...costBreakdown} />
+                      <div className="flex gap-2">
+                        <div className="relative flex-1">
+                          <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground transition-colors duration-300 peer-focus:text-primary" />
+                          <Input
+                            type="number"
+                            placeholder={`Enter amount in ${formData.currency}...`}
+                            value={userInput}
+                            onChange={(e) => dispatch(setUserInput(e.target.value))}
+                            onKeyPress={(e) => e.key === 'Enter' && handleLoanAmount()}
+                            className="pl-10 h-12 rounded-lg peer transition-all duration-300 focus:shadow-sm hover:border-primary/40"
+                          />
+                        </div>
+                        <Button
+                          onClick={handleLoanAmount}
+                          disabled={!userInput || parseFloat(userInput) <= 0}
+                          className="gradient-primary px-6 h-12 rounded-lg font-semibold transition-all duration-300 hover:shadow-glow transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                        >
+                          Continue
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
                   {step === 'loan-type' && !isTyping && (
                     <div className="flex py-4">
                       <div className="grid grid-cols-2 gap-3">
@@ -1202,196 +1305,151 @@ const Index = () => {
                       </div>
                     </div>
                   )}
+
+                  {step === 'otp' && !isTyping && !formData.phone && (
+                    <div className="space-y-2">
+                      <div className="flex gap-2">
+                        <Select value={countryCode} onValueChange={(value) => dispatch(setCountryCode(value))}>
+                          <SelectTrigger className="w-32 h-12 rounded-lg">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="+91">🇮🇳 +91</SelectItem>
+                            <SelectItem value="+1">🇺🇸 +1</SelectItem>
+                            <SelectItem value="+44">🇬🇧 +44</SelectItem>
+                            <SelectItem value="+61">🇦🇺 +61</SelectItem>
+                            <SelectItem value="+86">🇨🇳 +86</SelectItem>
+                            <SelectItem value="+81">🇯🇵 +81</SelectItem>
+                            <SelectItem value="+82">🇰🇷 +82</SelectItem>
+                            <SelectItem value="+65">🇸🇬 +65</SelectItem>
+                            <SelectItem value="+971">🇦🇪 +971</SelectItem>
+                            <SelectItem value="+966">🇸🇦 +966</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <div className="relative flex-1">
+                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground transition-colors duration-300 peer-focus:text-primary" />
+                          <Input
+                            type="tel"
+                            placeholder={countryCode === '+91' ? "Enter 10-digit number" : "Enter phone number"}
+                            value={userInput}
+                            onChange={(e) => handlePhoneInputChange(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && handlePhoneSubmit()}
+                            className={`pl-10 h-12 rounded-lg peer transition-all duration-300 focus:shadow-sm ${phoneValidation === null || userInput === ''
+                                ? 'hover:border-primary/40'
+                                : phoneValidation.isValid
+                                  ? 'border-green-500 focus:border-green-500 hover:border-green-600'
+                                  : 'border-red-500 focus:border-red-500 hover:border-red-600'
+                              }`}
+                          />
+                        </div>
+                        <Button
+                          onClick={handlePhoneSubmit}
+                          disabled={!phoneValidation?.isValid || !userInput}
+                          className="gradient-primary px-6 h-12 rounded-lg font-semibold transition-all duration-300 hover:shadow-glow transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                        >
+                          Send OTP
+                        </Button>
+                      </div>
+                      {phoneValidation && userInput && (
+                        <div className={`text-sm px-3 py-2 rounded-lg transition-all duration-300 ${phoneValidation.isValid
+                            ? 'text-green-600 bg-green-50 dark:bg-green-950/30 dark:text-green-400'
+                            : 'text-red-600 bg-red-50 dark:bg-red-950/30 dark:text-red-400'
+                          }`}>
+                          {phoneValidation.isValid ? (
+                            <span className="flex items-center gap-2">
+                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                              Valid phone number
+                            </span>
+                          ) : phoneValidation.error && (
+                            <span className="flex items-center gap-2">
+                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              {phoneValidation.error}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {step === 'otp' && !isTyping && formData.phone && (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between px-3 py-2 bg-muted/50 rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <Phone className="w-4 h-4 text-muted-foreground" />
+                          <span className="text-sm font-medium">{formData.phone}</span>
+                        </div>
+                        <Button
+                          onClick={handleEditPhone}
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 text-xs text-primary hover:text-primary/80"
+                        >
+                          Edit
+                        </Button>
+                      </div>
+                      <div className="flex gap-2">
+                        <Input
+                          type="text"
+                          placeholder="Enter 6-digit OTP..."
+                          value={userInput}
+                          onChange={(e) => dispatch(setUserInput(e.target.value))}
+                          onKeyPress={(e) => e.key === 'Enter' && handleOTPVerify()}
+                          maxLength={6}
+                          className="flex-1 h-12 px-4 rounded-lg text-center tracking-widest text-lg font-semibold transition-all duration-300 focus:shadow-sm hover:border-primary/40"
+                        />
+                        <Button onClick={handleOTPVerify} className="gradient-primary px-6 h-12 rounded-lg font-semibold transition-all duration-300 hover:shadow-glow transform hover:scale-105 active:scale-95">
+                          Verify
+                        </Button>
+                      </div>
+                      <div className="flex items-center justify-center gap-2 text-sm">
+                        {otpCountdown > 0 ? (
+                          <span className="text-muted-foreground">
+                            Resend OTP in <span className="font-semibold text-foreground">{otpCountdown}s</span>
+                          </span>
+                        ) : (
+                          <Button
+                            onClick={handleResendOTP}
+                            variant="ghost"
+                            className="text-primary hover:text-primary/80 font-semibold"
+                          >
+                            Resend OTP
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div ref={messagesEndRef} />
               </div>
             </ScrollArea>
 
-            {/* Fixed Bottom Input */}
-            <div className="absolute bottom-0 left-0 right-0 border-t border-border bg-background/95 backdrop-blur-sm">
-              <div className="max-w-3xl mx-auto px-4 py-4">
-                {step === 'university' && !isTyping && (
-                  <div className="relative">
-                    <div className="flex gap-2">
-                      <div className="relative flex-1">
-                        <Input
-                          ref={universityInputRef}
-                          placeholder="Start typing university name..."
-                          value={userInput}
-                          onChange={(e) => handleUniversityInputChange(e.target.value)}
-                          onKeyPress={(e) => e.key === 'Enter' && handleUniversitySearch()}
-                          onFocus={() => userInput.length >= 2 && setShowSuggestions(true)}
-                          onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                          className="flex-1 h-12 px-4 rounded-lg transition-all duration-300 focus:shadow-sm hover:border-primary/40"
-                        />
-                        {isLoadingSuggestions && (
-                          <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                            <div className="w-4 h-4 rounded-full bg-primary/20 animate-spin border-2 border-primary/30 border-t-primary" />
-                          </div>
-                        )}
-                        {showSuggestions && universitySuggestions.length > 0 && (
-                          <div className="absolute bottom-full left-0 right-0 mb-1 bg-card border border-border rounded-lg shadow-lg z-50 max-h-60 overflow-auto">
-                            {universitySuggestions.map((suggestion, idx) => (
-                              <button
-                                key={idx}
-                                onMouseDown={(e) => {
-                                  e.preventDefault();
-                                  handleSuggestionSelect(suggestion);
-                                }}
-                                className="w-full text-left px-4 py-3 hover:bg-muted transition-colors border-b border-border last:border-0 text-sm"
-                              >
-                                {suggestion}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      <Button onClick={() => handleUniversitySearch()} disabled={isTyping} className="gradient-primary px-6 h-12 rounded-lg font-semibold transition-all duration-300 hover:shadow-glow transform hover:scale-105 active:scale-95">
-                        Search
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                {step === 'loan-amount' && !isTyping && (
-                  <div className="flex gap-2">
-                    <div className="relative flex-1">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors duration-300 peer-focus:text-primary font-semibold">
-                        {getCurrencySymbol(formData.currency)}
-                      </span>
-                      <Input
-                        type="number"
-                        placeholder={`Enter loan amount in ${formData.currency}...`}
-                        value={userInput}
-                        onChange={(e) => setUserInput(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && handleLoanAmount()}
-                        className="pl-10 h-12 rounded-lg peer transition-all duration-300 focus:shadow-sm hover:border-primary/40"
-                      />
-                    </div>
-                    <Button onClick={handleLoanAmount} className="gradient-primary px-6 h-12 rounded-lg font-semibold transition-all duration-300 hover:shadow-glow transform hover:scale-105 active:scale-95">
-                      Continue
+            {/* Fixed Bottom Bar - visible when a conversation has started */}
+            {/* <div className="absolute bottom-0 left-0 right-0 border-t border-border bg-background/80 backdrop-blur-lg z-10">
+              <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-2">
+                  <ThemeToggle />
+                  {messages.length > 0 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleNewConversation}
+                      className="h-9 px-3 transition-all duration-300 hover:bg-primary/10 hover:border-primary/40 hover:shadow-sm group"
+                    >
+                      <RotateCcw className="w-4 h-4 mr-1.5 transition-transform duration-300 group-hover:-rotate-180" />
+                      New Chat
                     </Button>
-                  </div>
-                )}
-
-                {step === 'otp' && !isTyping && !formData.phone && (
-                  <div className="space-y-2">
-                    <div className="flex gap-2">
-                      <Select value={countryCode} onValueChange={setCountryCode}>
-                        <SelectTrigger className="w-32 h-12 rounded-lg">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="+91">🇮🇳 +91</SelectItem>
-                          <SelectItem value="+1">🇺🇸 +1</SelectItem>
-                          <SelectItem value="+44">🇬🇧 +44</SelectItem>
-                          <SelectItem value="+61">🇦🇺 +61</SelectItem>
-                          <SelectItem value="+86">🇨🇳 +86</SelectItem>
-                          <SelectItem value="+81">🇯🇵 +81</SelectItem>
-                          <SelectItem value="+82">🇰🇷 +82</SelectItem>
-                          <SelectItem value="+65">🇸🇬 +65</SelectItem>
-                          <SelectItem value="+971">🇦🇪 +971</SelectItem>
-                          <SelectItem value="+966">🇸🇦 +966</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <div className="relative flex-1">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground transition-colors duration-300 peer-focus:text-primary" />
-                        <Input
-                          type="tel"
-                          placeholder={countryCode === '+91' ? "Enter 10-digit number" : "Enter phone number"}
-                          value={userInput}
-                          onChange={(e) => handlePhoneInputChange(e.target.value)}
-                          onKeyPress={(e) => e.key === 'Enter' && handlePhoneSubmit()}
-                          className={`pl-10 h-12 rounded-lg peer transition-all duration-300 focus:shadow-sm ${phoneValidation === null || userInput === ''
-                              ? 'hover:border-primary/40'
-                              : phoneValidation.isValid
-                                ? 'border-green-500 focus:border-green-500 hover:border-green-600'
-                                : 'border-red-500 focus:border-red-500 hover:border-red-600'
-                            }`}
-                        />
-                      </div>
-                      <Button
-                        onClick={handlePhoneSubmit}
-                        disabled={!phoneValidation?.isValid || !userInput}
-                        className="gradient-primary px-6 h-12 rounded-lg font-semibold transition-all duration-300 hover:shadow-glow transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                      >
-                        Send OTP
-                      </Button>
-                    </div>
-                    {phoneValidation && userInput && (
-                      <div className={`text-sm px-3 py-2 rounded-lg transition-all duration-300 ${phoneValidation.isValid
-                          ? 'text-green-600 bg-green-50 dark:bg-green-950/30 dark:text-green-400'
-                          : 'text-red-600 bg-red-50 dark:bg-red-950/30 dark:text-red-400'
-                        }`}>
-                        {phoneValidation.isValid ? (
-                          <span className="flex items-center gap-2">
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                            Valid phone number
-                          </span>
-                        ) : phoneValidation.error && (
-                          <span className="flex items-center gap-2">
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            {phoneValidation.error}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {step === 'otp' && !isTyping && formData.phone && (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between px-3 py-2 bg-muted/50 rounded-lg">
-                      <div className="flex items-center gap-2">
-                        <Phone className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-sm font-medium">{formData.phone}</span>
-                      </div>
-                      <Button
-                        onClick={handleEditPhone}
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 text-xs text-primary hover:text-primary/80"
-                      >
-                        Edit
-                      </Button>
-                    </div>
-                    <div className="flex gap-2">
-                      <Input
-                        type="text"
-                        placeholder="Enter 6-digit OTP..."
-                        value={userInput}
-                        onChange={(e) => setUserInput(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && handleOTPVerify()}
-                        maxLength={6}
-                        className="flex-1 h-12 px-4 rounded-lg text-center tracking-widest text-lg font-semibold transition-all duration-300 focus:shadow-sm hover:border-primary/40"
-                      />
-                      <Button onClick={handleOTPVerify} className="gradient-primary px-6 h-12 rounded-lg font-semibold transition-all duration-300 hover:shadow-glow transform hover:scale-105 active:scale-95">
-                        Verify
-                      </Button>
-                    </div>
-                    <div className="flex items-center justify-center gap-2 text-sm">
-                      {otpCountdown > 0 ? (
-                        <span className="text-muted-foreground">
-                          Resend OTP in <span className="font-semibold text-foreground">{otpCountdown}s</span>
-                        </span>
-                      ) : (
-                        <Button
-                          onClick={handleResendOTP}
-                          variant="ghost"
-                          className="text-primary hover:text-primary/80 font-semibold"
-                        >
-                          Resend OTP
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                )}
+                  )}
+                </div>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Sparkles className="w-4 h-4" />
+                  <span>Powered by Edumate AI</span>
+                </div>
               </div>
-            </div>
+            </div> */}
           </>
         ) : (
           <div className="flex-1 overflow-auto p-6">
