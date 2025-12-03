@@ -46,7 +46,7 @@ const initialState: LoanProductsState = {
   detailsError: null,
   pagination: {
     page: 1,
-    size: 9,
+    size: 10,
     total: 0,
     totalPages: 0,
   },

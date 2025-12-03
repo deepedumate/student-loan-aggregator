@@ -203,6 +203,7 @@ import {
   CheckCircle2,
   ArrowRight,
   Heart,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -215,6 +216,7 @@ interface LoanCardProps {
   onToggleFavorite: (loanId: string) => void;
   isSelected?: boolean;
   isFavorite?: boolean;
+  isInterested?: boolean;
 }
 
 export function LoanCard({
@@ -224,6 +226,7 @@ export function LoanCard({
   onToggleFavorite,
   isSelected,
   isFavorite,
+  isInterested,
 }: LoanCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
@@ -448,11 +451,25 @@ export function LoanCard({
         <div className="flex gap-3">
           <Button
             onClick={() => onInterested(loan.id.toString())}
-            className="flex-1 bg-gradient-to-r from-primary to-primary-light hover:from-primary hover:to-primary text-primary-foreground font-semibold shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-95 group"
+            className={`
+      flex-1 font-bold shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-[1.03] active:scale-95 group
+      ${
+        isInterested
+          ? "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-2 border-red-400 shadow-red-500/30 hover:shadow-red-500/50"
+          : "bg-gradient-to-r from-primary to-primary-light hover:from-primary-light hover:to-primary text-primary-foreground border-2 border-transparent"
+      }
+    `}
             size="lg"
           >
-            <span className="transition-transform duration-300 group-hover:scale-105">
-              Interested?
+            <span className="transition-all duration-300 group-hover:scale-105 flex items-center justify-center gap-2">
+              {isInterested ? (
+                <>
+                  <X className="w-5 h-5 animate-pulse" />
+                  <span className="text-base tracking-wide">Un Interest</span>
+                </>
+              ) : (
+                <span className="text-base">Interested?</span>
+              )}
             </span>
           </Button>
           <Button
@@ -460,14 +477,14 @@ export function LoanCard({
             variant="outline"
             size="lg"
             className={`
-              flex-1 border-2 font-semibold transition-all duration-300
-              text-primary hover:text-primary hover:scale-[1.02] active:scale-95 group
-              ${
-                isSelected
-                  ? "border-primary bg-primary/5 hover:bg-primary/10 animate-pulse"
-                  : "border-border hover:border-primary/40 hover:bg-primary/5"
-              }
-            `}
+      flex-1 border-2 font-semibold transition-all duration-300
+      text-primary hover:text-primary hover:scale-[1.03] active:scale-95 group
+      ${
+        isSelected
+          ? "border-primary bg-primary/5 hover:bg-primary/10 shadow-lg shadow-primary/20"
+          : "border-border hover:border-primary/40 hover:bg-primary/5"
+      }
+    `}
           >
             <span className="transition-transform duration-300 group-hover:scale-105">
               {isSelected ? "Selected" : "Compare"}

@@ -5,7 +5,6 @@ import {
   LoginPayload,
   UpdatePayload,
 } from "@/services/contactUser";
-import { ApiError } from "@/lib/helper/errorHandler";
 
 export interface User {
   id: string;

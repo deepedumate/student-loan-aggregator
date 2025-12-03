@@ -62,6 +62,8 @@ import {
   toggleShowFavoritesOnly,
 } from "@/store/slices/loanProductSlice";
 import { LoanProduct, LoanProductFilters } from "@/types/loanProduct";
+import { fetchLenders, selectLenders } from "@/store/slices/lenderSlice";
+import { updateUser } from "@/store/slices/contactAuthSlice";
 
 export default function LoanList() {
   const dispatch = useAppDispatch();
@@ -80,7 +82,12 @@ export default function LoanList() {
   const favoriteLoanIds = useAppSelector(selectFavoriteLoanIds);
   const showFavoritesOnly = useAppSelector(selectShowFavoritesOnly);
   const appliedFiltersCount = useAppSelector(selectAppliedFiltersCount);
-  const contactUser = useAppSelector((state: any) => state.contactAuth?.data?.student || null);
+  const contactAuth = useAppSelector(
+    (state: any) => state.contactAuth?.data?.student || null
+  );
+  const lenders = useAppSelector(selectLenders);
+  const userFavorites = contactAuth?.favourite || [];
+  const userInterested = contactAuth?.interested || [];
 
   // Local UI state only (no persistence)
   const [showComparison, setShowComparison] = useState(false);
@@ -126,6 +133,10 @@ export default function LoanList() {
     search,
     showFavoritesOnly,
   ]);
+
+  useEffect(() => {
+    dispatch(fetchLenders());
+  }, []);
 
   // Convert filters to component format
   const componentFilters = useMemo(() => {
@@ -222,11 +233,73 @@ export default function LoanList() {
     toast.success("Preset deleted");
   };
 
-  const handleInterested = (loanId: string) => {
+  const handleInterested = async (loanId: string) => {
     const loan = loans.find((l) => l.id.toString() === loanId);
-    if (loan) {
+    const loanProductId = parseInt(loanId, 10);
+
+    // ===== STEP 1: Check if user has email =====
+    if (!contactAuth || !contactAuth.email) {
+      // No email - open modal to collect details
       setSelectedLoan(loan);
       setShowInterestedModal(true);
+      return;
+    }
+
+    // ===== STEP 2: User has email - toggle interested status directly =====
+    const currentInterested = contactAuth.interested || [];
+    const isAlreadyInterested = currentInterested.includes(loanProductId);
+
+    // Create new interested array
+    let newInterested: number[];
+    if (isAlreadyInterested) {
+      // Remove from interested
+      newInterested = currentInterested.filter(
+        (id: number) => id !== loanProductId
+      );
+    } else {
+      // Add to interested
+      newInterested = [...currentInterested, loanProductId];
+    }
+
+    console.log("Updating interested:", {
+      userId: contactAuth.id,
+      currentInterested,
+      newInterested,
+      loanProductId,
+      action: isAlreadyInterested ? "REMOVE" : "ADD",
+    });
+
+    try {
+      // Call update API
+      const result = await dispatch(
+        updateUser({
+          userId: contactAuth.id.toString(),
+          payload: {
+            studentId: contactAuth.id,
+            interested: newInterested,
+          },
+        }) as any
+      );
+
+      if (result.payload) {
+        // Show success toast
+        if (isAlreadyInterested) {
+          toast.success("Removed from interested", {
+            description: `${loan?.lender_name} has been removed from your interested list.`,
+          });
+        } else {
+          toast.success("Interest Recorded! ✓", {
+            description: `We'll contact you about ${loan?.lender_name} soon.`,
+          });
+        }
+      } else {
+        throw new Error("Failed to update interest");
+      }
+    } catch (error: any) {
+      console.error("Failed to update interest:", error);
+      toast.error("Failed to update interest", {
+        description: error.message || "Please try again later.",
+      });
     }
   };
 
@@ -261,19 +334,89 @@ export default function LoanList() {
     });
   };
 
-  const handleToggleFavorite = (loanId: string) => {
-    const loan = loans.find((l) => l.id.toString() === loanId);
-    const isFavorite = favoriteLoanIds.includes(loanId);
+  // const handleToggleFavorite = (loanId: string) => {
+  //   const loan = loans.find((l) => l.id.toString() === loanId);
+  //   const isFavorite = favoriteLoanIds.includes(loanId);
 
-    dispatch(toggleFavorite(loanId));
+  //   dispatch(toggleFavorite(loanId));
 
-    if (isFavorite) {
-      toast.success("Removed from favorites", {
-        description: `${loan?.lender_name} has been removed from your bookmarks.`,
+  //   if (isFavorite) {
+  //     toast.success("Removed from favorites", {
+  //       description: `${loan?.lender_name} has been removed from your bookmarks.`,
+  //     });
+  //   } else {
+  //     toast.success("Added to favorites! ❤️", {
+  //       description: `${loan?.lender_name} has been bookmarked for easy access.`,
+  //     });
+  //   }
+  // };
+
+  const handleToggleFavorite = async (loanId: string) => {
+    const loan = loans.find((l) => l.id.toString() == loanId);
+    const loanProductId = parseInt(loanId, 10);
+
+    // Check if user is logged in
+    if (!contactAuth || !contactAuth.id) {
+      toast.error("Please log in first", {
+        description: "You need to be logged in to save favorites.",
       });
+      return;
+    }
+
+    // Get current favorites from contactAuth
+    const currentFavorites = contactAuth.favourite || [];
+    const isFavorite = currentFavorites.includes(loanProductId);
+
+    // Create new favorites array
+    let newFavorites: number[];
+    if (isFavorite) {
+      // Remove from favorites
+      newFavorites = currentFavorites.filter(
+        (id: number) => id !== loanProductId
+      );
     } else {
-      toast.success("Added to favorites! ❤️", {
-        description: `${loan?.lender_name} has been bookmarked for easy access.`,
+      // Add to favorites
+      newFavorites = [...currentFavorites, loanProductId];
+    }
+
+    console.log("Updating favorites:", {
+      userId: contactAuth.id,
+      currentFavorites,
+      newFavorites,
+      loanProductId,
+      action: isFavorite ? "REMOVE" : "ADD",
+    });
+
+    try {
+      // Call update API
+      const result = await dispatch(
+        updateUser({
+          userId: contactAuth.id.toString(),
+          payload: {
+            studentId: contactAuth.id,
+            favourite: newFavorites,
+          },
+        }) as any
+      );
+
+      if (result.payload) {
+        // Show success toast
+        if (isFavorite) {
+          toast.success("Removed from favorites", {
+            description: `${loan?.lender_name} has been removed from your favourite.`,
+          });
+        } else {
+          toast.success("Added to favorites! ❤️", {
+            description: `${loan?.lender_name} has been added to your favourite for easy access.`,
+          });
+        }
+      } else {
+        throw new Error("Failed to update favorites");
+      }
+    } catch (error: any) {
+      console.error("Failed to update favorites:", error);
+      toast.error("Failed to update favorites", {
+        description: error.message || "Please try again later.",
       });
     }
   };
@@ -313,7 +456,7 @@ export default function LoanList() {
             </div>
             <div className="p-4 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50">
               <p className="text-2xl font-bold text-accent">
-                {isLoading ? "..." : filterOptions?.lenders.length || 0}
+                {isLoading ? "..." : lenders?.length || 0}
               </p>
               <p className="text-sm text-muted-foreground">Lenders</p>
             </div>
@@ -483,7 +626,8 @@ export default function LoanList() {
                     onCompare={handleCompare}
                     onToggleFavorite={handleToggleFavorite}
                     isSelected={selectedLoanIds.includes(loan.id.toString())}
-                    isFavorite={favoriteLoanIds.includes(loan.id.toString())}
+                    isFavorite={userFavorites.includes(loan.id)}
+                    isInterested={userInterested.includes(loan.id)}
                   />
                 </div>
               ))}
