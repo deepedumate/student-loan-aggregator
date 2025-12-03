@@ -488,9 +488,16 @@ export default function LoanDetails() {
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Button
-            variant="ghost"
+            variant="default"
             onClick={() => navigate("/loan-offers")}
-            className="mb-4 text-gray-700 dark:text-foreground hover:bg-gray-100 dark:hover:bg-primary/5"
+            className="mb-4
+    text-gray-700 dark:text-foreground
+    bg-white/80                 /* Light mode visible background */
+    dark:bg-transparent
+    border border-gray-300/60   /* LIGHT MODE BORDER */
+    hover:bg-gray-100
+    dark:hover:bg-primary/10
+    shadow-sm text-foreground"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to All Loans
@@ -550,9 +557,15 @@ export default function LoanDetails() {
                 </Button>
                 <Button
                   size="lg"
-                  variant="outline"
+                  variant="secondary"
                   onClick={handleToggleFavorite}
-                  className="bg-white dark:bg-transparent border-gray-300 dark:border-border text-gray-700 dark:text-foreground hover:bg-gray-50 dark:hover:bg-primary/5"
+                  className="text-gray-700 dark:text-foreground
+    bg-white/80                 /* Light mode visible background */
+    dark:bg-transparent
+    border border-gray-300/60   /* LIGHT MODE BORDER */
+    hover:bg-gray-100
+    dark:hover:bg-primary/10
+    shadow-sm text-foreground"
                 >
                   <Heart
                     className={`w-4 h-4 mr-2 ${
