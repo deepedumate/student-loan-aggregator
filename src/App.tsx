@@ -4,12 +4,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 // import { ThemeProvider } from "next-themes";
-import { Provider } from 'react-redux';
-import { store } from '@/store';
+import { Provider } from "react-redux";
+import { store } from "@/store";
 
 // Layouts
-import { LoanListLayout } from '@/layouts/LoanListLayout';
-import { ChatJourneyLayout } from '@/layouts/ChatJourneyLayout';
+import { LoanListLayout } from "@/layouts/LoanListLayout";
+import { ChatJourneyLayout } from "@/layouts/ChatJourneyLayout";
 
 // Pages
 import Home from "./pages/Home";
@@ -19,13 +19,14 @@ import ChatJourney from "./pages/AILoanPath";
 import NotFound from "./pages/NotFound";
 import { ThemeProvider } from "./components/chat-journey/ThemeProvider";
 import { HomeLayout } from "./layouts/HomeLayout";
+import Login from "./pages/Login";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <Provider store={store}>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light" >
+      <ThemeProvider defaultTheme="light">
         <TooltipProvider>
           <Toaster />
           <Sonner />
@@ -34,6 +35,7 @@ const App = () => (
               <Route element={<HomeLayout />}>
                 <Route path="/" element={<Home />} />
               </Route>
+              <Route path="/login" element={<Login />} />
               {/* Edu Loan Guide Routes with Header/Footer Layout */}
               <Route element={<LoanListLayout />}>
                 <Route path="/loan-offers" element={<LoanList />} />

@@ -1868,12 +1868,6 @@ const ChatJourney = () => {
                   </span>
                 </div>
               </div>
-
-              <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {/* {mockLoans.map((loan) => (
-                  <LoanCard key={loan.id} loan={loan} />
-                ))} */}
-              </div>
             </div>
           </div>
         )}
