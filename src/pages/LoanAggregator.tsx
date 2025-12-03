@@ -62,6 +62,7 @@ import {
   toggleShowFavoritesOnly,
 } from "@/store/slices/loanProductSlice";
 import { LoanProduct, LoanProductFilters } from "@/types/loanProduct";
+import { fetchLenders, selectLenders } from "@/store/slices/lenderSlice";
 
 export default function LoanAggregator() {
   const dispatch = useAppDispatch();
@@ -80,6 +81,8 @@ export default function LoanAggregator() {
   const favoriteLoanIds = useAppSelector(selectFavoriteLoanIds);
   const showFavoritesOnly = useAppSelector(selectShowFavoritesOnly);
   const appliedFiltersCount = useAppSelector(selectAppliedFiltersCount);
+  const lenders = useAppSelector(selectLenders);
+  console.log("lenders aara hai", lenders);
 
   // Local UI state only (no persistence)
   const [showComparison, setShowComparison] = useState(false);
@@ -125,6 +128,10 @@ export default function LoanAggregator() {
     search,
     showFavoritesOnly,
   ]);
+
+  useEffect(() => {
+    dispatch(fetchLenders());
+  }, []);
 
   // Convert filters to component format
   const componentFilters = useMemo(() => {
