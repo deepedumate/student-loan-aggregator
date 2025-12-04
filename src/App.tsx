@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 // import { ThemeProvider } from "next-themes";
 import { Provider } from "react-redux";
 import { store } from "@/store";
@@ -20,8 +20,6 @@ import NotFound from "./pages/NotFound";
 import { ThemeProvider } from "./components/chat-journey/ThemeProvider";
 import { HomeLayout } from "./layouts/HomeLayout";
 import Login from "./pages/Login";
-<<<<<<< Updated upstream
-=======
 import StudentLayout from "./layouts/StudentLayout";
 import {
   Applications,
@@ -31,8 +29,6 @@ import {
   Notifications,
   Profile,
 } from "./pages/student";
-import ContactUs from "./pages/ContactUs";
->>>>>>> Stashed changes
 
 const queryClient = new QueryClient();
 
@@ -48,8 +44,6 @@ const App = () => (
               <Route element={<HomeLayout />}>
                 <Route path="/" element={<Home />} />
               </Route>
-<<<<<<< Updated upstream
-=======
               {/* Contact Us */}
               <Route path="/contact-us" element={<ContactUs />} />
 
@@ -65,7 +59,6 @@ const App = () => (
                 {/* Redirect /student to /student/dashboard */}
                 <Route index element={<Navigate to="dashboard" replace />} />
               </Route>
->>>>>>> Stashed changes
               <Route path="/login" element={<Login />} />
               {/* Edu Loan Guide Routes with Header/Footer Layout */}
               <Route element={<LoanListLayout />}>
