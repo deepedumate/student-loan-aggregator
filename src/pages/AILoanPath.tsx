@@ -23,7 +23,7 @@ import {
   setIsOtherProgramSelected,
   setCustomProgramName,
   resetChat,
-  type Step
+  type Step,
 } from "@/store/slices/chatSlice";
 import { signup as signupUser } from "@/store/slices/contactAuthSlice";
 import { ChatBubble } from "@/components/chat-journey/ChatBubble";
@@ -66,9 +66,9 @@ import { apiService } from "@/lib/apiService";
 import { googleMapsService } from "@/lib/Googlemapsservice";
 
 interface UniversitySuggestion {
-  name: string;          // "Harvard University, Cambridge, MA, USA"
-  placeId: string;       // "ChIJOae13ii644kRuC8SkiUkpQQ"
-  country: string;       // "US" or "USA"
+  name: string; // "Harvard University, Cambridge, MA, USA"
+  placeId: string; // "ChIJOae13ii644kRuC8SkiUkpQQ"
+  country: string; // "US" or "USA"
 }
 
 // Google Maps API configuration
@@ -345,10 +345,10 @@ const ChatJourney = () => {
   // Helper function to map study level
   const mapStudyLevel = (studyLevel: string): string => {
     const mapping: Record<string, string> = {
-      'undergraduate': 'Bachelors',
-      'graduate_mba': 'Masters',
-      'graduate_masters': 'Masters',
-      'phd': 'PhD'
+      undergraduate: "Bachelors",
+      graduate_mba: "Masters",
+      graduate_masters: "Masters",
+      phd: "PhD",
     };
     return mapping[studyLevel] || "Bachelor";
   };
@@ -376,8 +376,9 @@ const ChatJourney = () => {
   const prepareContactPayload = (formData: any) => {
     const phoneNumber = formData.phone.replace(/\+/g, "");
     const submissionDate = new Date().toISOString();
-    const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '';
-    const referrer = typeof document !== 'undefined' ? document.referrer : '';
+    const userAgent =
+      typeof navigator !== "undefined" ? navigator.userAgent : "";
+    const referrer = typeof document !== "undefined" ? document.referrer : "";
     const studyDestination = formData.studyDestination;
     const levelOfEducation = mapStudyLevel(formData.studyLevel);
     const intakeMonth = getMonthName(formData.intendedMonth);
@@ -632,7 +633,10 @@ const ChatJourney = () => {
     handleUniversitySearch(universitydetails?.name, universitydetails?.country);
   };
 
-  const handleUniversitySearch = async (selectedUniversity?: string, selectedCountry: string = "") => {
+  const handleUniversitySearch = async (
+    selectedUniversity?: string,
+    selectedCountry: string = ""
+  ) => {
     const universityName = selectedUniversity || userInput.trim();
     if (!universityName) return;
 
@@ -640,7 +644,9 @@ const ChatJourney = () => {
     dispatch(setUserInput(""));
     dispatch(setShowSuggestions(false));
     dispatch(setUniversitySuggestions([]));
-    dispatch(updateFormData({ universityName, studyDestination: selectedCountry }));
+    dispatch(
+      updateFormData({ universityName, studyDestination: selectedCountry })
+    );
 
     await addTypingMessage(
       `Searching for **${universityName}**. Retrieving available programs...`
@@ -691,9 +697,10 @@ const ChatJourney = () => {
   };
 
   const handleProgramSelect = async (program: any) => {
+    console.log("Selected program:", program);
     addMessageHelper(program.program_name, true, "programs");
     const totalCost = program.total_program_cost;
-    dispatch(updateFormData({ programId: program.program_name, totalCost }));
+    dispatch(updateFormData({ program, totalCost }));
 
     const durationYears = program.duration_years || 0;
     const duration =
@@ -781,7 +788,7 @@ const ChatJourney = () => {
 
         dispatch(
           updateFormData({
-            programId: program.program_name,
+            program: program,
             totalCost,
             currency,
           })
@@ -1292,7 +1299,9 @@ const ChatJourney = () => {
                         <div className="flex items-center justify-between mb-3 py-2">
                           <span className="text-xs text-muted-foreground">
                             {programData.data.programs.length} program
-                            {programData.data.programs.length !== 1 ? "s" : ""}{" "}
+                            {programData.data.programs.length !== 1
+                              ? "s"
+                              : ""}{" "}
                             found
                           </span>
                           <div className="flex items-center gap-2">
@@ -1491,7 +1500,9 @@ const ChatJourney = () => {
                               >
                                 <div className="flex items-center gap-2">
                                   <Building2 className="w-4 h-4 text-primary" />
-                                  <span className="text-sm">{suggestion?.name}</span>
+                                  <span className="text-sm">
+                                    {suggestion?.name}
+                                  </span>
                                 </div>
                               </div>
                             ))}

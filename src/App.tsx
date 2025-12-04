@@ -20,6 +20,19 @@ import NotFound from "./pages/NotFound";
 import { ThemeProvider } from "./components/chat-journey/ThemeProvider";
 import { HomeLayout } from "./layouts/HomeLayout";
 import Login from "./pages/Login";
+<<<<<<< Updated upstream
+=======
+import StudentLayout from "./layouts/StudentLayout";
+import {
+  Applications,
+  Compare,
+  Dashboard,
+  Documents,
+  Notifications,
+  Profile,
+} from "./pages/student";
+import ContactUs from "./pages/ContactUs";
+>>>>>>> Stashed changes
 
 const queryClient = new QueryClient();
 
@@ -35,6 +48,24 @@ const App = () => (
               <Route element={<HomeLayout />}>
                 <Route path="/" element={<Home />} />
               </Route>
+<<<<<<< Updated upstream
+=======
+              {/* Contact Us */}
+              <Route path="/contact-us" element={<ContactUs />} />
+
+              {/* Student Portal Routes */}
+              <Route path="/student" element={<StudentLayout />}>
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="applications" element={<Applications />} />
+                <Route path="compare" element={<Compare />} />
+                <Route path="documents" element={<Documents />} />
+                <Route path="notifications" element={<Notifications />} />
+                <Route path="profile" element={<Profile />} />
+
+                {/* Redirect /student to /student/dashboard */}
+                <Route index element={<Navigate to="dashboard" replace />} />
+              </Route>
+>>>>>>> Stashed changes
               <Route path="/login" element={<Login />} />
               {/* Edu Loan Guide Routes with Header/Footer Layout */}
               <Route element={<LoanListLayout />}>

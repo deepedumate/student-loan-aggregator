@@ -22,7 +22,7 @@ export interface FormData {
   intendedYear: number;
   universityName: string;
   studyDestination: string;
-  programId: string;
+  program: any;
   totalCost: number;
   loanAmount: number;
   loanType: string;
@@ -47,7 +47,7 @@ interface ChatState {
   preferredCurrency: string;
   exchangeRates: Record<string, number>;
   showCurrencySelector: boolean;
-  currencyDisplayMode: 'original' | 'converted' | 'both';
+  currencyDisplayMode: "original" | "converted" | "both";
   costBreakdown: {
     totalCost: string;
     duration: string;
@@ -63,43 +63,43 @@ interface ChatState {
 
 const initialState: ChatState = {
   messages: [
-    { 
-      text: "Welcome to Edumate. We help smart students make smarter funding decisions.\n\nLet's find the best education financing options tailored to your needs.", 
-      isUser: false 
-    }
+    {
+      text: "Welcome to Edumate. We help smart students make smarter funding decisions.\n\nLet's find the best education financing options tailored to your needs.",
+      isUser: false,
+    },
   ],
-  step: 'welcome',
+  step: "welcome",
   isTyping: false,
   formData: {
-    studyLevel: '',
-    admitStatus: '',
+    studyLevel: "",
+    admitStatus: "",
     intendedMonth: 0,
     intendedYear: 0,
-    universityName: '',
-    studyDestination: '',
-    programId: '',
+    universityName: "",
+    studyDestination: "",
+    program: null,
     totalCost: 0,
     loanAmount: 0,
-    loanType: '',
-    phone: '',
-    otp: '',
-    currency: 'USD'
+    loanType: "",
+    phone: "",
+    otp: "",
+    currency: "USD",
   },
-  countryCode: '+91',
+  countryCode: "+91",
   programData: null,
-  userInput: '',
+  userInput: "",
   phoneValidation: null,
   otpCountdown: 0,
   universitySuggestions: [],
   isLoadingSuggestions: false,
   showSuggestions: false,
-  preferredCurrency: 'USD',
+  preferredCurrency: "USD",
   exchangeRates: {},
   showCurrencySelector: false,
-  currencyDisplayMode: 'both',
+  currencyDisplayMode: "both",
   costBreakdown: null,
   isOtherProgramSelected: false,
-  customProgramName: '',
+  customProgramName: "",
 };
 
 const chatSlice = createSlice({

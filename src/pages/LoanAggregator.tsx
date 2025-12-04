@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
-import { Footer } from "@/components/edu-loan-guide/Footer";
 import { LoanCard } from "@/components/edu-loan-guide/LoanCard";
 import { LoanCardSkeleton } from "@/components/edu-loan-guide/LoanCardSkeleton";
 import {
@@ -43,7 +42,6 @@ import {
   selectSort,
   selectSearch,
   selectFilters,
-  selectFilterOptions,
   selectSelectedLoanIds,
   selectSelectedLoans,
   selectFavoriteLoanIds,
@@ -58,7 +56,6 @@ import {
   removeLoanFromComparison,
   addLoanToComparison,
   clearComparison,
-  toggleFavorite,
   toggleShowFavoritesOnly,
 } from "@/store/slices/loanProductSlice";
 import { LoanProduct, LoanProductFilters } from "@/types/loanProduct";
@@ -76,7 +73,6 @@ export default function LoanList() {
   const sort = useAppSelector(selectSort);
   const search = useAppSelector(selectSearch);
   const filters = useAppSelector(selectFilters);
-  const filterOptions = useAppSelector(selectFilterOptions);
   const selectedLoanIds = useAppSelector(selectSelectedLoanIds);
   const selectedLoans = useAppSelector(selectSelectedLoans);
   const favoriteLoanIds = useAppSelector(selectFavoriteLoanIds);
@@ -333,23 +329,6 @@ export default function LoanList() {
       description: "All loans removed from comparison.",
     });
   };
-
-  // const handleToggleFavorite = (loanId: string) => {
-  //   const loan = loans.find((l) => l.id.toString() === loanId);
-  //   const isFavorite = favoriteLoanIds.includes(loanId);
-
-  //   dispatch(toggleFavorite(loanId));
-
-  //   if (isFavorite) {
-  //     toast.success("Removed from favorites", {
-  //       description: `${loan?.lender_name} has been removed from your bookmarks.`,
-  //     });
-  //   } else {
-  //     toast.success("Added to favorites! ❤️", {
-  //       description: `${loan?.lender_name} has been bookmarked for easy access.`,
-  //     });
-  //   }
-  // };
 
   const handleToggleFavorite = async (loanId: string) => {
     const loan = loans.find((l) => l.id.toString() == loanId);

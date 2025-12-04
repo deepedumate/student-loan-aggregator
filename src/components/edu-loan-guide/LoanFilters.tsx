@@ -29,6 +29,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { LoanProductFilters } from "@/types/loanProduct";
+import { useAppSelector } from "@/store/hooks";
 
 export interface FilterValues {
   intakeMonth?: string;
@@ -44,11 +45,10 @@ export interface FilterValues {
   searchQuery?: string;
 }
 
-// ✅ FIXED: Update FilterPreset to use LoanProductFilters instead of FilterValues
 export interface FilterPreset {
   id: string;
   name: string;
-  filters: LoanProductFilters; // ✅ Changed from FilterValues
+  filters: LoanProductFilters;
   createdAt: string;
 }
 
@@ -106,6 +106,164 @@ export function LoanFilters({
   const [presetName, setPresetName] = useState("");
   const [showSavePreset, setShowSavePreset] = useState(false);
   const [showPresetsList, setShowPresetsList] = useState(false);
+  const [hasAutoPopulated, setHasAutoPopulated] = useState(false);
+
+  const chat = useAppSelector((state) => state.chat);
+  console.log("Chat state in LoanFilters:", chat);
+
+  // Auto-populate filters from chat data on mount
+  useEffect(() => {
+    // Only run once when component mounts and chat data is available
+    if (!chat || hasAutoPopulated) return;
+
+    const autoFilters: FilterValues = {};
+    let hasData = false;
+
+    // Helper function to convert numeric month to month name
+    const getMonthName = (monthNum: number): string => {
+      const monthNames = [
+        "january",
+        "february",
+        "march",
+        "april",
+        "may",
+        "june",
+        "july",
+        "august",
+        "september",
+        "october",
+        "november",
+        "december",
+      ];
+      return monthNames[monthNum - 1] || "";
+    };
+
+    // Extract intake period from intendedMonth/intendedYear (priority)
+    if (chat.formData?.intendedMonth) {
+      const monthNum =
+        typeof chat.formData.intendedMonth === "number"
+          ? chat.formData.intendedMonth
+          : parseInt(chat.formData.intendedMonth);
+      if (monthNum >= 1 && monthNum <= 12) {
+        autoFilters.intakeMonth = getMonthName(monthNum);
+        hasData = true;
+      }
+    }
+
+    if (chat.formData?.intendedYear) {
+      autoFilters.intakeYear = chat.formData.intendedYear.toString();
+      hasData = true;
+    }
+
+    // Extract study level from formData with proper formatting
+    if (chat.formData?.studyLevel) {
+      let studyLevel = chat.formData.studyLevel.toLowerCase();
+
+      // Handle different study level formats to match dropdown values
+      // The dropdown uses: undergraduate, graduate_-_mba, graduate_-_masters, phd
+      if (studyLevel.includes("masters")) {
+        studyLevel = "graduate_-_masters";
+      } else if (studyLevel.includes("mba")) {
+        studyLevel = "graduate_-_mba";
+      } else if (studyLevel.includes("phd") || studyLevel.includes("ph.d")) {
+        studyLevel = "phd";
+      } else if (
+        studyLevel.includes("undergraduate") ||
+        studyLevel.includes("undergrad")
+      ) {
+        studyLevel = "undergraduate";
+      }
+
+      autoFilters.studyLevel = studyLevel;
+      hasData = true;
+    }
+
+    // Extract school name from multiple possible sources (priority order)
+    if (chat.programData?.data?.university_name) {
+      autoFilters.school = chat.programData.data.university_name;
+      hasData = true;
+    } else if (chat.universitySuggestions?.[0]?.name) {
+      autoFilters.school = chat.universitySuggestions[0].name;
+      hasData = true;
+    } else if (chat.formData?.universityName) {
+      autoFilters.school = chat.formData.universityName;
+      hasData = true;
+    }
+
+    // Extract program name from multiple sources (priority order)
+    if (chat.formData?.program?.program_name) {
+      autoFilters.program = chat.formData.program.program_name;
+      hasData = true;
+    } else if (chat.programData?.data?.program_name) {
+      autoFilters.program = chat.programData.data.program_name;
+      hasData = true;
+    } else if (chat.formData?.program?.programName) {
+      autoFilters.program = chat.formData.program.programName;
+      hasData = true;
+    }
+
+    // Extract admission status from multiple sources
+    if (chat.formData?.admitStatus) {
+      autoFilters.status = chat.formData.admitStatus
+        .toLowerCase()
+        .replace(/\s+/g, "_");
+      hasData = true;
+    } else if (chat.formData?.admitStatus) {
+      autoFilters.status = chat.formData.admitStatus
+        .toLowerCase()
+        .replace(/\s+/g, "_");
+      hasData = true;
+    } else if (
+      chat.step === "verified" ||
+      chat.isOtherProgramSelected === false
+    ) {
+      // If step is verified or they selected a program from suggestions, likely admitted
+      autoFilters.status = "admitted";
+      hasData = true;
+    }
+
+    // Extract financial data from costBreakdown
+    // Convert tuition to number (remove $ and commas)
+    if (chat.formData?.program?.total_tuition) {
+      const tuition = parseFloat(chat.formData.program.total_tuition);
+      if (!isNaN(tuition) && tuition > 0) {
+        autoFilters.totalTuitionFee = Math.round(tuition);
+        hasData = true;
+      }
+    }
+
+    // Convert living costs to number
+    if (chat.formData?.program?.total_cost_of_living) {
+      const living = parseFloat(chat.formData.program.total_cost_of_living);
+      if (!isNaN(living) && living > 0) {
+        autoFilters.totalCostOfLiving = Math.round(living);
+        hasData = true;
+      }
+    }
+
+    // Only update if we have some filters to apply and haven't already populated
+    if (hasData && Object.keys(autoFilters).length > 0) {
+      console.log("Auto-populating filters with:", autoFilters);
+
+      // Mark as populated BEFORE calling onFilterChange to prevent re-runs
+      setHasAutoPopulated(true);
+
+      // Call the filter change handler
+      onFilterChange(autoFilters);
+
+      // Show a toast notification
+      toast.success(
+        `Auto-filled ${Object.keys(autoFilters).length} filter${
+          Object.keys(autoFilters).length !== 1 ? "s" : ""
+        } from your conversation`,
+        {
+          description: "You can adjust these filters as needed",
+          duration: 4000,
+        }
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chat]); // Run when chat state changes
 
   const handleClearAll = () => {
     onFilterChange({});
@@ -117,7 +275,6 @@ export function LoanFilters({
     onFilterChange(newFilters);
   };
 
-  // ✅ FIXED: Convert FilterValues to LoanProductFilters before saving
   const handleSavePreset = () => {
     if (!presetName.trim()) {
       toast.error("Please enter a preset name");
@@ -204,16 +361,12 @@ export function LoanFilters({
             <Button
               variant="outline"
               size="lg"
-              className=" h-12 px-6 rounded-xl border-border/50
-    hover:border-primary/40
-    hover:bg-primary/5
-    hover:text-foreground
-    transition-all duration-300 relative"
+              className="h-12 px-6 rounded-xl border-border/50 hover:border-primary/40 hover:bg-primary/5 hover:text-foreground transition-all duration-300 relative"
             >
               <Filter className="w-5 h-5 mr-2" />
               Filters
               {appliedFiltersCount > 0 && (
-                <Badge className="ml-2 bg-primary text-primary">
+                <Badge className="ml-2 bg-primary text-primary-foreground">
                   {appliedFiltersCount}
                 </Badge>
               )}
@@ -392,7 +545,7 @@ export function LoanFilters({
               </div>
 
               {/* School */}
-              <div className="space-y-3 school-program-filters">
+              <div className="space-y-3">
                 <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                   School
                 </Label>
@@ -424,7 +577,7 @@ export function LoanFilters({
               </div>
 
               {/* Loan Amount Range */}
-              <div className="space-y-3 amount-filters">
+              <div className="space-y-3">
                 <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                   Loan Amount Range
                 </Label>
@@ -573,6 +726,13 @@ export function LoanFilters({
         <div className="flex flex-wrap gap-2">
           {Object.entries(filters).map(([key, value]) => {
             if (!value || key === "searchQuery") return null;
+
+            // Format the display value
+            let displayValue = value;
+            if (typeof value === "number") {
+              displayValue = value.toLocaleString();
+            }
+
             return (
               <Badge
                 key={key}
@@ -580,7 +740,7 @@ export function LoanFilters({
                 className="px-3 py-1.5 rounded-lg bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors"
               >
                 <span className="text-xs font-medium">
-                  {key.replace(/([A-Z])/g, " $1").trim()}: {value}
+                  {key.replace(/([A-Z])/g, " $1").trim()}: {displayValue}
                 </span>
                 <button
                   onClick={() => handleRemoveFilter(key as keyof FilterValues)}
