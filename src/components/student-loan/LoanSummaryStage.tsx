@@ -23,7 +23,10 @@ interface LoanSummaryStageProps {
   application: Application;
 }
 
-export function LoanSummaryStage({lender, application }: LoanSummaryStageProps) {
+export function LoanSummaryStage({
+  lender,
+  application,
+}: LoanSummaryStageProps) {
   // Access selectedLender from application - adjust this based on your actual type structure
   // Try both 'selectedLender' and 'lender' to handle different possible naming
   const selectedLender =
@@ -31,7 +34,7 @@ export function LoanSummaryStage({lender, application }: LoanSummaryStageProps) 
 
   if (!selectedLender) {
     return (
-      <div className="max-w-3xl mx-auto text-center py-12">
+      <div className="container mx-auto px-4 max-w-3xl text-center py-12">
         <p className="text-muted-foreground">No lender selected</p>
       </div>
     );
@@ -92,10 +95,10 @@ export function LoanSummaryStage({lender, application }: LoanSummaryStageProps) 
   ];
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="container mx-auto px-4 max-w-5xl space-y-6">
       {/* Success Header */}
       <motion.div
-        className="text-center space-y-4"
+        className="text-left lg:text-center space-y-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
@@ -127,7 +130,7 @@ export function LoanSummaryStage({lender, application }: LoanSummaryStageProps) 
 
         <div>
           <motion.h2
-            className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary via-primary-light to-accent bg-clip-text text-transparent"
+            className="text-3xl sm:text-4xl font-bold text-primary"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
@@ -244,7 +247,7 @@ export function LoanSummaryStage({lender, application }: LoanSummaryStageProps) 
           ))}
 
           <motion.div
-            className="flex justify-between items-center py-4 mt-4 border-t-2 border-primary/20 bg-gradient-to-r from-primary/5 to-accent/5 -mx-4 px-4 rounded-lg"
+            className="flex justify-between items-center py-4 mt-4 border-t-2 border-primary/20 bg-primary/5 -mx-4 px-4 rounded-lg"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 1.2, type: "spring" }}
@@ -252,7 +255,7 @@ export function LoanSummaryStage({lender, application }: LoanSummaryStageProps) 
             <span className="text-lg font-bold text-foreground">
               Total Amount Payable
             </span>
-            <span className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <span className="text-2xl font-bold text-primary">
               {formatCurrency(loanDetails.totalPayable)}
             </span>
           </motion.div>
@@ -272,7 +275,7 @@ export function LoanSummaryStage({lender, application }: LoanSummaryStageProps) 
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
           <motion.div
-            className="w-24 h-24 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center border-2 border-primary/20 shrink-0"
+            className="w-24 h-24 rounded-2xl bg-primary/10 flex items-center justify-center border-2 border-primary/20 shrink-0"
             whileHover={{ scale: 1.05, rotate: 5 }}
           >
             <span className="text-3xl font-bold text-primary">
@@ -342,7 +345,7 @@ export function LoanSummaryStage({lender, application }: LoanSummaryStageProps) 
 
       {/* Next Steps */}
       <motion.div
-        className="glass-card p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-primary/5 to-accent/5 border-2 border-primary/20"
+        className="glass-card p-6 sm:p-8 rounded-2xl bg-primary/5 border-2 border-primary/20"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.2 }}
@@ -389,7 +392,7 @@ export function LoanSummaryStage({lender, application }: LoanSummaryStageProps) 
           ].map((step, index) => (
             <motion.div
               key={step.title}
-              className="flex items-start gap-4 p-4 rounded-xl bg-white/50 border border-border hover:border-primary/30 transition-all"
+              className="flex items-start gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/30 transition-all"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 1.3 + index * 0.1 }}
@@ -427,7 +430,7 @@ export function LoanSummaryStage({lender, application }: LoanSummaryStageProps) 
         transition={{ delay: 1.5 }}
       >
         <motion.button
-          className="relative px-12 py-4 text-lg font-semibold rounded-xl bg-gradient-to-r from-primary to-primary-light text-primary-foreground shadow-lg shadow-primary/25 overflow-hidden group"
+          className="relative px-12 py-4 text-lg font-semibold rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/25 overflow-hidden group"
           whileHover={{ scale: 1.02, y: -2 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -444,7 +447,7 @@ export function LoanSummaryStage({lender, application }: LoanSummaryStageProps) 
         </motion.button>
 
         <motion.button
-          className="px-8 py-4 text-lg font-semibold rounded-xl bg-white border-2 border-primary text-primary hover:bg-primary/5 transition-all flex items-center justify-center gap-2"
+          className="px-8 py-4 text-lg font-semibold rounded-xl bg-card border-2 border-primary text-primary hover:bg-primary/5 transition-all flex items-center justify-center gap-2"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >

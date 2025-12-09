@@ -15,22 +15,16 @@ import {
 } from "lucide-react";
 
 /**
- * Premium Contact Map Component
+ * Contact Map Component - ChatJourney Theme Style
  *
  * Features:
- * - Animated map loading with skeleton state
+ * - Clean theme-based design (no gradients)
+ * - Animated map loading
  * - Transport options showcase
  * - Virtual meeting CTA
- * - Office status indicator (open/closed)
- * - Glassmorphic cards with hover effects
- * - Smooth scroll-triggered animations
- *
- * Design Decisions:
- * - Map header shows real-time status
- * - Transport icons use gradient backgrounds
- * - CTA section encourages both physical and virtual visits
- * - Floating directions button overlays the map
- * - Premium shadow and border treatments
+ * - Lucide React icons only
+ * - Fully responsive for all devices
+ * - Dark mode support
  */
 const ContactMap: React.FC = () => {
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -42,19 +36,16 @@ const ContactMap: React.FC = () => {
       icon: Train,
       type: "Metro",
       info: "Lower Parel Station - 5 min walk",
-      color: "from-blue-500 to-blue-600",
     },
     {
       icon: Bus,
       type: "Bus",
       info: "Multiple routes available",
-      color: "from-emerald-500 to-emerald-600",
     },
     {
       icon: Car,
       type: "Taxi",
       info: "Uber/Ola pickup point nearby",
-      color: "from-violet-500 to-violet-600",
     },
   ];
 
@@ -91,40 +82,32 @@ const ContactMap: React.FC = () => {
   };
 
   return (
-    <section className="py-20 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 right-10 w-80 h-80 bg-accent/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 left-10 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-      </div>
-
-      <div className="container mx-auto px-4 relative z-10">
+    <section className="py-12 sm:py-16 lg:py-20 relative overflow-hidden">
+      <div className="container mx-auto px-2 sm:px-4 relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-left lg:text-center mb-10 sm:mb-12 md:mb-16"
         >
           <motion.div
             initial={{ scale: 0 }}
             whileInView={{ scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="inline-block mb-4"
+            className="inline-block mb-3 sm:mb-4"
           >
-            <div className="w-16 h-1 bg-gradient-to-r from-accent via-accent-light to-primary rounded-full" />
+            <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-primary rounded-full" />
           </motion.div>
 
-          <h2 className="text-4xl md:text-5xl font-bold font-heading mb-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-heading mb-3 sm:mb-4 md:mb-6">
             <span className="text-foreground">Visit Our </span>
-            <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
-              Office
-            </span>
+            <span className="text-primary">Office</span>
           </h2>
 
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground max-w-2xl lg:mx-auto leading-relaxed">
             Located in the heart of Mumbai's business district, we're easily
             accessible by all major transport options.
           </p>
@@ -136,28 +119,28 @@ const ContactMap: React.FC = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8 md:mb-12"
         >
           {locationFeatures.map((feature, index) => (
             <motion.div
               key={index}
               variants={itemVariants}
               whileHover={{ y: -5, scale: 1.02 }}
-              className="glass-card rounded-2xl p-6 shadow-soft hover:shadow-lg transition-all duration-300"
+              className="border border-border rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-6 bg-card shadow-sm hover:shadow-md transition-all duration-300"
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
                 <motion.div
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.6 }}
-                  className="w-12 h-12 bg-gradient-to-br from-primary to-primary-light rounded-xl flex items-center justify-center flex-shrink-0 shadow-md"
+                  className="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-primary/10 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0"
                 >
-                  <feature.icon className="w-6 h-6 text-white" />
+                  <feature.icon className="w-4.5 h-4.5 sm:w-5 sm:h-5 md:w-6 md:h-6 text-primary" />
                 </motion.div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm text-muted-foreground mb-1">
+                  <div className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">
                     {feature.label}
                   </div>
-                  <div className="font-semibold text-foreground truncate">
+                  <div className="font-semibold text-sm sm:text-base text-foreground truncate">
                     {feature.value}
                   </div>
                 </div>
@@ -172,17 +155,17 @@ const ContactMap: React.FC = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.8 }}
-          className="mb-16"
+          className="mb-10 sm:mb-12 md:mb-16"
         >
-          <div className="glass-card rounded-3xl shadow-2xl border-2 border-primary/10 overflow-hidden">
+          <div className="border-2 border-border rounded-2xl sm:rounded-3xl bg-card shadow-lg overflow-hidden">
             {/* Map Header */}
-            <div className="p-6 border-b border-border bg-gradient-to-r from-primary/5 to-accent/5">
-              <div className="flex items-center justify-between flex-wrap gap-4">
-                <div>
-                  <h3 className="text-2xl font-bold font-heading text-foreground mb-1">
+            <div className="p-4 sm:p-6 border-b border-border bg-primary/5">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-xl sm:text-2xl font-bold font-heading text-foreground mb-1 truncate">
                     Edumate Global Office
                   </h3>
-                  <p className="text-muted-foreground">
+                  <p className="text-sm sm:text-base text-muted-foreground truncate">
                     Trade Link Building, Lower Parel, Mumbai
                   </p>
                 </div>
@@ -191,14 +174,14 @@ const ContactMap: React.FC = () => {
                 <motion.div
                   animate={{ scale: [1, 1.05, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
-                  className="flex items-center gap-2 px-4 py-2 bg-success/10 border border-success/20 rounded-full"
+                  className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-success/10 border border-success/20 rounded-full flex-shrink-0"
                 >
                   <motion.div
                     animate={{ scale: [1, 1.3, 1], opacity: [1, 0.5, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
                     className="w-2 h-2 bg-success rounded-full"
                   />
-                  <span className="text-sm text-success font-semibold">
+                  <span className="text-xs sm:text-sm text-success font-semibold whitespace-nowrap">
                     Open Now
                   </span>
                 </motion.div>
@@ -222,11 +205,11 @@ const ContactMap: React.FC = () => {
                         repeat: Infinity,
                         ease: "linear",
                       }}
-                      className="w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg"
+                      className="w-14 h-14 sm:w-16 sm:h-16 bg-primary/10 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-4"
                     >
-                      <MapPin className="w-8 h-8 text-white" />
+                      <MapPin className="w-7 h-7 sm:w-8 sm:h-8 text-primary" />
                     </motion.div>
-                    <p className="text-muted-foreground font-medium">
+                    <p className="text-sm sm:text-base text-muted-foreground font-medium">
                       Loading map...
                     </p>
                   </div>
@@ -237,12 +220,12 @@ const ContactMap: React.FC = () => {
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3882.8929903556445!2d72.82921177771254!3d19.004090467139214!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7ce932f47756f%3A0xc480633b0cecc064!2sTradelink!5e0!3m2!1sen!2sin!4v1750070266957!5m2!1sen!2sin"
                 width="100%"
-                height="500"
+                height="400"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                className="w-full"
+                className="w-full h-[300px] sm:h-[400px] lg:h-[500px]"
                 onLoad={() => setMapLoaded(true)}
               />
 
@@ -251,7 +234,7 @@ const ContactMap: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: mapLoaded ? 1 : 0, y: mapLoaded ? 0 : 20 }}
                 transition={{ delay: 0.5 }}
-                className="absolute top-4 right-4"
+                className="absolute top-3 right-3 sm:top-4 sm:right-4"
               >
                 <motion.a
                   whileHover={{ scale: 1.05 }}
@@ -259,10 +242,11 @@ const ContactMap: React.FC = () => {
                   href="https://maps.google.com/dir/?api=1&destination=Trade Link Building, Lower Parel, Mumbai"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-3 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl border-2 border-primary/20 text-foreground font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300"
+                  className="inline-flex items-center gap-2 px-3 sm:px-5 py-2 sm:py-3 bg-card/95 backdrop-blur-sm border-2 border-primary/20 text-foreground font-semibold rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-xs sm:text-base"
                 >
-                  <Navigation className="w-5 h-5 text-primary" />
-                  <span>Get Directions</span>
+                  <Navigation className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                  <span className="hidden sm:inline">Get Directions</span>
+                  <span className="sm:hidden">Directions</span>
                 </motion.a>
               </motion.div>
             </div>
@@ -275,13 +259,13 @@ const ContactMap: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-16"
+          className="mb-12 sm:mb-16"
         >
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold font-heading text-foreground mb-2">
+          <div className="text-left lg:text-center mb-6 sm:mb-8">
+            <h3 className="text-xl sm:text-2xl font-bold font-heading text-foreground mb-2">
               Easy to Reach
             </h3>
-            <p className="text-muted-foreground">
+            <p className="text-sm sm:text-base text-muted-foreground max-w-2xl lg:mx-auto">
               Multiple transport options available
             </p>
           </div>
@@ -291,26 +275,28 @@ const ContactMap: React.FC = () => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
           >
             {transportOptions.map((option, index) => (
               <motion.div
                 key={index}
                 variants={itemVariants}
                 whileHover={{ y: -5, scale: 1.02 }}
-                className="glass-card rounded-2xl p-6 shadow-soft hover:shadow-lg transition-all duration-300 text-center"
+                className="border border-border rounded-xl sm:rounded-2xl p-5 sm:p-6 bg-card shadow-sm hover:shadow-md transition-all duration-300 text-center"
               >
                 <motion.div
                   whileHover={{ rotate: [0, -10, 10, 0] }}
                   transition={{ duration: 0.5 }}
-                  className={`w-14 h-14 bg-gradient-to-br ${option.color} rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg`}
+                  className="w-12 h-12 sm:w-14 sm:h-14 bg-primary/10 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4"
                 >
-                  <option.icon className="w-7 h-7 text-white" />
+                  <option.icon className="w-6 h-6 sm:w-7 sm:h-7 text-primary" />
                 </motion.div>
-                <h4 className="text-lg font-semibold text-foreground mb-2">
+                <h4 className="text-base sm:text-lg font-semibold text-foreground mb-2">
                   {option.type}
                 </h4>
-                <p className="text-sm text-muted-foreground">{option.info}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">
+                  {option.info}
+                </p>
               </motion.div>
             ))}
           </motion.div>
@@ -325,7 +311,7 @@ const ContactMap: React.FC = () => {
         >
           <motion.div
             whileHover={{ scale: 1.01 }}
-            className="glass-card rounded-3xl p-10 shadow-xl border-2 border-accent/10 hover:border-accent/20 transition-all duration-300 max-w-4xl mx-auto"
+            className="border-2 border-border rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10 bg-card shadow-lg hover:shadow-xl hover:border-primary/20 transition-all duration-300 max-w-md sm:max-w-xl lg:max-w-4xl mx-auto"
           >
             <div className="text-center">
               {/* Icon */}
@@ -339,22 +325,22 @@ const ContactMap: React.FC = () => {
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-                className="w-16 h-16 bg-gradient-to-br from-accent via-accent-light to-primary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl"
+                className="w-14 h-14 sm:w-16 sm:h-16 bg-primary/10 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-5 md:mb-6"
               >
-                <Video className="w-8 h-8 text-white" />
+                <Video className="w-7 h-7 sm:w-8 sm:h-8 text-primary" />
               </motion.div>
 
-              <h3 className="text-3xl font-bold font-heading text-foreground mb-4">
+              <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold font-heading text-foreground mb-3 sm:mb-4 px-2">
                 Prefer Virtual Meetings?
               </h3>
-              <p className="text-muted-foreground text-lg mb-8 max-w-2xl mx-auto">
+              <p className="text-sm sm:text-base lg:text-lg text-muted-foreground mb-6 sm:mb-7 md:mb-8 max-w-2xl mx-auto leading-relaxed px-2">
                 We also offer online consultations for your convenience.
                 Schedule a video call with our education loan experts from
                 anywhere.
               </p>
 
               {/* Benefits List */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+              <div className="flex flex-col gap-3 sm:gap-3.5 mb-6 sm:mb-7 md:mb-8 max-w-sm mx-auto">
                 {[
                   { icon: CheckCircle2, text: "Same expert guidance" },
                   { icon: Calendar, text: "Flexible scheduling" },
@@ -366,12 +352,12 @@ const ContactMap: React.FC = () => {
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
-                    className="flex items-center gap-3 justify-center md:justify-start"
+                    className="flex items-center gap-3 text-left"
                   >
-                    <div className="w-8 h-8 bg-success/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <benefit.icon className="w-5 h-5 text-success" />
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 bg-success/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <benefit.icon className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-success" />
                     </div>
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-sm sm:text-base text-muted-foreground font-medium">
                       {benefit.text}
                     </span>
                   </motion.div>
@@ -379,11 +365,11 @@ const ContactMap: React.FC = () => {
               </div>
 
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col gap-3 sm:gap-3.5 max-w-sm mx-auto px-2">
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="group px-8 py-4 bg-gradient-to-r from-accent to-accent-light text-accent-foreground font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full px-6 py-3.5 sm:py-4 bg-primary text-primary-foreground font-bold rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2.5"
                   onClick={() =>
                     window.open(
                       "https://calendly.com/priyank-edumateglobal/speak-to-our-financing-expert?month=2025-07",
@@ -392,26 +378,21 @@ const ContactMap: React.FC = () => {
                     )
                   }
                 >
-                  <Video className="w-5 h-5" />
-                  <span>Schedule Video Call</span>
-                  <motion.div
-                    animate={{ x: [0, 5, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                  >
-                    <Calendar className="w-5 h-5" />
-                  </motion.div>
+                  <Video className="w-5 h-5 flex-shrink-0" />
+                  <span className="text-base whitespace-nowrap">
+                    Schedule Video Call
+                  </span>
+                  <Calendar className="w-5 h-5 flex-shrink-0" />
                 </motion.button>
 
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-8 py-4 bg-card border-2 border-border hover:border-accent/50 text-foreground font-semibold rounded-xl hover:shadow-lg transition-all duration-300"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full px-6 py-3.5 sm:py-4 bg-card border-2 border-border hover:border-primary/50 text-foreground font-semibold rounded-xl hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2.5"
                   onClick={() => (window.location.href = "tel:+917208743607")}
                 >
-                  <div className="flex items-center justify-center gap-2">
-                    <Phone className="w-5 h-5" />
-                    <span>Call Now</span>
-                  </div>
+                  <Phone className="w-5 h-5 flex-shrink-0" />
+                  <span className="text-base">Call Now</span>
                 </motion.button>
               </div>
             </div>

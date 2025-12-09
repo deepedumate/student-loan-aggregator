@@ -139,14 +139,14 @@ export function LenderDiscoveryStage({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="container mx-auto px-4 space-y-6">
       {/* Header */}
       <motion.div
-        className="text-center"
+        className="text-left lg:text-center"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary via-primary-light to-accent bg-clip-text text-transparent mb-2">
+        <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2">
           Find Your Perfect Lender
         </h2>
         <p className="text-muted-foreground">
@@ -159,7 +159,7 @@ export function LenderDiscoveryStage({
       <AnimatePresence>
         {showInstructions && (
           <motion.div
-            className="glass-card p-6 rounded-2xl bg-gradient-to-r from-primary/5 to-accent/5 border-2 border-primary/20"
+            className="glass-card p-6 rounded-2xl bg-primary/5 border-2 border-primary/20"
             initial={{ opacity: 0, y: -20, height: 0 }}
             animate={{ opacity: 1, y: 0, height: "auto" }}
             exit={{ opacity: 0, y: -20, height: 0 }}
@@ -381,7 +381,7 @@ export function LenderDiscoveryStage({
 
         {/* Results Count */}
         <motion.div
-          className="mt-4 flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/20"
+          className="mt-4 flex items-center justify-between p-4 rounded-xl bg-primary/5 border border-primary/20"
           initial={{ scale: 0.95 }}
           animate={{ scale: 1 }}
         >
@@ -437,7 +437,7 @@ export function LenderDiscoveryStage({
                 sortBy: "relevance",
               })
             }
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-primary-light text-primary-foreground shadow-lg shadow-primary/25"
+            className="px-6 py-3 rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/25"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -449,7 +449,7 @@ export function LenderDiscoveryStage({
       {/* Selection Prompt */}
       {!selectedLender && filteredLenders.length > 0 && (
         <motion.div
-          className="glass-card p-6 rounded-2xl bg-gradient-to-r from-accent/5 to-warning/5 border-2 border-accent/30"
+          className="glass-card p-6 rounded-2xl bg-accent/5 border-2 border-accent/30"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -484,7 +484,7 @@ export function LenderDiscoveryStage({
               glass-card p-6 rounded-2xl
               ${
                 selectedLender?.id === lender.id
-                  ? "ring-4 ring-primary shadow-glow-primary-lg scale-[1.02] bg-gradient-to-br from-primary/5 to-accent/5"
+                  ? "ring-4 ring-primary shadow-glow-primary-lg scale-[1.02] bg-primary/5"
                   : "hover:shadow-xl hover:scale-[1.01] hover:border-primary/50"
               }
             `}
@@ -516,7 +516,7 @@ export function LenderDiscoveryStage({
             {/* Header */}
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary-light rounded-xl flex items-center justify-center text-2xl shadow-lg shadow-primary/25">
+                <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-2xl shadow-lg shadow-primary/25">
                   {lender.logo}
                 </div>
                 <div>
@@ -620,7 +620,7 @@ export function LenderDiscoveryStage({
       <AnimatePresence>
         {selectedLender && (
           <motion.div
-            className="glass-card p-6 rounded-2xl sticky bottom-24 z-10 bg-gradient-to-r from-success/5 via-primary/5 to-accent/5 border-4 border-success/30 shadow-xl"
+            className="glass-card p-6 rounded-2xl sticky bottom-24 z-10 bg-success/5 border-4 border-success/30 shadow-xl"
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 100 }}
@@ -657,7 +657,7 @@ export function LenderDiscoveryStage({
                 <p className="text-sm text-muted-foreground mb-1">
                   Loan Amount
                 </p>
-                <p className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                <p className="text-2xl sm:text-3xl font-bold text-primary">
                   {formatLakhsCrores(profile.requestedAmount)}
                 </p>
               </motion.div>
@@ -744,7 +744,7 @@ export function LenderDiscoveryStage({
             <div className="flex flex-col sm:flex-row gap-4">
               <motion.button
                 onClick={handleProceed}
-                className="relative flex-1 px-8 py-5 text-lg sm:text-xl font-bold rounded-xl bg-gradient-to-r from-primary to-primary-light text-primary-foreground shadow-xl overflow-hidden group"
+                className="relative flex-1 px-8 py-5 text-lg sm:text-xl font-bold rounded-xl bg-primary text-primary-foreground shadow-xl overflow-hidden group"
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
               >

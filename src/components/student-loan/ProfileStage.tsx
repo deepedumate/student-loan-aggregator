@@ -136,10 +136,10 @@ export function ProfileStage({ onComplete, initialData }: ProfileStageProps) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="container mx-auto px-4 max-w-4xl">
       {/* Header */}
       <motion.div
-        className="text-center mb-8"
+        className="text-left lg:text-center mb-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
@@ -154,7 +154,7 @@ export function ProfileStage({ onComplete, initialData }: ProfileStageProps) {
             <span className="text-primary">Editing Your Profile</span>
           </motion.div>
         )}
-        <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary via-primary-light to-accent bg-clip-text text-transparent mb-2">
+        <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2">
           {initialData ? "Update Your Information" : "Let's Start Your Journey"}
         </h2>
         <p className="text-muted-foreground">
@@ -174,7 +174,7 @@ export function ProfileStage({ onComplete, initialData }: ProfileStageProps) {
         >
           <div className="flex items-center gap-3 mb-6">
             <motion.div
-              className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center"
+              className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"
               whileHover={{ rotate: 5, scale: 1.05 }}
             >
               <User className="w-5 h-5 text-primary" />
@@ -335,7 +335,7 @@ export function ProfileStage({ onComplete, initialData }: ProfileStageProps) {
         >
           <div className="flex items-center gap-3 mb-6">
             <motion.div
-              className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent/10 to-accent/5 flex items-center justify-center"
+              className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center"
               whileHover={{ rotate: 5, scale: 1.05 }}
             >
               <GraduationCap className="w-5 h-5 text-accent" />
@@ -499,7 +499,7 @@ export function ProfileStage({ onComplete, initialData }: ProfileStageProps) {
         >
           <div className="flex items-center gap-3 mb-6">
             <motion.div
-              className="w-10 h-10 rounded-xl bg-gradient-to-br from-success/10 to-success/5 flex items-center justify-center"
+              className="w-10 h-10 rounded-xl bg-success/10 flex items-center justify-center"
               whileHover={{ rotate: 5, scale: 1.05 }}
             >
               <DollarSign className="w-5 h-5 text-success" />
@@ -633,7 +633,7 @@ export function ProfileStage({ onComplete, initialData }: ProfileStageProps) {
         >
           <motion.button
             type="submit"
-            className="relative px-12 py-4 text-lg font-semibold rounded-xl bg-gradient-to-r from-primary to-primary-light text-primary-foreground shadow-lg shadow-primary/25 overflow-hidden group"
+            className="relative px-12 py-4 text-lg font-semibold rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/25 overflow-hidden group"
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
           >

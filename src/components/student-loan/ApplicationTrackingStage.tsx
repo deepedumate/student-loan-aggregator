@@ -48,14 +48,14 @@ export function ApplicationTrackingStage({
   const progress = (completedStages / stages.length) * 100;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      {/* Header */}
+    <div className="container mx-auto px-4 max-w-4xl space-y-6">
+      {/* Header - RESPONSIVE: Left on mobile, Center on desktop */}
       <motion.div
-        className="text-center"
+        className="text-left lg:text-center"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary via-primary-light to-accent bg-clip-text text-transparent mb-2">
+        <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2">
           Track Your Application
         </h2>
         <p className="text-muted-foreground">
@@ -83,7 +83,7 @@ export function ApplicationTrackingStage({
             </div>
             <div className="w-full h-3 bg-secondary rounded-full overflow-hidden">
               <motion.div
-                className="h-full bg-gradient-to-r from-primary to-primary-light"
+                className="h-full bg-primary"
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.5, delay: 0.2 }}
@@ -167,9 +167,9 @@ export function ApplicationTrackingStage({
                     <div
                       className={
                         stage.status === "completed"
-                          ? "text-success-foreground"
+                          ? "text-white"
                           : stage.status === "in-progress"
-                          ? "text-primary-foreground"
+                          ? "text-white"
                           : "text-muted-foreground"
                       }
                     >
@@ -291,7 +291,7 @@ export function ApplicationTrackingStage({
       >
         <motion.button
           onClick={onViewSummary}
-          className="relative px-12 py-4 text-lg font-semibold rounded-xl bg-gradient-to-r from-primary to-primary-light text-primary-foreground shadow-lg shadow-primary/25 overflow-hidden group"
+          className="relative px-12 py-4 text-lg font-semibold rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/25 overflow-hidden group"
           whileHover={{ scale: 1.02, y: -2 }}
           whileTap={{ scale: 0.98 }}
         >

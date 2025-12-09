@@ -23,22 +23,15 @@ interface ContactInfoProps {
 }
 
 /**
- * Premium Contact Information Component
+ * Contact Information Component - ChatJourney Theme Style
  *
  * Features:
- * - Animated contact cards with glassmorphic design
- * - Copy-to-clipboard functionality with visual feedback
- * - Staggered reveal animations on scroll
- * - Feature showcase with gradient icons
- * - Responsive grid layout
- * - CTA section with primary actions
- *
- * Design Decisions:
- * - Cards use subtle gradients for depth
- * - Icon colors match the design system
- * - Hover effects provide interactive feedback
- * - Address card spans 2 columns for better readability
- * - Features section uses colored gradient backgrounds for visual interest
+ * - Clean theme-based design (no gradients)
+ * - Copy-to-clipboard functionality
+ * - Staggered reveal animations
+ * - Lucide React icons only
+ * - Fully responsive for all devices
+ * - Dark mode support
  */
 const ContactInfo: React.FC<ContactInfoProps> = ({ items }) => {
   const [copied, setCopied] = useState<string | null>(null);
@@ -55,22 +48,22 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ items }) => {
     }
   };
 
-  // Icon mapping with custom colors
+  // Icon mapping
   const iconMap: Record<
     string,
-    { icon: React.ComponentType<any>; gradient: string }
+    { icon: React.ComponentType<any>; color: string }
   > = {
     Email: {
       icon: Mail,
-      gradient: "from-blue-500 to-blue-600",
+      color: "text-blue-600 dark:text-blue-400",
     },
     Phone: {
       icon: Phone,
-      gradient: "from-emerald-500 to-emerald-600",
+      color: "text-emerald-600 dark:text-emerald-400",
     },
     Address: {
       icon: MapPin,
-      gradient: "from-violet-500 to-violet-600",
+      color: "text-violet-600 dark:text-violet-400",
     },
   };
 
@@ -82,19 +75,16 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ items }) => {
     {
       icon: Clock,
       text: "Response within 24 hours",
-      color: "from-blue-500 to-blue-600",
       detail: "Fast turnaround on all inquiries",
     },
     {
       icon: Users,
       text: "Expert financial counselors",
-      color: "from-emerald-500 to-emerald-600",
       detail: "Dedicated support team",
     },
     {
       icon: Award,
       text: "Tailor Made Solutions",
-      color: "from-violet-500 to-violet-600",
       detail: "Personalized loan options",
     },
   ];
@@ -122,40 +112,32 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ items }) => {
   };
 
   return (
-    <section className="py-20 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
-      </div>
-
-      <div className="container mx-auto px-4 relative z-10">
+    <section className="py-12 sm:py-16 lg:py-20 relative overflow-hidden">
+      <div className="container mx-auto px-2 sm:px-4 relative z-10">
         {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-left lg:text-center mb-10 sm:mb-12 md:mb-16"
         >
           <motion.div
             initial={{ scale: 0 }}
             whileInView={{ scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="inline-block mb-4"
+            className="inline-block mb-3 sm:mb-4"
           >
-            <div className="w-16 h-1 bg-gradient-to-r from-primary via-primary-light to-accent rounded-full" />
+            <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-primary rounded-full" />
           </motion.div>
 
-          <h2 className="text-4xl md:text-5xl font-bold font-heading mb-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-heading mb-3 sm:mb-4 md:mb-6">
             <span className="text-foreground">Get in </span>
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Touch
-            </span>
+            <span className="text-primary">Touch</span>
           </h2>
 
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground max-w-2xl lg:mx-auto leading-relaxed">
             Have questions about education loans? Our expert team is here to
             guide you every step of the way.
           </p>
@@ -167,13 +149,13 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ items }) => {
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="mb-20"
+          className="mb-10 sm:mb-12 lg:mb-16"
         >
-          <div className="glass-card rounded-3xl shadow-xl border overflow-hidden">
+          <div className="sm:border sm:border-border sm:rounded-2xl lg:rounded-3xl sm:shadow-md sm:bg-card overflow-hidden">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-border">
               {/* Email and Phone Cards */}
               {otherItems.map((item, index) => {
-                const { icon: IconComponent, gradient } = iconMap[item.title];
+                const { icon: IconComponent, color } = iconMap[item.title];
                 const isEmail = item.title === "Email";
                 const isPhone = item.title === "Phone";
 
@@ -182,15 +164,8 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ items }) => {
                     key={index}
                     variants={cardVariants}
                     whileHover={{ scale: 1.02 }}
-                    className="group relative p-8 text-center hover:bg-primary/5 dark:hover:bg-primary/10 transition-all duration-300"
+                    className="group relative p-4 sm:p-6 md:p-8 text-center hover:bg-primary/5 dark:hover:bg-primary/10 transition-all duration-300"
                   >
-                    {/* Hover gradient overlay */}
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      whileHover={{ opacity: 1 }}
-                      className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 pointer-events-none"
-                    />
-
                     <div className="relative z-10">
                       {/* Icon */}
                       <motion.div
@@ -199,17 +174,17 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ items }) => {
                           scale: 1.1,
                         }}
                         transition={{ duration: 0.5 }}
-                        className="mb-6"
+                        className="mb-3 sm:mb-4 md:mb-6"
                       >
-                        <div
-                          className={`w-16 h-16 bg-gradient-to-br ${gradient} rounded-2xl flex items-center justify-center mx-auto shadow-lg group-hover:shadow-xl transition-shadow duration-300`}
-                        >
-                          <IconComponent className="w-8 h-8 text-white" />
+                        <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-primary/10 rounded-lg sm:rounded-xl md:rounded-2xl flex items-center justify-center mx-auto shadow-sm group-hover:shadow-md transition-shadow duration-300">
+                          <IconComponent
+                            className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 ${color}`}
+                          />
                         </div>
                       </motion.div>
 
                       {/* Title */}
-                      <h5 className="text-xl font-bold font-heading text-foreground mb-3 group-hover:text-primary transition-colors">
+                      <h5 className="text-base sm:text-lg md:text-xl font-bold font-heading text-foreground mb-2 sm:mb-2.5 md:mb-3 group-hover:text-primary transition-colors">
                         {item.title}
                       </h5>
 
@@ -217,19 +192,19 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ items }) => {
                       {isEmail ? (
                         <a
                           href={`mailto:${item.value}`}
-                          className="block text-muted-foreground hover:text-primary mb-4 leading-relaxed transition-colors"
+                          className="block text-sm sm:text-base text-muted-foreground hover:text-primary mb-3 sm:mb-4 leading-relaxed transition-colors break-all"
                         >
                           {item.value}
                         </a>
                       ) : isPhone ? (
                         <a
                           href={`tel:${item.value}`}
-                          className="block text-muted-foreground hover:text-primary mb-4 leading-relaxed transition-colors"
+                          className="block text-sm sm:text-base text-muted-foreground hover:text-primary mb-3 sm:mb-4 leading-relaxed transition-colors"
                         >
                           {item.value}
                         </a>
                       ) : (
-                        <p className="text-muted-foreground mb-4 leading-relaxed">
+                        <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4 leading-relaxed">
                           {item.value}
                         </p>
                       )}
@@ -239,17 +214,17 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ items }) => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => handleCopy(item.value, index)}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-secondary hover:bg-primary/10 text-secondary-foreground hover:text-primary rounded-xl transition-all duration-300 text-sm font-medium shadow-sm hover:shadow-md"
+                        className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-secondary hover:bg-primary/10 text-secondary-foreground hover:text-primary rounded-lg sm:rounded-xl transition-all duration-300 text-xs sm:text-sm font-medium shadow-sm hover:shadow-md"
                       >
                         {copied === index.toString() ? (
                           <>
-                            <Check className="w-4 h-4" />
-                            Copied!
+                            <Check className="w-3 h-3 sm:w-4 sm:h-4" />
+                            <span>Copied!</span>
                           </>
                         ) : (
                           <>
-                            <Copy className="w-4 h-4" />
-                            Copy
+                            <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
+                            <span>Copy</span>
                           </>
                         )}
                       </motion.button>
@@ -258,20 +233,13 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ items }) => {
                 );
               })}
 
-              {/* Address Card - Spans 2 columns */}
+              {/* Address Card - Spans 2 columns on desktop */}
               {addressItem && (
                 <motion.div
                   variants={cardVariants}
                   whileHover={{ scale: 1.01 }}
-                  className="group relative md:col-span-2 p-8 text-center hover:bg-primary/5 dark:hover:bg-primary/10 transition-all duration-300"
+                  className="group relative md:col-span-2 p-4 sm:p-6 md:p-8 text-center hover:bg-primary/5 dark:hover:bg-primary/10 transition-all duration-300"
                 >
-                  {/* Hover gradient overlay */}
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    whileHover={{ opacity: 1 }}
-                    className="absolute inset-0 bg-gradient-to-br from-accent/5 to-primary/5 pointer-events-none"
-                  />
-
                   <div className="relative z-10">
                     {/* Icon */}
                     <motion.div
@@ -280,40 +248,40 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ items }) => {
                         scale: 1.1,
                       }}
                       transition={{ duration: 0.5 }}
-                      className="mb-6"
+                      className="mb-3 sm:mb-4 md:mb-6"
                     >
-                      <div className="w-16 h-16 bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                        <MapPin className="w-8 h-8 text-white" />
+                      <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-primary/10 rounded-lg sm:rounded-xl md:rounded-2xl flex items-center justify-center mx-auto shadow-sm group-hover:shadow-md transition-shadow duration-300">
+                        <MapPin className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-violet-600 dark:text-violet-400" />
                       </div>
                     </motion.div>
 
                     {/* Title */}
-                    <h5 className="text-xl font-bold font-heading text-foreground mb-3 group-hover:text-primary transition-colors">
+                    <h5 className="text-base sm:text-lg md:text-xl font-bold font-heading text-foreground mb-2 sm:mb-2.5 md:mb-3 group-hover:text-primary transition-colors">
                       {addressItem.title}
                     </h5>
 
                     {/* Address */}
-                    <p className="text-muted-foreground mb-6 leading-relaxed max-w-md mx-auto">
+                    <p className="text-xs sm:text-sm md:text-base text-muted-foreground mb-3 sm:mb-4 md:mb-6 leading-relaxed max-w-md mx-auto px-2">
                       {addressItem.value}
                     </p>
 
                     {/* Action Buttons */}
-                    <div className="flex flex-wrap gap-3 justify-center">
+                    <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 justify-center">
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => handleCopy(addressItem.value, 999)}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-secondary hover:bg-primary/10 text-secondary-foreground hover:text-primary rounded-xl transition-all duration-300 text-sm font-medium shadow-sm hover:shadow-md"
+                        className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-secondary hover:bg-primary/10 text-secondary-foreground hover:text-primary rounded-lg sm:rounded-xl transition-all duration-300 text-xs sm:text-sm font-medium shadow-sm hover:shadow-md"
                       >
                         {copied === "999" ? (
                           <>
-                            <Check className="w-4 h-4" />
-                            Copied!
+                            <Check className="w-3 h-3 sm:w-4 sm:h-4" />
+                            <span>Copied!</span>
                           </>
                         ) : (
                           <>
-                            <Copy className="w-4 h-4" />
-                            Copy
+                            <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
+                            <span>Copy</span>
                           </>
                         )}
                       </motion.button>
@@ -326,10 +294,10 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ items }) => {
                         )}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-primary to-primary-light text-primary-foreground rounded-xl transition-all duration-300 text-sm font-semibold shadow-md hover:shadow-lg"
+                        className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 bg-primary text-primary-foreground rounded-lg sm:rounded-xl transition-all duration-300 text-xs sm:text-sm font-semibold shadow-md hover:shadow-lg"
                       >
-                        <MapPin className="w-4 h-4" />
-                        View on Maps
+                        <MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <span>View on Maps</span>
                       </motion.a>
                     </div>
                   </div>
@@ -345,13 +313,13 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ items }) => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-20"
+          className="mb-10 sm:mb-12 lg:mb-16"
         >
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold font-heading text-foreground mb-4">
+          <div className="text-left lg:text-center mb-6 sm:mb-8 md:mb-12">
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold font-heading text-foreground mb-2 sm:mb-3 md:mb-4">
               Why Students Choose Our Support
             </h3>
-            <p className="text-muted-foreground text-lg">
+            <p className="text-xs sm:text-sm md:text-base lg:text-lg text-muted-foreground max-w-2xl lg:mx-auto">
               We're committed to providing exceptional service at every step
             </p>
           </div>
@@ -361,7 +329,7 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ items }) => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
           >
             {features.map((feature, index) => (
               <motion.div
@@ -370,29 +338,22 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ items }) => {
                 whileHover={{ y: -8, scale: 1.02 }}
                 className="group relative"
               >
-                <div className="glass-card rounded-2xl p-8 shadow-soft hover:shadow-lg transition-all duration-300 text-center h-full">
-                  {/* Animated background gradient */}
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    whileHover={{ opacity: 1 }}
-                    className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-5 rounded-2xl pointer-events-none`}
-                  />
-
+                <div className="border border-border rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 bg-card shadow-sm hover:shadow-md transition-all duration-300 text-center h-full">
                   <div className="relative z-10">
                     {/* Icon */}
                     <motion.div
                       whileHover={{ rotate: 360 }}
                       transition={{ duration: 0.6 }}
-                      className={`w-14 h-14 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center mx-auto mb-5 shadow-lg group-hover:shadow-xl transition-shadow`}
+                      className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-primary/10 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 md:mb-5 shadow-sm group-hover:shadow-md transition-shadow"
                     >
-                      <feature.icon className="w-7 h-7 text-white" />
+                      <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-primary" />
                     </motion.div>
 
                     {/* Text */}
-                    <h4 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+                    <h4 className="text-sm sm:text-base md:text-lg font-semibold text-foreground mb-1.5 sm:mb-2 group-hover:text-primary transition-colors px-2">
                       {feature.text}
                     </h4>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs sm:text-sm text-muted-foreground px-2">
                       {feature.detail}
                     </p>
                   </div>
@@ -412,30 +373,30 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ items }) => {
         >
           <motion.div
             whileHover={{ scale: 1.01 }}
-            className="glass-card rounded-3xl p-10 shadow-xl border-2 border-primary/10 hover:border-primary/20 transition-all duration-300 max-w-3xl mx-auto"
+            className="border-2 border-border rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 lg:p-10 bg-card shadow-md hover:shadow-lg hover:border-primary/20 transition-all duration-300 max-w-3xl mx-auto"
           >
             {/* Accent decoration */}
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg"
+              className="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 bg-primary/10 rounded-lg sm:rounded-xl md:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 md:mb-6"
             >
-              <Zap className="w-6 h-6 text-white" />
+              <Zap className="w-5 h-5 sm:w-5.5 sm:h-5.5 md:w-6 md:h-6 text-primary" />
             </motion.div>
 
-            <h3 className="text-3xl font-bold font-heading text-foreground mb-4">
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold font-heading text-foreground mb-2 sm:mb-3 md:mb-4 px-2 sm:px-4">
               Ready to Start Your Education Journey?
             </h3>
-            <p className="text-muted-foreground text-lg mb-8">
+            <p className="text-xs sm:text-sm md:text-base lg:text-lg text-muted-foreground mb-4 sm:mb-6 md:mb-8 px-2 sm:px-4">
               Schedule a free consultation with our education loan experts today
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="group px-8 py-4 bg-gradient-to-r from-primary to-primary-light text-primary-foreground font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
+                className="group px-6 sm:px-8 py-3 sm:py-4 bg-primary text-primary-foreground font-bold rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
                 onClick={() =>
                   window.open(
                     "https://calendly.com/priyank-edumateglobal/speak-to-our-financing-expert?month=2025-07",
@@ -444,19 +405,21 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ items }) => {
                   )
                 }
               >
-                <span>Schedule Consultation</span>
+                <span className="text-sm sm:text-base">
+                  Schedule Consultation
+                </span>
                 <motion.div
                   animate={{ x: [0, 5, 0] }}
                   transition={{ duration: 1.5, repeat: Infinity }}
                 >
-                  <ArrowRight className="w-5 h-5" />
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                 </motion.div>
               </motion.button>
 
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 bg-card border-2 border-border hover:border-primary/50 text-foreground font-semibold rounded-xl hover:shadow-lg transition-all duration-300"
+                className="px-6 sm:px-8 py-3 sm:py-4 bg-card border-2 border-border hover:border-primary/50 text-foreground font-semibold rounded-lg sm:rounded-xl hover:shadow-md transition-all duration-300 text-sm sm:text-base"
                 onClick={() => (window.location.href = "/faqs")}
               >
                 View FAQ

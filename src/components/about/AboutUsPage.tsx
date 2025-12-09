@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Sparkles, TrendingUp, Globe } from "lucide-react";
+import { Sparkles, TrendingUp } from "lucide-react";
 import AboutUsHeader from "./AboutUsHeader";
 import LeadershipCarousel from "./LeadershipCarousel";
 import MissionCard from "./MissionCard";
@@ -8,15 +8,14 @@ import ValuesSection from "./ValueSection";
 import VisionCard from "./VisionCard";
 
 /**
- * Premium Fintech About Page
- * 
- * Design Philosophy:
- * - Clean, minimal aesthetic inspired by Stripe/Plaid/Brex
- * - Subtle glassmorphic effects with your brand colors
- * - Smooth micro-interactions (200-300ms)
- * - Consistent 12-16px border radius
- * - Soft shadows, no harsh borders
- * - Generous white space for premium feel
+ * About Page Component - ChatJourney Theme Style
+ *
+ * Features:
+ * - Clean theme-based design (no gradients)
+ * - Smooth animations
+ * - Lucide React icons only
+ * - Fully responsive
+ * - Dark mode support
  */
 const AboutPage: React.FC = () => {
   return (
@@ -25,15 +24,10 @@ const AboutPage: React.FC = () => {
       <AboutUsHeader />
 
       {/* Main Content Area */}
-      <div className="bg-gradient-to-b from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 transition-colors duration-300">
-        
-        {/* Enhanced Intro Section with Glassmorphism */}
-        <section className="py-24 px-4 relative overflow-hidden">
-          {/* Subtle background gradient orbs */}
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-3xl" />
-          
-          <div className="container mx-auto relative z-10">
+      <div className="bg-background transition-colors duration-300">
+        {/* Enhanced Intro Section */}
+        <section className="py-12 sm:py-16 lg:py-20 px-2 sm:px-4">
+          <div className="container mx-auto relative z-10 px-2 sm:px-4">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -41,38 +35,33 @@ const AboutPage: React.FC = () => {
               transition={{ duration: 0.6, ease: "easeOut" }}
               className="relative"
             >
-              {/* Premium glassmorphic card */}
-              <div className="glass-card rounded-3xl p-12 md:p-16 shadow-xl relative overflow-hidden">
-                {/* Decorative corner element */}
-                <div className="absolute top-6 right-6 text-primary/20 dark:text-primary/30">
-                  <Globe className="w-12 h-12" />
-                </div>
-
-                <div className="text-center max-w-5xl mx-auto">
-                  {/* Premium badge with gradient */}
+              {/* Card - hidden border on mobile, visible on larger screens */}
+              <div className="sm:border sm:border-border sm:rounded-2xl lg:rounded-3xl p-0 sm:p-8 lg:p-12 sm:bg-card sm:shadow-md relative overflow-hidden">
+                <div className="text-left lg:text-center max-w-5xl lg:mx-auto">
+                  {/* Badge */}
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: 0.1 }}
-                    className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 border border-primary/20 dark:border-primary/30 text-primary px-5 py-2.5 rounded-full text-sm font-semibold mb-8 shadow-sm"
+                    className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold mb-4 sm:mb-6 md:mb-8 shadow-sm"
                   >
-                    <Sparkles className="w-4 h-4" />
+                    <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     <span>About Edumate Global</span>
                   </motion.div>
 
-                  {/* Main headline with gradient text */}
+                  {/* Main headline */}
                   <motion.h1
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: 0.2 }}
-                    className="text-4xl md:text-6xl lg:text-7xl font-black mb-8 leading-tight"
+                    className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold font-heading mb-4 sm:mb-6 md:mb-8 leading-tight"
                   >
                     <span className="text-foreground">
                       Empowering Students.{" "}
                     </span>
-                    <span className="gradient-text">
+                    <span className="text-primary">
                       Simplifying Education Loans.
                     </span>
                   </motion.h1>
@@ -83,11 +72,11 @@ const AboutPage: React.FC = () => {
                     whileInView={{ scaleX: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: 0.3 }}
-                    className="w-24 h-1 bg-gradient-to-r from-primary to-accent mx-auto mb-10 rounded-full"
+                    className="w-12 sm:w-16 md:w-20 lg:w-24 h-0.5 sm:h-1 bg-primary lg:mx-auto mb-6 sm:mb-8 md:mb-10 rounded-full"
                   />
 
                   {/* Content with staggered animations */}
-                  <div className="max-w-4xl mx-auto space-y-6 text-lg leading-relaxed">
+                  <div className="max-w-4xl lg:mx-auto space-y-3 sm:space-y-4 md:space-y-6 text-sm sm:text-base md:text-lg leading-relaxed">
                     <motion.p
                       initial={{ opacity: 0, y: 15 }}
                       whileInView={{ opacity: 1, y: 0 }}
@@ -107,7 +96,7 @@ const AboutPage: React.FC = () => {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.5, delay: 0.5 }}
-                      className="font-bold text-primary text-2xl"
+                      className="font-bold text-primary text-xl sm:text-2xl"
                     >
                       We're here to change that.
                     </motion.p>
@@ -134,10 +123,10 @@ const AboutPage: React.FC = () => {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.5, delay: 0.7 }}
-                      className="bg-gradient-to-r from-primary/5 to-accent/5 dark:from-primary/10 dark:to-accent/10 border border-primary/10 dark:border-primary/20 rounded-2xl p-8 shadow-soft"
+                      className="bg-primary/5 border border-primary/10 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-sm"
                     >
-                      <p className="text-foreground font-semibold text-lg">
-                        <span className="font-black text-primary">
+                      <p className="text-foreground font-semibold text-sm sm:text-base md:text-lg">
+                        <span className="font-bold text-primary">
                           We are not a lender.
                         </span>{" "}
                         We do not push products that do not make sense to you.
@@ -163,7 +152,7 @@ const AboutPage: React.FC = () => {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.5, delay: 0.9 }}
-                      className="gradient-text font-black text-2xl pt-4"
+                      className="text-primary font-bold text-lg sm:text-xl md:text-2xl pt-3 sm:pt-4"
                     >
                       Let's make your education journey smoother, smarter, and
                       truly empowering.
@@ -176,31 +165,31 @@ const AboutPage: React.FC = () => {
         </section>
 
         {/* Vision & Mission Section */}
-        <section className="py-20 px-4">
-          <div className="container mx-auto">
+        <section className="py-12 sm:py-16 lg:py-20 px-2 sm:px-4">
+          <div className="container mx-auto px-2 sm:px-4">
             {/* Section header */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="text-center mb-16"
+              className="text-left lg:text-center mb-12 sm:mb-16"
             >
-              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 border border-primary/20 dark:border-primary/30 text-primary px-5 py-2.5 rounded-full text-sm font-semibold mb-6 shadow-sm">
-                <TrendingUp className="w-4 h-4" />
+              <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold mb-4 sm:mb-6 shadow-sm">
+                <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 <span>Our Foundation</span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-heading text-foreground mb-3 sm:mb-4">
                 Vision & Mission
               </h2>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              <p className="text-sm sm:text-base lg:text-lg text-muted-foreground max-w-2xl lg:mx-auto">
                 Driving our commitment to student success through clear purpose
                 and unwavering dedication
               </p>
             </motion.div>
 
             {/* Vision & Mission Cards */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 max-w-6xl mx-auto">
               <VisionCard />
               <MissionCard />
             </div>

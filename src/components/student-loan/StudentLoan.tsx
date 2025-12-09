@@ -12,7 +12,7 @@ import {
   Clock,
   Award,
 } from "lucide-react";
-import  {ProfileStage}  from "./ProfileStage";
+import { ProfileStage } from "./ProfileStage";
 import { EligibilityStage } from "./EligibilityStage";
 import { LenderDiscoveryStage } from "./LenderDiscoveryStage";
 import { DocumentationStage } from "./DocumentationStage";
@@ -20,21 +20,15 @@ import { ApplicationTrackingStage } from "./ApplicationTrackingStage";
 import { LoanSummaryStage } from "./LoanSummaryStage";
 
 /**
- * PREMIUM FINTECH LOAN AGGREGATOR APP
+ * STUDENT LOAN APPLICATION - Theme Matched & Responsive
  *
  * Design Philosophy:
- * - Clean, minimal interface inspired by Stripe, Plaid, and modern fintech apps
- * - Glassmorphic cards with subtle depth and shadows
- * - Smooth Framer Motion animations throughout
- * - Progressive disclosure with clear visual hierarchy
- * - Trust-building elements with premium aesthetics
- * - Mobile-first responsive design
- *
- * Color Usage (from Edumate Design System):
- * - Primary (Trust Blue): Main actions, progress indicators
- * - Accent (Energy Orange): Highlights, completed states
- * - Success (Green): Achievements, positive feedback
- * - Muted: Backgrounds, subtle elements
+ * - Matches Edumate theme system perfectly
+ * - Mobile: Left-aligned text, Desktop: Center-aligned
+ * - Consistent spacing with other sections
+ * - Glassmorphic cards with proper depth
+ * - Smooth animations throughout
+ * - NO HORIZONTAL SCROLL
  */
 
 export default function StudentLoan() {
@@ -113,7 +107,7 @@ export default function StudentLoan() {
     }
   };
 
-  // Stage configuration with icons
+  // Stage configuration
   const stages = [
     {
       number: 1,
@@ -159,84 +153,32 @@ export default function StudentLoan() {
     },
   ];
 
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.4,
-        ease: [0.25, 0.46, 0.45, 0.94] as const,
-      },
-    },
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-primary/5 dark:from-slate-900 dark:via-slate-800 dark:to-primary/5 transition-colors duration-300">
-      {/* Animated background gradient orbs for depth */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute -top-40 -right-40 w-96 h-96 bg-primary/10 rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-        <motion.div
-          className="absolute top-1/2 -left-40 w-96 h-96 bg-accent/10 rounded-full blur-3xl"
-          animate={{
-            scale: [1.2, 1, 1.2],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1,
-          }}
-        />
-      </div>
-
-      {/* Premium Header with Glassmorphic Effect */}
+    <div className="min-h-screen bg-background transition-colors duration-300 overflow-x-hidden">
+      {/* Premium Header */}
       <motion.div
-        className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-b border-slate-200/50 dark:border-slate-700/50 shadow-soft"
+        className="sticky top-0 z-50 backdrop-blur-xl bg-card/80 border-b border-border shadow-sm"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="w-full max-w-[100vw] mx-auto px-4 py-6">
           {/* Header Content */}
-          <motion.div className="mb-6" variants={itemVariants}>
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-3">
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-2 gap-4">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
                 <motion.div
-                  className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center shadow-lg shadow-primary/25"
+                  className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/25 flex-shrink-0"
                   whileHover={{ scale: 1.05, rotate: 5 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Sparkles className="w-5 h-5 text-white" />
+                  <Sparkles className="w-5 h-5 text-primary-foreground" />
                 </motion.div>
-                <div>
-                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-primary via-primary-light to-accent bg-clip-text text-transparent">
+                <div className="min-w-0 flex-1">
+                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-primary truncate">
                     Student Loan Application
                   </h1>
-                  <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 truncate">
                     Secure your education funding in minutes
                   </p>
                 </div>
@@ -244,12 +186,12 @@ export default function StudentLoan() {
 
               {/* Progress Badge */}
               <motion.div
-                className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20"
+                className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 flex-shrink-0"
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.3 }}
               >
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 whitespace-nowrap">
                   <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                   <span className="text-sm font-semibold text-primary">
                     Step {currentStage} of {stages.length}
@@ -260,19 +202,21 @@ export default function StudentLoan() {
 
             {/* Current Stage Info */}
             <motion.p
-              className="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-2"
+              className="text-sm text-muted-foreground flex items-center gap-2"
               key={currentStage}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex-shrink-0">
                 {currentStage}
               </span>
-              {stages[currentStage - 1]?.title} -{" "}
-              {stages[currentStage - 1]?.description}
+              <span className="truncate">
+                {stages[currentStage - 1]?.title} -{" "}
+                {stages[currentStage - 1]?.description}
+              </span>
             </motion.p>
-          </motion.div>
+          </div>
 
           {/* Premium Stage Navigation */}
           <PremiumStageNavigation
@@ -283,16 +227,16 @@ export default function StudentLoan() {
         </div>
       </motion.div>
 
-      {/* Main Content Area with Animation */}
-      <main className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-32">
+      {/* Main Content Area */}
+      <main className="relative w-full max-w-[100vw] mx-auto px-4 py-8 pb-32 overflow-x-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStage}
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
+            className="w-full max-w-full"
           >
             {currentStage === 1 && (
               <ProfileStage
@@ -350,11 +294,10 @@ export default function StudentLoan() {
 
 /**
  * PREMIUM STAGE NAVIGATION COMPONENT
- * Modern progress indicator with glassmorphic cards
  */
 function PremiumStageNavigation({ stages, currentStage, onStageClick }) {
   return (
-    <div className="relative">
+    <div className="relative w-full max-w-full overflow-hidden">
       {/* Desktop: Horizontal Stepper */}
       <div className="hidden lg:flex items-center justify-between gap-2">
         {stages.map((stage, index) => {
@@ -364,13 +307,15 @@ function PremiumStageNavigation({ stages, currentStage, onStageClick }) {
           const isAccessible = stage.number <= currentStage;
 
           return (
-            <div key={stage.number} className="flex-1 flex items-center">
-              {/* Stage Card */}
+            <div
+              key={stage.number}
+              className="flex-1 flex items-center min-w-0"
+            >
               <motion.button
                 onClick={() => isAccessible && onStageClick(stage.number)}
                 disabled={!isAccessible}
                 className={`
-                  relative w-full group
+                  relative w-full group min-w-0
                   ${isAccessible ? "cursor-pointer" : "cursor-not-allowed"}
                 `}
                 whileHover={isAccessible ? { scale: 1.02, y: -2 } : {}}
@@ -381,15 +326,14 @@ function PremiumStageNavigation({ stages, currentStage, onStageClick }) {
                   relative overflow-hidden rounded-xl p-4 transition-all duration-300
                   ${
                     isActive
-                      ? "bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary shadow-lg shadow-primary/20"
+                      ? "bg-primary/10 border-2 border-primary shadow-lg shadow-primary/20"
                       : isCompleted
-                      ? "bg-gradient-to-br from-success/10 to-success/5 border border-success/30"
-                      : "bg-white/50 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-700/50"
+                      ? "bg-success/10 border border-success/30"
+                      : "bg-card border border-border"
                   }
                   ${isAccessible && "hover:shadow-md"}
                 `}
                 >
-                  {/* Shimmer effect for active stage */}
                   {isActive && (
                     <motion.div
                       className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent"
@@ -402,17 +346,16 @@ function PremiumStageNavigation({ stages, currentStage, onStageClick }) {
                     />
                   )}
 
-                  <div className="relative flex items-center gap-3">
-                    {/* Icon Circle */}
+                  <div className="relative flex items-center gap-3 min-w-0">
                     <div
                       className={`
                       flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300
                       ${
                         isActive
-                          ? "bg-gradient-to-br from-primary to-primary-light shadow-lg shadow-primary/30"
+                          ? "bg-primary shadow-lg shadow-primary/30"
                           : isCompleted
                           ? "bg-success"
-                          : "bg-slate-200 dark:bg-slate-700"
+                          : "bg-muted"
                       }
                     `}
                     >
@@ -421,13 +364,12 @@ function PremiumStageNavigation({ stages, currentStage, onStageClick }) {
                       ) : (
                         <Icon
                           className={`w-5 h-5 ${
-                            isActive ? "text-white" : "text-slate-500"
+                            isActive ? "text-white" : "text-muted-foreground"
                           }`}
                         />
                       )}
                     </div>
 
-                    {/* Text Content */}
                     <div className="flex-1 min-w-0 text-left">
                       <div
                         className={`
@@ -437,13 +379,13 @@ function PremiumStageNavigation({ stages, currentStage, onStageClick }) {
                             ? "text-primary"
                             : isCompleted
                             ? "text-success"
-                            : "text-slate-600 dark:text-slate-400"
+                            : "text-muted-foreground"
                         }
                       `}
                       >
                         {stage.title}
                       </div>
-                      <div className="text-xs text-slate-500 dark:text-slate-500 truncate">
+                      <div className="text-xs text-muted-foreground truncate">
                         {stage.description}
                       </div>
                     </div>
@@ -451,17 +393,12 @@ function PremiumStageNavigation({ stages, currentStage, onStageClick }) {
                 </div>
               </motion.button>
 
-              {/* Connector Line */}
               {index < stages.length - 1 && (
-                <div className="w-8 px-2">
+                <div className="w-8 px-2 flex-shrink-0">
                   <div
                     className={`
                     h-0.5 rounded-full transition-colors duration-300
-                    ${
-                      isCompleted
-                        ? "bg-success"
-                        : "bg-slate-200 dark:bg-slate-700"
-                    }
+                    ${isCompleted ? "bg-success" : "bg-border"}
                   `}
                   />
                 </div>
@@ -472,8 +409,8 @@ function PremiumStageNavigation({ stages, currentStage, onStageClick }) {
       </div>
 
       {/* Mobile & Tablet: Compact Stepper */}
-      <div className="lg:hidden">
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
+      <div className="lg:hidden w-full overflow-x-auto">
+        <div className="flex items-center gap-2 pb-2 min-w-min">
           {stages.map((stage) => {
             const Icon = stage.icon;
             const isActive = stage.number === currentStage;
@@ -486,13 +423,13 @@ function PremiumStageNavigation({ stages, currentStage, onStageClick }) {
                 onClick={() => isAccessible && onStageClick(stage.number)}
                 disabled={!isAccessible}
                 className={`
-                  flex-shrink-0 flex flex-col items-center gap-2 p-3 rounded-xl min-w-[90px] transition-all duration-300
+                  flex-shrink-0 flex flex-col items-center gap-2 p-3 rounded-xl w-[90px] transition-all duration-300
                   ${
                     isActive
-                      ? "bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary"
+                      ? "bg-primary/10 border-2 border-primary"
                       : isCompleted
                       ? "bg-success/10 border border-success/30"
-                      : "bg-white/50 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-700/50"
+                      : "bg-card border border-border"
                   }
                   ${
                     isAccessible
@@ -507,10 +444,10 @@ function PremiumStageNavigation({ stages, currentStage, onStageClick }) {
                   w-8 h-8 rounded-full flex items-center justify-center transition-all
                   ${
                     isActive
-                      ? "bg-gradient-to-br from-primary to-primary-light"
+                      ? "bg-primary"
                       : isCompleted
                       ? "bg-success"
-                      : "bg-slate-200 dark:bg-slate-700"
+                      : "bg-muted"
                   }
                 `}
                 >
@@ -519,20 +456,20 @@ function PremiumStageNavigation({ stages, currentStage, onStageClick }) {
                   ) : (
                     <Icon
                       className={`w-4 h-4 ${
-                        isActive ? "text-white" : "text-slate-500"
+                        isActive ? "text-white" : "text-muted-foreground"
                       }`}
                     />
                   )}
                 </div>
                 <span
                   className={`
-                  text-xs font-medium text-center
+                  text-xs font-medium text-center line-clamp-1
                   ${
                     isActive
                       ? "text-primary"
                       : isCompleted
                       ? "text-success"
-                      : "text-slate-600 dark:text-slate-400"
+                      : "text-muted-foreground"
                   }
                 `}
                 >
@@ -549,7 +486,6 @@ function PremiumStageNavigation({ stages, currentStage, onStageClick }) {
 
 /**
  * PREMIUM NAVIGATION BAR
- * Fixed bottom navigation with glassmorphic design
  */
 function PremiumNavigationBar({
   currentStage,
@@ -565,32 +501,31 @@ function PremiumNavigationBar({
       animate={{ y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
-      {/* Glassmorphic Container */}
-      <div className="backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-t border-slate-200/50 dark:border-slate-700/50 shadow-strong">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div className="backdrop-blur-xl bg-card/80 border-t border-border shadow-lg">
+        <div className="w-full max-w-[100vw] mx-auto px-4 py-4">
           <div className="flex items-center justify-between gap-4">
             {/* Left: Home Button */}
             <motion.button
               onClick={onHome}
-              className="group flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all duration-200 border border-slate-200 dark:border-slate-700"
+              className="group flex items-center gap-2 px-4 py-2.5 rounded-xl bg-secondary hover:bg-secondary/80 transition-all duration-200 border border-border flex-shrink-0"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <Home className="w-4 h-4 text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors" />
-              <span className="hidden sm:inline text-sm font-medium text-slate-700 dark:text-slate-300">
+              <Home className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+              <span className="hidden sm:inline text-sm font-medium text-muted-foreground group-hover:text-foreground whitespace-nowrap">
                 Start Over
               </span>
             </motion.button>
 
             {/* Center: Progress Indicator */}
-            <div className="flex-1 max-w-md">
+            <div className="flex-1 max-w-md min-w-0">
               <div className="flex items-center gap-3">
-                <span className="text-sm font-medium text-slate-600 dark:text-slate-400 whitespace-nowrap">
+                <span className="text-sm font-medium text-muted-foreground whitespace-nowrap flex-shrink-0">
                   {currentStage} of {totalStages}
                 </span>
-                <div className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                <div className="flex-1 h-2 bg-secondary rounded-full overflow-hidden min-w-[60px]">
                   <motion.div
-                    className="h-full bg-gradient-to-r from-primary to-primary-light rounded-full"
+                    className="h-full bg-primary rounded-full"
                     initial={{ width: 0 }}
                     animate={{
                       width: `${(currentStage / totalStages) * 100}%`,
@@ -598,7 +533,7 @@ function PremiumNavigationBar({
                     transition={{ duration: 0.5, ease: "easeOut" }}
                   />
                 </div>
-                <span className="text-sm font-bold text-primary whitespace-nowrap">
+                <span className="text-sm font-bold text-primary whitespace-nowrap flex-shrink-0">
                   {Math.round((currentStage / totalStages) * 100)}%
                 </span>
               </div>
@@ -608,15 +543,15 @@ function PremiumNavigationBar({
             {showBack && (
               <motion.button
                 onClick={onBack}
-                className="group flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary/10 hover:bg-primary/20 transition-all duration-200 border border-primary/20"
+                className="group flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary/10 hover:bg-primary/20 transition-all duration-200 border border-primary/20 flex-shrink-0"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
               >
-                <ArrowLeft className="w-4 h-4 text-primary group-hover:text-primary-light transition-colors" />
-                <span className="hidden sm:inline text-sm font-medium text-primary">
+                <ArrowLeft className="w-4 h-4 text-primary transition-colors" />
+                <span className="hidden sm:inline text-sm font-medium text-primary whitespace-nowrap">
                   Back
                 </span>
               </motion.button>

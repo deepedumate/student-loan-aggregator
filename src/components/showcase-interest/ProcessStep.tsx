@@ -1,5 +1,5 @@
 import React from "react";
-import { motion, spring } from "framer-motion";
+import { easeOut, motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import {
   Calendar,
@@ -13,15 +13,15 @@ import {
 } from "lucide-react";
 
 /**
- * PROCESS STEPS COMPONENT
+ * PROCESS STEPS COMPONENT - ChatJourney Theme Style
  *
- * Premium Fintech Design:
- * - Horizontal flow for desktop with connecting arrows
- * - Vertical timeline for mobile with animated connectors
- * - Glassmorphic step cards with hover lift effects
- * - Gradient badges and icons
- * - Smooth stagger animations
- * - Numbered badges with shadow effects
+ * Features:
+ * - Clean theme-based design (no gradients)
+ * - Horizontal flow for desktop
+ * - Vertical timeline for mobile
+ * - Lucide React icons only
+ * - Fully responsive with mobile-left/desktop-center alignment
+ * - Dark mode support
  */
 
 const ProcessSteps = () => {
@@ -36,11 +36,7 @@ const ProcessSteps = () => {
       title: "Book Appointment",
       description:
         "Schedule a convenient time to discuss your education plans and financial needs.",
-      color: "from-blue-500 to-blue-600",
-      bgColor: "bg-blue-50 dark:bg-blue-900/20",
-      iconColor: "text-blue-600 dark:text-blue-400",
-      badgeColor: "bg-blue-600 dark:bg-blue-500",
-      arrowColor: "text-blue-400",
+      color: "primary",
       details: [
         "Quick 15-min consultation",
         "Flexible timing",
@@ -52,11 +48,7 @@ const ProcessSteps = () => {
       title: "Connect with Counselor",
       description:
         "Get paired with our expert education loan counselors for personalized guidance.",
-      color: "from-orange-500 to-orange-600",
-      bgColor: "bg-orange-50 dark:bg-orange-900/20",
-      iconColor: "text-orange-600 dark:text-orange-400",
-      badgeColor: "bg-orange-600 dark:bg-orange-500",
-      arrowColor: "text-orange-400",
+      color: "accent",
       details: [
         "Experienced professionals",
         "Personalized approach",
@@ -68,11 +60,7 @@ const ProcessSteps = () => {
       title: "Document Assessment",
       description:
         "Our team reviews your profile to identify the best loan options for your needs.",
-      color: "from-cyan-500 to-cyan-600",
-      bgColor: "bg-cyan-50 dark:bg-cyan-900/20",
-      iconColor: "text-cyan-600 dark:text-cyan-400",
-      badgeColor: "bg-cyan-600 dark:bg-cyan-500",
-      arrowColor: "text-cyan-400",
+      color: "primary",
       details: [
         "Complete profile review",
         "Eligibility assessment",
@@ -84,11 +72,7 @@ const ProcessSteps = () => {
       title: "We Handle Everything",
       description:
         "Sit back while we manage all communications with lenders for a stress-free experience.",
-      color: "from-green-500 to-green-600",
-      bgColor: "bg-green-50 dark:bg-green-900/20",
-      iconColor: "text-green-600 dark:text-green-400",
-      badgeColor: "bg-green-600 dark:bg-green-500",
-      arrowColor: "text-green-400",
+      color: "success",
       details: [
         "End-to-end management",
         "Regular updates",
@@ -100,11 +84,7 @@ const ProcessSteps = () => {
       title: "Receive Funds",
       description:
         "Get quick approval and seamless fund disbursement directly to your institution.",
-      color: "from-purple-500 to-purple-600",
-      bgColor: "bg-purple-50 dark:bg-purple-900/20",
-      iconColor: "text-purple-600 dark:text-purple-400",
-      badgeColor: "bg-purple-600 dark:bg-purple-500",
-      arrowColor: "text-purple-400",
+      color: "accent",
       details: [
         "Fast approval process",
         "Direct disbursement",
@@ -131,46 +111,40 @@ const ProcessSteps = () => {
       opacity: 1,
       y: 0,
       transition: {
-        type: spring,
-        stiffness: 100,
-        damping: 15,
+        duration: 0.5,
+        ease: easeOut,
       },
     },
   };
 
   return (
     <section
-      className="py-16 md:py-20 bg-gradient-to-br from-muted via-background to-accent/5 relative overflow-hidden"
+      className="py-12 sm:py-16 md:py-20 bg-muted/30 relative overflow-hidden"
       ref={ref}
     >
-      {/* Background decoration */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-5" />
-
       <div className="container mx-auto px-4 relative z-10">
-        {/* Header */}
+        {/* Header - RESPONSIVE ALIGNMENT */}
         <motion.div
-          className="text-center mb-20"
+          className="text-left lg:text-center mb-12 sm:mb-16 lg:mb-20"
           initial={{ opacity: 0, y: -20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
           {/* Badge */}
           <motion.div
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6 border border-primary/20"
+            className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-xs sm:text-sm font-medium mb-4 sm:mb-6 border border-primary/20"
             whileHover={{ scale: 1.05 }}
           >
-            <CheckCircle className="w-4 h-4" />
+            <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             <span>Simple 5-Step Process</span>
           </motion.div>
 
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-heading mb-3 sm:mb-4 md:mb-6">
             <span className="text-foreground">Your Loan Approval </span>
-            <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
-              Roadmap
-            </span>
+            <span className="text-primary">Roadmap</span>
           </h2>
 
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base lg:text-lg text-muted-foreground max-w-2xl lg:mx-auto leading-relaxed">
             Navigate through our streamlined process to secure your education
             funding smoothly and efficiently
           </p>
@@ -179,7 +153,7 @@ const ProcessSteps = () => {
         {/* Steps - Desktop Horizontal Layout */}
         <div className="relative">
           <motion.div
-            className="hidden lg:flex justify-center items-stretch gap-4 relative px-2"
+            className="hidden lg:flex justify-center items-stretch gap-3 xl:gap-4 relative px-2"
             variants={containerVariants}
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
@@ -187,30 +161,43 @@ const ProcessSteps = () => {
             {steps.map((step, index) => (
               <React.Fragment key={index}>
                 {/* Step Card */}
-                <motion.div className="flex-1 max-w-sm" variants={stepVariants}>
+                <motion.div className="flex-1 max-w-xs" variants={stepVariants}>
                   <motion.div
-                    className="bg-card/80 backdrop-blur-xl rounded-3xl shadow-lg border border-border hover:border-primary/30 hover:shadow-2xl transition-all duration-300 h-full relative overflow-hidden group"
+                    className="bg-card border border-border rounded-2xl xl:rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 h-full relative overflow-hidden group"
                     whileHover={{ y: -8, scale: 1.02 }}
                   >
-                    {/* Gradient overlay */}
-                    <div
-                      className={`absolute inset-0 bg-gradient-to-br ${step.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}
-                    />
-
-                    <div className="p-8 text-center relative z-10 flex flex-col h-full">
+                    <div className="p-6 xl:p-8 text-center relative z-10 flex flex-col h-full">
                       {/* Icon Container */}
-                      <div className="relative mb-8">
+                      <div className="relative mb-6 xl:mb-8">
                         <motion.div
-                          className={`mx-auto w-20 h-20 rounded-2xl flex items-center justify-center ${step.bgColor} relative shadow-lg`}
+                          className={`mx-auto w-16 h-16 xl:w-20 xl:h-20 rounded-xl xl:rounded-2xl flex items-center justify-center ${
+                            step.color === "primary"
+                              ? "bg-primary/10"
+                              : step.color === "accent"
+                              ? "bg-accent/10"
+                              : "bg-success/10"
+                          } relative shadow-sm`}
                           whileHover={{ rotate: [0, -10, 10, -10, 0] }}
                           transition={{ duration: 0.5 }}
                         >
                           <step.icon
-                            className={`w-10 h-10 ${step.iconColor}`}
+                            className={`w-8 h-8 xl:w-10 xl:h-10 ${
+                              step.color === "primary"
+                                ? "text-primary"
+                                : step.color === "accent"
+                                ? "text-accent"
+                                : "text-success"
+                            }`}
                           />
                           {/* Number badge */}
                           <span
-                            className={`absolute -top-3 -right-3 w-8 h-8 ${step.badgeColor} text-white text-sm font-bold rounded-full flex items-center justify-center shadow-lg ring-4 ring-background`}
+                            className={`absolute -top-2 xl:-top-3 -right-2 xl:-right-3 w-7 h-7 xl:w-8 xl:h-8 ${
+                              step.color === "primary"
+                                ? "bg-primary"
+                                : step.color === "accent"
+                                ? "bg-accent"
+                                : "bg-success"
+                            } text-white text-xs xl:text-sm font-bold rounded-full flex items-center justify-center shadow-md ring-4 ring-background`}
                           >
                             {index + 1}
                           </span>
@@ -218,7 +205,7 @@ const ProcessSteps = () => {
                       </div>
 
                       {/* Content */}
-                      <h6 className="text-xl font-bold mb-4 text-foreground leading-tight">
+                      <h6 className="text-lg xl:text-xl font-bold mb-3 xl:mb-4 text-foreground leading-tight">
                         {step.title}
                       </h6>
                       <p className="text-muted-foreground text-sm leading-relaxed mb-4 flex-grow">
@@ -236,7 +223,7 @@ const ProcessSteps = () => {
                               key={i}
                               className="flex items-center gap-2 justify-center"
                             >
-                              <CheckCircle className="w-3 h-3 text-success" />
+                              <CheckCircle className="w-3 h-3 text-success flex-shrink-0" />
                               <span>{detail}</span>
                             </div>
                           ))}
@@ -249,13 +236,19 @@ const ProcessSteps = () => {
                 {/* Arrow between steps */}
                 {index < steps.length - 1 && (
                   <motion.div
-                    className={`flex items-center justify-center mt-12 ${step.arrowColor} relative z-20 flex-shrink-0`}
+                    className={`flex items-center justify-center mt-12 ${
+                      step.color === "primary"
+                        ? "text-primary"
+                        : step.color === "accent"
+                        ? "text-accent"
+                        : "text-success"
+                    } relative z-20 flex-shrink-0`}
                     initial={{ opacity: 0, scale: 0 }}
                     animate={inView ? { opacity: 1, scale: 1 } : {}}
                     transition={{ duration: 0.3, delay: 0.1 * (index + 1) }}
                   >
-                    <div className="bg-card/80 backdrop-blur-sm rounded-full p-3 shadow-lg border border-border">
-                      <ArrowRight className="w-6 h-6" />
+                    <div className="bg-card/80 rounded-full p-2 xl:p-3 shadow-sm border border-border">
+                      <ArrowRight className="w-5 h-5 xl:w-6 xl:h-6" />
                     </div>
                   </motion.div>
                 )}
@@ -265,7 +258,7 @@ const ProcessSteps = () => {
 
           {/* Steps - Mobile/Tablet Vertical Layout */}
           <motion.div
-            className="lg:hidden space-y-6"
+            className="lg:hidden space-y-4 sm:space-y-6"
             variants={containerVariants}
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
@@ -274,26 +267,39 @@ const ProcessSteps = () => {
               <React.Fragment key={index}>
                 <motion.div variants={stepVariants}>
                   <motion.div
-                    className="bg-card/80 backdrop-blur-xl rounded-3xl shadow-lg border border-border hover:shadow-2xl transition-all duration-300 relative overflow-hidden group"
+                    className="bg-card border border-border rounded-xl sm:rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group"
                     whileHover={{ x: 4 }}
                   >
-                    {/* Gradient overlay */}
-                    <div
-                      className={`absolute inset-0 bg-gradient-to-br ${step.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}
-                    />
-
-                    <div className="p-6 relative z-10">
-                      <div className="flex items-start gap-4">
+                    <div className="p-3 sm:p-4 md:p-6 relative z-10">
+                      <div className="flex items-start gap-2.5 sm:gap-3 md:gap-4">
                         {/* Icon */}
                         <div className="flex-shrink-0">
                           <div
-                            className={`w-16 h-16 rounded-2xl flex items-center justify-center ${step.bgColor} relative shadow-md`}
+                            className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg sm:rounded-xl md:rounded-2xl flex items-center justify-center ${
+                              step.color === "primary"
+                                ? "bg-primary/10"
+                                : step.color === "accent"
+                                ? "bg-accent/10"
+                                : "bg-success/10"
+                            } relative shadow-sm`}
                           >
                             <step.icon
-                              className={`w-8 h-8 ${step.iconColor}`}
+                              className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 ${
+                                step.color === "primary"
+                                  ? "text-primary"
+                                  : step.color === "accent"
+                                  ? "text-accent"
+                                  : "text-success"
+                              }`}
                             />
                             <span
-                              className={`absolute -top-2 -right-2 w-7 h-7 ${step.badgeColor} text-white text-xs font-bold rounded-full flex items-center justify-center shadow-lg`}
+                              className={`absolute -top-1 sm:-top-1.5 md:-top-2 -right-1 sm:-right-1.5 md:-right-2 w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 ${
+                                step.color === "primary"
+                                  ? "bg-primary"
+                                  : step.color === "accent"
+                                  ? "bg-accent"
+                                  : "bg-success"
+                              } text-white text-xs font-bold rounded-full flex items-center justify-center shadow-md`}
                             >
                               {index + 1}
                             </span>
@@ -301,11 +307,11 @@ const ProcessSteps = () => {
                         </div>
 
                         {/* Content */}
-                        <div className="flex-1">
-                          <h6 className="text-lg font-bold mb-2 text-foreground">
+                        <div className="flex-1 min-w-0">
+                          <h6 className="text-sm sm:text-base md:text-lg font-bold mb-1.5 sm:mb-2 text-foreground leading-tight">
                             {step.title}
                           </h6>
-                          <p className="text-muted-foreground text-sm leading-relaxed mb-3">
+                          <p className="text-muted-foreground text-xs leading-relaxed mb-2 sm:mb-3">
                             {step.description}
                           </p>
 
@@ -330,13 +336,19 @@ const ProcessSteps = () => {
                 {/* Arrow down for mobile */}
                 {index < steps.length - 1 && (
                   <motion.div
-                    className={`flex justify-center ${step.arrowColor} -my-3`}
+                    className={`flex justify-center ${
+                      step.color === "primary"
+                        ? "text-primary"
+                        : step.color === "accent"
+                        ? "text-accent"
+                        : "text-success"
+                    } -my-2`}
                     initial={{ opacity: 0 }}
                     animate={inView ? { opacity: 1 } : {}}
                     transition={{ duration: 0.3, delay: 0.1 * (index + 1) }}
                   >
-                    <div className="bg-card/80 backdrop-blur-sm rounded-full p-3 shadow-lg border border-border">
-                      <ArrowDown className="w-5 h-5" />
+                    <div className="bg-card/80 rounded-full p-2 sm:p-3 shadow-sm border border-border">
+                      <ArrowDown className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
                   </motion.div>
                 )}

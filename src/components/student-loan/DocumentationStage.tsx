@@ -106,14 +106,14 @@ export function DocumentationStage({
   );
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="container mx-auto px-4 max-w-5xl space-y-6">
       {/* Header */}
       <motion.div
-        className="text-center"
+        className="text-left lg:text-center"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary via-primary-light to-accent bg-clip-text text-transparent mb-2">
+        <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2">
           Upload Your Documents
         </h2>
         <p className="text-muted-foreground">
@@ -137,7 +137,7 @@ export function DocumentationStage({
         </div>
         <div className="w-full h-3 bg-secondary rounded-full overflow-hidden">
           <motion.div
-            className="h-full bg-gradient-to-r from-primary to-primary-light"
+            className="h-full bg-primary"
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.5 }}
@@ -463,7 +463,7 @@ export function DocumentationStage({
             relative px-12 py-4 text-lg font-semibold rounded-xl overflow-hidden
             ${
               canProceed
-                ? "bg-gradient-to-r from-primary to-primary-light text-primary-foreground shadow-lg shadow-primary/25"
+                ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
                 : "bg-secondary text-muted-foreground cursor-not-allowed"
             }
           `}

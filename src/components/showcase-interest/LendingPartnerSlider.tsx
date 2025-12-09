@@ -4,13 +4,15 @@ import { useInView } from "react-intersection-observer";
 import { Shield, TrendingUp, Users } from "lucide-react";
 
 /**
- * LENDING PARTNERS SLIDER COMPONENT - FIXED VERSION
+ * LENDING PARTNERS SLIDER COMPONENT - ChatJourney Theme Style
  *
- * Fixes:
- * - White background for better logo visibility
- * - Proper contrast for dark/light modes
- * - Enhanced card styling
- * - Better gradient masks
+ * Features:
+ * - Clean theme-based design (no gradients)
+ * - White background for logo visibility
+ * - Infinite scroll animation
+ * - Lucide React icons only
+ * - Fully responsive with mobile-left/desktop-center alignment
+ * - Dark mode support
  */
 
 const LendingPartnersSlider = () => {
@@ -48,80 +50,88 @@ const LendingPartnersSlider = () => {
     {
       icon: Shield,
       text: "Trusted Partners",
-      color: "text-green-600 dark:text-green-400",
+      color: "success",
     },
     {
       icon: TrendingUp,
       text: "Best Rates",
-      color: "text-blue-600 dark:text-blue-400",
+      color: "primary",
     },
     {
       icon: Users,
       text: "Expert Support",
-      color: "text-purple-600 dark:text-purple-400",
+      color: "accent",
     },
   ];
 
   return (
     <div
-      className="py-16 md:py-20 bg-white dark:bg-gray-900 relative overflow-hidden"
+      className="py-12 sm:py-16 md:py-20 bg-background relative overflow-hidden"
       ref={ref}
     >
-      {/* Background gradient orbs for subtle depth */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-64 h-64 bg-accent/10 rounded-full blur-3xl" />
-      </div>
-
       <div className="container mx-auto px-4 relative z-10">
-        {/* Header */}
+        {/* Header - RESPONSIVE ALIGNMENT */}
         <motion.div
-          className="text-center mb-16"
+          className="text-left lg:text-center mb-12 sm:mb-16"
           initial={{ opacity: 0, y: -20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
           {/* Badge */}
           <motion.div
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 text-primary dark:text-primary-light px-4 py-2 rounded-full text-sm font-medium mb-6 border border-primary/20"
+            className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-xs sm:text-sm font-medium mb-4 sm:mb-6 border border-primary/20"
             whileHover={{ scale: 1.05 }}
           >
-            <Shield className="w-4 h-4" />
+            <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             <span>Trusted Financial Partners</span>
           </motion.div>
 
-          <h1 className="text-4xl md:text-5xl font-bold text-center mb-6">
-            <span className="text-gray-900 dark:text-white">Our </span>
-            <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
-              Lending Partners
-            </span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-heading mb-4 sm:mb-6">
+            <span className="text-foreground">Our </span>
+            <span className="text-primary">Lending Partners</span>
           </h1>
 
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed mb-8">
+          <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-2xl lg:mx-auto leading-relaxed mb-6 sm:mb-8">
             We've partnered with India's most trusted financial institutions to
             bring you the best education loan options
           </p>
 
           {/* Features */}
-          <div className="flex justify-center gap-6 mb-12 flex-wrap">
+          <div className="flex justify-start lg:justify-center gap-4 sm:gap-6 mb-8 sm:mb-12 flex-wrap">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
-                className="flex items-center gap-2 text-sm font-medium"
+                className="flex items-center gap-2 text-xs sm:text-sm font-medium"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={inView ? { opacity: 1, scale: 1 } : {}}
                 transition={{ delay: index * 0.1 }}
               >
-                <feature.icon className={`w-5 h-5 ${feature.color}`} />
-                <span className="text-gray-600 dark:text-gray-300">
-                  {feature.text}
-                </span>
+                <div
+                  className={`p-1.5 sm:p-2 rounded-lg ${
+                    feature.color === "primary"
+                      ? "bg-primary/10"
+                      : feature.color === "success"
+                      ? "bg-success/10"
+                      : "bg-accent/10"
+                  }`}
+                >
+                  <feature.icon
+                    className={`w-4 h-4 sm:w-5 sm:h-5 ${
+                      feature.color === "primary"
+                        ? "text-primary"
+                        : feature.color === "success"
+                        ? "text-success"
+                        : "text-accent"
+                    }`}
+                  />
+                </div>
+                <span className="text-muted-foreground">{feature.text}</span>
               </motion.div>
             ))}
           </div>
 
           <motion.div
-            className="w-24 h-1 bg-gradient-to-r from-accent to-primary mx-auto rounded-full"
+            className="w-20 sm:w-24 h-1 bg-primary lg:mx-auto rounded-full"
             initial={{ scaleX: 0 }}
             animate={inView ? { scaleX: 1 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
@@ -129,9 +139,9 @@ const LendingPartnersSlider = () => {
         </motion.div>
 
         {/* First Row - Moving Left to Right */}
-        <div className="mb-8 relative py-4 overflow-hidden">
+        <div className="mb-6 sm:mb-8 relative py-3 sm:py-4 overflow-hidden">
           <motion.div
-            className="flex gap-6"
+            className="flex gap-4 sm:gap-6"
             animate={{
               x: [0, -1680],
             }}
@@ -151,8 +161,8 @@ const LendingPartnersSlider = () => {
                 className="flex-shrink-0"
                 whileHover={{ scale: 1.05 }}
               >
-                <div className="group cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl flex items-center justify-center shadow-md hover:shadow-xl w-56 h-28 transition-all duration-300 hover:border-primary/50 hover:-translate-y-1">
-                  <div className="relative flex items-center justify-center w-44 h-16 p-4">
+                <div className="group cursor-pointer bg-card border border-border rounded-xl sm:rounded-2xl flex items-center justify-center shadow-sm hover:shadow-md w-48 sm:w-56 h-24 sm:h-28 transition-all duration-300 hover:border-primary/30 hover:-translate-y-1">
+                  <div className="relative flex items-center justify-center w-36 sm:w-44 h-14 sm:h-16 p-3 sm:p-4">
                     <img
                       src={partner.logo}
                       alt={`${partner.name} logo`}
@@ -165,27 +175,20 @@ const LendingPartnersSlider = () => {
             ))}
           </motion.div>
 
-          {/* Enhanced gradient fade masks */}
+          {/* Gradient fade masks */}
           <div
-            className="absolute inset-0 pointer-events-none dark:hidden"
+            className="absolute inset-0 pointer-events-none"
             style={{
               background:
-                "linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 10%, rgba(255,255,255,0) 90%, rgba(255,255,255,1) 100%)",
-            }}
-          />
-          <div
-            className="absolute inset-0 pointer-events-none hidden dark:block"
-            style={{
-              background:
-                "linear-gradient(to right, rgba(17,24,39,1) 0%, rgba(17,24,39,0) 10%, rgba(17,24,39,0) 90%, rgba(17,24,39,1) 100%)",
+                "linear-gradient(to right, var(--background) 0%, transparent 10%, transparent 90%, var(--background) 100%)",
             }}
           />
         </div>
 
         {/* Second Row - Moving Right to Left */}
-        <div className="relative py-4 overflow-hidden">
+        <div className="relative py-3 sm:py-4 overflow-hidden">
           <motion.div
-            className="flex gap-6"
+            className="flex gap-4 sm:gap-6"
             animate={{
               x: [-1680, 0],
             }}
@@ -205,8 +208,8 @@ const LendingPartnersSlider = () => {
                 className="flex-shrink-0"
                 whileHover={{ scale: 1.05 }}
               >
-                <div className="group cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl flex items-center justify-center shadow-md hover:shadow-xl w-56 h-28 transition-all duration-300 hover:border-primary/50 hover:-translate-y-1">
-                  <div className="relative flex items-center justify-center w-44 h-16 p-4">
+                <div className="group cursor-pointer bg-card border border-border rounded-xl sm:rounded-2xl flex items-center justify-center shadow-sm hover:shadow-md w-48 sm:w-56 h-24 sm:h-28 transition-all duration-300 hover:border-primary/30 hover:-translate-y-1">
+                  <div className="relative flex items-center justify-center w-36 sm:w-44 h-14 sm:h-16 p-3 sm:p-4">
                     <img
                       src={partner.logo}
                       alt={`${partner.name} logo`}
@@ -219,55 +222,51 @@ const LendingPartnersSlider = () => {
             ))}
           </motion.div>
 
-          {/* Enhanced gradient fade masks */}
+          {/* Gradient fade masks */}
           <div
-            className="absolute inset-0 pointer-events-none dark:hidden"
+            className="absolute inset-0 pointer-events-none"
             style={{
               background:
-                "linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 10%, rgba(255,255,255,0) 90%, rgba(255,255,255,1) 100%)",
-            }}
-          />
-          <div
-            className="absolute inset-0 pointer-events-none hidden dark:block"
-            style={{
-              background:
-                "linear-gradient(to right, rgba(17,24,39,1) 0%, rgba(17,24,39,0) 10%, rgba(17,24,39,0) 90%, rgba(17,24,39,1) 100%)",
+                "linear-gradient(to right, var(--background) 0%, transparent 10%, transparent 90%, var(--background) 100%)",
             }}
           />
         </div>
 
         {/* Stats Section */}
         <motion.div
-          className="mt-16 pt-12 border-t border-gray-200 dark:border-gray-700"
+          className="mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-border"
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 text-center">
             {[
               {
                 value: "15+",
                 label: "Lending Partners",
-                color: "text-primary",
-                bgColor: "bg-primary/10",
+                color: "primary",
               },
               {
                 value: "₹1L - ₹2Cr",
                 label: "Loan Range",
-                color: "text-accent",
-                bgColor: "bg-accent/10",
+                color: "accent",
               },
               {
                 value: "8.5%+",
                 label: "Interest Rates",
-                color: "text-success",
-                bgColor: "bg-success/10",
+                color: "success",
               },
             ].map((stat, index) => (
               <motion.div key={index} className="group" whileHover={{ y: -4 }}>
-                <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700">
+                <div className="bg-card border border-border rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-primary/30">
                   <motion.div
-                    className={`text-3xl font-bold mb-2 ${stat.color}`}
+                    className={`text-2xl sm:text-3xl font-bold mb-2 ${
+                      stat.color === "primary"
+                        ? "text-primary"
+                        : stat.color === "accent"
+                        ? "text-accent"
+                        : "text-success"
+                    }`}
                     initial={{ scale: 0 }}
                     animate={inView ? { scale: 1 } : {}}
                     transition={{
@@ -279,7 +278,7 @@ const LendingPartnersSlider = () => {
                   >
                     {stat.value}
                   </motion.div>
-                  <div className="text-gray-600 dark:text-gray-300 font-medium">
+                  <div className="text-muted-foreground text-xs sm:text-sm font-medium">
                     {stat.label}
                   </div>
                 </div>

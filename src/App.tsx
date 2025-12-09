@@ -30,7 +30,7 @@ import {
   Profile,
 } from "./pages/student";
 import ContactUsPage from "./components/contact/ContactUs";
-import AboutPage from "./components/about/AboutsPage";
+import AboutPage from "./components/about/AboutUsPage";
 import FAQPage from "./components/faq/FaqPage";
 import ShowcaseInterest from "./components/showcase-interest/ShowcaseInterest";
 import StudentLoan from "./components/student-loan/StudentLoan";

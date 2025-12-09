@@ -22,15 +22,16 @@ const contactInfoData: ContactItem[] = [
 ];
 
 /**
- * Premium Fintech Contact Us Page
+ * Contact Us Page - ChatJourney Theme Style
  *
  * Design Philosophy:
- * - Clean, minimal layout with strategic use of white space
- * - Glassmorphic cards for depth and modern feel
- * - Smooth Framer Motion animations throughout
- * - Consistent color palette from design system
- * - Mobile-first responsive design
- * - Accessibility-focused with proper contrast ratios
+ * - Clean, theme-based design (no gradients)
+ * - Consistent spacing and typography
+ * - Smooth animations throughout
+ * - Lucide React icons only
+ * - Fully responsive for all devices
+ * - Dark mode support via theme system
+ * - Accessible with proper contrast ratios
  */
 const ContactUsPage: React.FC = () => {
   return (
@@ -38,37 +39,8 @@ const ContactUsPage: React.FC = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="bg-gradient-to-br from-gray-50 via-white to-primary-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-primary-900/10 transition-colors duration-300"
+      className="min-h-screen bg-background transition-colors duration-300"
     >
-      {/* Animated background gradient orbs for premium feel */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute top-1/4 -left-48 w-96 h-96 bg-primary/10 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1,
-          }}
-          className="absolute bottom-1/4 -right-48 w-96 h-96 bg-accent/10 rounded-full blur-3xl"
-        />
-      </div>
-
       {/* Main Content */}
       <div className="relative z-10">
         <ContactUsHeader />

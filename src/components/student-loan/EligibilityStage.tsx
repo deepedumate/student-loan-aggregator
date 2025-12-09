@@ -119,11 +119,11 @@ export function EligibilityStage({
     return "text-destructive";
   };
 
-  const getScoreGradient = (score: number) => {
-    if (score >= 80) return "from-success to-success/80";
-    if (score >= 65) return "from-primary to-primary-light";
-    if (score >= 50) return "from-warning to-warning/80";
-    return "from-destructive to-destructive/80";
+  const getScoreBg = (score: number) => {
+    if (score >= 80) return "bg-success";
+    if (score >= 65) return "bg-primary";
+    if (score >= 50) return "bg-warning";
+    return "bg-destructive";
   };
 
   const getLevelInfo = (level: string) => {
@@ -145,7 +145,7 @@ export function EligibilityStage({
 
   if (loading || !score) {
     return (
-      <div className="max-w-2xl mx-auto">
+      <div className="container mx-auto px-4 max-w-2xl">
         <motion.div
           className="glass-card p-12 text-center rounded-2xl"
           initial={{ opacity: 0 }}
@@ -157,7 +157,7 @@ export function EligibilityStage({
             animate={{ rotate: 360 }}
             transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
           >
-            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-accent opacity-20 blur-xl" />
+            <div className="absolute inset-0 rounded-full bg-primary/20 opacity-20 blur-xl" />
             <Sparkles className="w-10 h-10 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-primary animate-pulse" />
           </motion.div>
 
@@ -172,7 +172,7 @@ export function EligibilityStage({
           <div className="max-w-md mx-auto">
             <div className="w-full h-3 bg-secondary rounded-full overflow-hidden">
               <motion.div
-                className="h-full bg-gradient-to-r from-primary to-primary-light"
+                className="h-full bg-primary"
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.3 }}
@@ -206,10 +206,10 @@ export function EligibilityStage({
   const levelInfo = getLevelInfo(score.eligibilityLevel);
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="container mx-auto px-4 max-w-4xl space-y-6">
       {/* Overall Score Card */}
       <motion.div
-        className="glass-card p-12 text-center rounded-2xl"
+        className="glass-card p-12 text-left lg:text-center rounded-2xl"
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.5, type: "spring" }}
@@ -258,7 +258,7 @@ export function EligibilityStage({
                   />
                   <stop
                     offset="100%"
-                    className="text-accent"
+                    className="text-primary"
                     stopColor="currentColor"
                   />
                 </linearGradient>
@@ -347,9 +347,7 @@ export function EligibilityStage({
             </div>
             <div className="w-full h-2 bg-secondary rounded-full overflow-hidden">
               <motion.div
-                className={`h-full bg-gradient-to-r ${getScoreGradient(
-                  item.score
-                )}`}
+                className={`h-full ${getScoreBg(item.score)}`}
                 initial={{ width: 0 }}
                 animate={{ width: `${item.score}%` }}
                 transition={{ duration: 1, delay: 0.5 + index * 0.1 }}
@@ -394,7 +392,7 @@ export function EligibilityStage({
       >
         <motion.button
           onClick={() => onComplete(score)}
-          className="relative px-12 py-4 text-lg font-semibold rounded-xl bg-gradient-to-r from-primary to-primary-light text-primary-foreground shadow-lg shadow-primary/25 overflow-hidden group"
+          className="relative px-12 py-4 text-lg font-semibold rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/25 overflow-hidden group"
           whileHover={{ scale: 1.02, y: -2 }}
           whileTap={{ scale: 0.98 }}
         >

@@ -1,11 +1,5 @@
-import React, {
-  useState,
-  useEffect,
-  useMemo,
-  useCallback,
-  useRef,
-} from "react";
-import { motion, AnimatePresence, spring } from "framer-motion";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { motion, AnimatePresence, easeOut } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import {
   Clock,
@@ -16,24 +10,23 @@ import {
   Shield,
   ChevronLeft,
   ChevronRight,
+  Target,
+  Zap,
+  Gem,
+  BarChart3,
 } from "lucide-react";
 
 /**
- * HOME HERO SECTION COMPONENT
+ * HOME HERO SECTION COMPONENT - ChatJourney Theme Style
  *
- * Premium Fintech Design Features:
- * - Glassmorphic cards with backdrop blur
- * - Smooth Framer Motion animations with spring physics
- * - Interactive insight carousel with touch support
- * - Responsive flag grid with hover states
- * - Clean typography hierarchy
- * - Soft shadows and gradients from design system
- *
- * Performance Optimizations:
- * - Intersection Observer for visibility
- * - Reduced motion support
- * - Optimized image placeholders
- * - Memoized calculations
+ * Features:
+ * - Clean theme-based design (no gradients)
+ * - Lucide React icons only
+ * - Fully responsive layout
+ * - Interactive carousel
+ * - Flag grid with hover states
+ * - Dark mode support
+ * - Hero text stays LEFT-ALIGNED on all screens (natural reading flow)
  */
 
 const ANIMATION_DELAYS = {
@@ -55,7 +48,6 @@ const HomeHeroSection = () => {
   const [userPrefersReducedMotion, setUserPrefersReducedMotion] =
     useState(false);
 
-  // Intersection observer for scroll animations
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -66,7 +58,7 @@ const HomeHeroSection = () => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     setUserPrefersReducedMotion(mediaQuery.matches);
 
-    const handleChange = (e) => {
+    const handleChange = (e: MediaQueryListEvent) => {
       setUserPrefersReducedMotion(e.matches);
     };
 
@@ -100,8 +92,8 @@ const HomeHeroSection = () => {
         description:
           "Our AI continuously monitors interest rates across financial institutions.",
         data: "Updated every 15 minutes",
-        icon: "📊",
-        gradient: "from-blue-500 to-cyan-500",
+        icon: BarChart3,
+        color: "primary",
       },
       {
         title: "Approval Analytics",
@@ -109,8 +101,8 @@ const HomeHeroSection = () => {
         description:
           "Advanced algorithms pre-qualify candidates based on academic performance.",
         data: `Based on ${METRICS.STUDENTS_FUNDED} applications`,
-        icon: "🎯",
-        gradient: "from-green-500 to-emerald-500",
+        icon: Target,
+        color: "success",
       },
       {
         title: "Speed Optimization",
@@ -118,8 +110,8 @@ const HomeHeroSection = () => {
         description:
           "Streamlined digital verification and instant decision algorithms.",
         data: "vs 2-3 weeks industry standard",
-        icon: "⚡",
-        gradient: "from-purple-500 to-violet-500",
+        icon: Zap,
+        color: "accent",
       },
       {
         title: "Cost Transparency",
@@ -127,8 +119,8 @@ const HomeHeroSection = () => {
         description:
           "Edumate doesn't charge anything. Complete fee transparency.",
         data: "Save ₹15,000+ on average",
-        icon: "💎",
-        gradient: "from-orange-500 to-amber-500",
+        icon: Gem,
+        color: "primary",
       },
     ],
     []
@@ -174,28 +166,30 @@ const HomeHeroSection = () => {
       opacity: 1,
       y: 0,
       transition: {
-        type: spring,
-        stiffness: 100,
-        damping: 15,
+        duration: 0.5,
+        ease: easeOut,
       },
     },
   };
 
   return (
-    <section ref={ref} className="relative min-h-screen pt-20 lg:pt-24 pb-16">
+    <section
+      ref={ref}
+      className="relative min-h-screen pt-16 sm:pt-20 lg:pt-24 pb-12 sm:pb-16"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Trust indicators header - Glassmorphic style */}
+        {/* Trust indicators header */}
         <motion.header
-          className="py-6 mb-12 rounded-2xl bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 shadow-soft"
+          className="py-4 sm:py-6 mb-8 sm:mb-12 rounded-xl sm:rounded-2xl bg-card border border-border shadow-sm"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-4 px-6">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-3 sm:gap-4 px-4 sm:px-6">
             {/* Left: Status Indicators */}
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-3">
               <motion.div
-                className="flex items-center gap-2 px-4 py-2 bg-success/10 rounded-full"
+                className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-success/10 rounded-full border border-success/20"
                 whileHover={{ scale: 1.05 }}
               >
                 <motion.div
@@ -203,30 +197,30 @@ const HomeHeroSection = () => {
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 />
-                <span className="text-sm font-medium text-success-foreground">
+                <span className="text-xs sm:text-sm font-medium text-success">
                   Live rates
                 </span>
               </motion.div>
               <motion.div
-                className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full"
+                className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-primary/10 rounded-full border border-primary/20"
                 whileHover={{ scale: 1.05 }}
               >
-                <Users className="w-4 h-4 text-primary" />
-                <span className="text-sm font-medium text-primary-foreground">
+                <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+                <span className="text-xs sm:text-sm font-medium text-foreground">
                   {METRICS.STUDENTS_FUNDED} funded
                 </span>
               </motion.div>
             </div>
 
             {/* Right: Statistics */}
-            <div className="flex flex-wrap items-center gap-3 text-sm">
-              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm px-4 py-2 rounded-xl border border-gray-200/50 dark:border-gray-700/50">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm">
+              <div className="bg-muted/50 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl border border-border">
                 <span className="text-muted-foreground">Total disbursed:</span>
                 <span className="ml-2 font-bold text-foreground">
                   {METRICS.TOTAL_DISBURSED}
                 </span>
               </div>
-              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm px-4 py-2 rounded-xl border border-gray-200/50 dark:border-gray-700/50">
+              <div className="bg-muted/50 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl border border-border">
                 <span className="text-muted-foreground">Success:</span>
                 <span className="ml-2 font-bold text-success">
                   {METRICS.SUCCESS_RATE}
@@ -236,24 +230,25 @@ const HomeHeroSection = () => {
           </div>
         </motion.header>
 
-        <main className="grid lg:grid-cols-5 gap-12">
-          {/* Main content - Left side */}
+        <main className="grid lg:grid-cols-5 gap-8 lg:gap-12">
+          {/* Main content - Left side - STAYS LEFT-ALIGNED */}
           <motion.div
-            className="lg:col-span-3 space-y-10"
+            className="lg:col-span-3 space-y-6 sm:space-y-8 lg:space-y-10"
             variants={containerVariants}
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
           >
-            {/* Hero heading with gradient */}
-            <motion.div variants={itemVariants} className="space-y-6">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black leading-[1.1]">
+            {/* Hero heading - LEFT-ALIGNED on all screens */}
+            <motion.div
+              variants={itemVariants}
+              className="space-y-4 sm:space-y-6"
+            >
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold font-heading leading-[1.1]">
                 <span className="text-foreground">Smart Students Make </span>
-                <span className="bg-gradient-to-r from-primary via-primary-light to-accent bg-clip-text text-transparent">
-                  Smarter Funding Decisions
-                </span>
+                <span className="text-primary">Smarter Funding Decisions</span>
               </h1>
 
-              <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-3xl">
+              <p className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-3xl">
                 Access exclusive education loan rates, get instant approvals,
                 and make data-driven decisions with our comprehensive comparison
                 platform.
@@ -263,7 +258,7 @@ const HomeHeroSection = () => {
             {/* Enhanced Metrics Grid - Desktop */}
             <motion.div
               variants={itemVariants}
-              className="hidden sm:grid sm:grid-cols-3 gap-6"
+              className="hidden sm:grid sm:grid-cols-3 gap-4 sm:gap-6"
             >
               {[
                 {
@@ -271,53 +266,71 @@ const HomeHeroSection = () => {
                   value: "2 min",
                   label: "For Pre-eligibility",
                   color: "primary",
-                  gradient: "from-primary-50 to-primary-100/50",
                 },
                 {
                   icon: Building2,
                   value: METRICS.LENDERS_COUNT,
                   label: "Marquee Lenders",
                   color: "accent",
-                  gradient: "from-accent-50 to-accent-100/50",
                 },
                 {
                   icon: IndianRupee,
                   value: "₹0",
                   label: "Edumate charges",
                   color: "success",
-                  gradient: "from-green-50 to-green-100/50",
                 },
               ].map((metric, index) => (
                 <motion.div
                   key={index}
-                  className="group relative overflow-hidden bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-all duration-300 hover:shadow-xl"
+                  className="group relative overflow-hidden bg-card rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-border hover:border-primary/30 transition-all duration-300 hover:shadow-md"
                   whileHover={{ y: -4, scale: 1.02 }}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  {/* Gradient overlay on hover */}
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${metric.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
-                  />
-
                   <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className={`p-3 bg-${metric.color}/10 rounded-xl`}>
+                    <div className="flex items-center justify-between mb-3 sm:mb-4">
+                      <div
+                        className={`p-2 sm:p-3 ${
+                          metric.color === "primary"
+                            ? "bg-primary/10"
+                            : metric.color === "accent"
+                            ? "bg-accent/10"
+                            : "bg-success/10"
+                        } rounded-lg sm:rounded-xl`}
+                      >
                         <metric.icon
-                          className={`w-6 h-6 text-${metric.color}`}
+                          className={`w-5 h-5 sm:w-6 sm:h-6 ${
+                            metric.color === "primary"
+                              ? "text-primary"
+                              : metric.color === "accent"
+                              ? "text-accent"
+                              : "text-success"
+                          }`}
                         />
                       </div>
                       <TrendingUp
-                        className={`w-5 h-5 text-${metric.color} opacity-60`}
+                        className={`w-4 h-4 sm:w-5 sm:h-5 ${
+                          metric.color === "primary"
+                            ? "text-primary"
+                            : metric.color === "accent"
+                            ? "text-accent"
+                            : "text-success"
+                        } opacity-60`}
                       />
                     </div>
                     <div
-                      className={`text-4xl font-black text-${metric.color} mb-2`}
+                      className={`text-3xl sm:text-4xl font-bold mb-2 ${
+                        metric.color === "primary"
+                          ? "text-primary"
+                          : metric.color === "accent"
+                          ? "text-accent"
+                          : "text-success"
+                      }`}
                     >
                       {metric.value}
                     </div>
-                    <div className="text-sm text-muted-foreground font-medium">
+                    <div className="text-xs sm:text-sm text-muted-foreground font-medium">
                       {metric.label}
                     </div>
                   </div>
@@ -330,9 +343,9 @@ const HomeHeroSection = () => {
               <MobileTimeline />
             </motion.div>
 
-            {/* Process flow - Premium badges */}
+            {/* Process flow */}
             <motion.nav variants={itemVariants} className="w-full">
-              <ol className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+              <ol className="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-muted-foreground">
                 {[
                   { color: "primary", text: "Apply digitally" },
                   { color: "accent", text: "Lender Approval" },
@@ -343,7 +356,15 @@ const HomeHeroSection = () => {
                     className="flex items-center gap-2"
                     whileHover={{ scale: 1.05 }}
                   >
-                    <div className={`w-2 h-2 bg-${step.color} rounded-full`} />
+                    <div
+                      className={`w-2 h-2 ${
+                        step.color === "primary"
+                          ? "bg-primary"
+                          : step.color === "accent"
+                          ? "bg-accent"
+                          : "bg-success"
+                      } rounded-full`}
+                    />
                     <span>{step.text}</span>
                   </motion.li>
                 ))}
@@ -354,12 +375,12 @@ const HomeHeroSection = () => {
             {inView && (
               <motion.section
                 variants={itemVariants}
-                className="bg-card/60 backdrop-blur-xl rounded-2xl p-6 border border-border shadow-soft"
+                className="bg-card border border-border rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm"
               >
-                <h2 className="text-lg font-semibold text-foreground mb-4">
+                <h2 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4">
                   Study Destinations
                 </h2>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-2 sm:gap-3">
                   {countries.map((country, index) => (
                     <motion.div
                       key={country.code}
@@ -370,7 +391,7 @@ const HomeHeroSection = () => {
                       whileHover={{ scale: 1.1, y: -2 }}
                     >
                       {/* Flag */}
-                      <div className="w-12 h-12 rounded-xl overflow-hidden ring-2 ring-border group-hover:ring-primary transition-all shadow-md">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl overflow-hidden ring-2 ring-border group-hover:ring-primary transition-all shadow-sm">
                         <img
                           src={country.flag}
                           alt={`${country.name} flag`}
@@ -405,22 +426,22 @@ const HomeHeroSection = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
               >
-                <div className="card-interactive p-6">
-                  <header className="mb-6">
-                    <h2 className="text-xl font-bold text-foreground">
+                <div className="border border-border bg-card rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm">
+                  <header className="mb-4 sm:mb-6">
+                    <h2 className="text-lg sm:text-xl font-bold text-foreground">
                       Platform Intelligence
                     </h2>
-                    <p className="text-muted-foreground text-sm mt-1">
+                    <p className="text-muted-foreground text-xs sm:text-sm mt-1">
                       Data-driven insights
                     </p>
                   </header>
 
                   {/* Carousel */}
-                  <div className="relative min-h-[360px] overflow-hidden rounded-xl bg-gradient-to-br from-primary/5 to-accent/5">
+                  <div className="relative min-h-[320px] sm:min-h-[360px] overflow-hidden rounded-lg sm:rounded-xl bg-muted/30 border border-border">
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={currentInsight}
-                        className="absolute inset-0 p-6"
+                        className="absolute inset-0 p-4 sm:p-6"
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -20 }}
@@ -429,29 +450,51 @@ const HomeHeroSection = () => {
                         <div className="h-full flex flex-col justify-between gap-4">
                           <div className="flex-1">
                             <div className="flex items-start gap-3 mb-4">
-                              <div className="text-2xl">
-                                {insights[currentInsight].icon}
+                              <div
+                                className={`p-2 sm:p-3 rounded-lg sm:rounded-xl ${
+                                  insights[currentInsight].color === "primary"
+                                    ? "bg-primary/10"
+                                    : insights[currentInsight].color ===
+                                      "success"
+                                    ? "bg-success/10"
+                                    : "bg-accent/10"
+                                }`}
+                              >
+                                {React.createElement(
+                                  insights[currentInsight].icon,
+                                  {
+                                    className: `w-5 h-5 sm:w-6 sm:h-6 ${
+                                      insights[currentInsight].color ===
+                                      "primary"
+                                        ? "text-primary"
+                                        : insights[currentInsight].color ===
+                                          "success"
+                                        ? "text-success"
+                                        : "text-accent"
+                                    }`,
+                                  }
+                                )}
                               </div>
-                              <div className="text-sm font-semibold text-primary uppercase tracking-wide">
+                              <div className="text-xs sm:text-sm font-semibold text-primary uppercase tracking-wide">
                                 {insights[currentInsight].title}
                               </div>
                             </div>
 
                             <div className="mb-4">
-                              <div className="text-xl font-bold text-foreground mb-2 leading-tight">
+                              <div className="text-lg sm:text-xl font-bold text-foreground mb-2 leading-tight">
                                 {insights[currentInsight].metric}
                               </div>
-                              <p className="text-sm text-muted-foreground leading-relaxed">
+                              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                                 {insights[currentInsight].description}
                               </p>
                             </div>
                           </div>
 
-                          <div className="bg-card/80 backdrop-blur-sm rounded-xl p-4 border border-border">
+                          <div className="bg-card/80 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-border">
                             <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
                               Data point
                             </div>
-                            <div className="text-sm font-semibold text-foreground">
+                            <div className="text-xs sm:text-sm font-semibold text-foreground">
                               {insights[currentInsight].data}
                             </div>
                           </div>
@@ -464,19 +507,21 @@ const HomeHeroSection = () => {
                   <div className="flex items-center justify-end gap-2 mt-4">
                     <motion.button
                       onClick={handlePrevInsight}
-                      className="p-3 bg-muted hover:bg-muted/80 rounded-xl transition-colors"
+                      className="p-2 sm:p-3 bg-muted hover:bg-muted/80 rounded-lg sm:rounded-xl transition-colors"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
+                      aria-label="Previous insight"
                     >
-                      <ChevronLeft className="w-5 h-5" />
+                      <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                     </motion.button>
                     <motion.button
                       onClick={handleNextInsight}
-                      className="p-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl transition-colors"
+                      className="p-2 sm:p-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg sm:rounded-xl transition-colors"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
+                      aria-label="Next insight"
                     >
-                      <ChevronRight className="w-5 h-5" />
+                      <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
                     </motion.button>
                   </div>
                 </div>
@@ -484,22 +529,6 @@ const HomeHeroSection = () => {
             )}
           </aside>
         </main>
-
-        {/* Footer */}
-        <motion.footer
-          className="border-t border-border mt-20"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          <div className="py-8 text-center">
-            <p className="text-muted-foreground text-sm">
-              Trusted by students at 3000+ Pre Approved Universities | 30+
-              Countries Supported | Loans available for UG, Certification,
-              Executive & PG Programs
-            </p>
-          </div>
-        </motion.footer>
       </div>
     </section>
   );
@@ -507,7 +536,6 @@ const HomeHeroSection = () => {
 
 /**
  * MOBILE TIMELINE COMPONENT
- * Vertical timeline for mobile devices
  */
 const MobileTimeline = () => {
   const steps = [
@@ -537,9 +565,9 @@ const MobileTimeline = () => {
   return (
     <div className="relative py-4">
       {/* Connecting line */}
-      <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-accent to-success" />
+      <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-border" />
 
-      <div className="space-y-5">
+      <div className="space-y-4">
         {steps.map((step, index) => (
           <motion.div
             key={index}
@@ -550,19 +578,47 @@ const MobileTimeline = () => {
           >
             <div className="relative z-10 flex-shrink-0">
               <div
-                className={`w-10 h-10 rounded-full bg-gradient-to-br from-${step.color} to-${step.color}/80 flex items-center justify-center shadow-lg ring-4 ring-background`}
+                className={`w-10 h-10 rounded-full ${
+                  step.color === "primary"
+                    ? "bg-primary"
+                    : step.color === "accent"
+                    ? "bg-accent"
+                    : "bg-success"
+                } flex items-center justify-center shadow-md ring-4 ring-background`}
               >
                 <step.icon className="w-5 h-5 text-white" />
               </div>
             </div>
             <div className="flex-1 pt-0.5">
               <div
-                className={`bg-gradient-to-br from-${step.color}/10 to-${step.color}/5 rounded-xl p-4 border-l-3 border-${step.color}`}
+                className={`${
+                  step.color === "primary"
+                    ? "bg-primary/10 border-l-4 border-primary"
+                    : step.color === "accent"
+                    ? "bg-accent/10 border-l-4 border-accent"
+                    : "bg-success/10 border-l-4 border-success"
+                } rounded-lg p-4`}
               >
-                <div className="text-xs font-bold text-${step.color} uppercase tracking-wider mb-1">
+                <div
+                  className={`text-xs font-bold uppercase tracking-wider mb-1 ${
+                    step.color === "primary"
+                      ? "text-primary"
+                      : step.color === "accent"
+                      ? "text-accent"
+                      : "text-success"
+                  }`}
+                >
                   {step.label}
                 </div>
-                <div className={`text-2xl font-black text-${step.color} mb-1`}>
+                <div
+                  className={`text-2xl font-bold mb-1 ${
+                    step.color === "primary"
+                      ? "text-primary"
+                      : step.color === "accent"
+                      ? "text-accent"
+                      : "text-success"
+                  }`}
+                >
                   {step.value}
                 </div>
                 <p className="text-xs text-muted-foreground font-medium leading-snug">

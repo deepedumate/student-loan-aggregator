@@ -1,17 +1,16 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import WhyPartnerEdumate from "./WhyPartnerEdumate";
 import PartnerHeader from "./PartnerHeader";
+import WhyPartnerEdumate from "./WhyPartnerEdumate";
 
 /**
- * Premium Fintech Partner Page - Main Component
+ * Premium Partner Page - Fintech Style
  *
- * Design Decisions:
- * - Smooth page transitions with Framer Motion
- * - Seamless section flow
- * - Maintained form redirect functionality
- * - Clean, modern layout structure
- * - Optimized for performance
+ * Features:
+ * - Clean design with smooth transitions
+ * - Form redirect functionality
+ * - Fully responsive
+ * - Dark mode support
  */
 
 export default function PremiumPartnerPage() {
@@ -52,12 +51,12 @@ export default function PremiumPartnerPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="presentation-page bg-gradient-to-b from-white via-slate-50 to-white dark:from-slate-900 dark:via-slate-800 dark:to-slate-900"
+      className="presentation-page bg-background"
     >
-      {/* Premium Header Section */}
+      {/* Header Section */}
       <PartnerHeader />
 
-      {/* Premium Why Partner Section */}
+      {/* Why Partner Section */}
       <WhyPartnerEdumate />
     </motion.div>
   );

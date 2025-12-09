@@ -8,6 +8,16 @@ interface TeamMember {
   image: string;
 }
 
+/**
+ * Leadership Carousel Component - ChatJourney Theme Style
+ *
+ * Features:
+ * - Clean theme-based design (no gradients)
+ * - Auto-play carousel with manual controls
+ * - Responsive grid layout
+ * - Lucide React icons only
+ * - Fully responsive
+ */
 const LeadershipCarousel: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
@@ -104,23 +114,23 @@ const LeadershipCarousel: React.FC = () => {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-white to-primary/5 dark:from-gray-900 dark:to-primary/5">
-      <div className="container mx-auto px-4">
+    <section className="py-12 sm:py-16 lg:py-20 bg-background">
+      <div className="container mx-auto px-2 sm:px-4">
         {/* Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6">
-            <Crown className="w-4 h-4" />
+        <div className="text-left lg:text-center mb-10 sm:mb-12 md:mb-16">
+          <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary px-4 py-2 rounded-full text-xs sm:text-sm font-medium mb-4 sm:mb-6">
+            <Crown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             <span>Meet Our Team</span>
           </div>
 
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            <span className="text-gray-900 dark:text-white">Our </span>
-            <span className="gradient-text">Leadership</span>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-heading mb-3 sm:mb-4 md:mb-6">
+            <span className="text-foreground">Our </span>
+            <span className="text-primary">Leadership</span>
           </h2>
 
-          <div className="w-24 h-1 bg-gradient-to-r from-primary to-accent mx-auto mb-6 rounded-full"></div>
+          <div className="w-12 sm:w-16 md:w-20 lg:w-24 h-0.5 sm:h-1 bg-primary lg:mx-auto mb-3 sm:mb-4 md:mb-6 rounded-full"></div>
 
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-xs sm:text-sm md:text-base lg:text-lg text-muted-foreground max-w-2xl lg:mx-auto">
             Experienced professionals dedicated to transforming education
             financing
           </p>
@@ -134,32 +144,32 @@ const LeadershipCarousel: React.FC = () => {
         >
           {/* Navigation Arrows */}
           <button
-            className="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-4 bg-white dark:bg-gray-800 border border-border rounded-full shadow-md hidden md:flex items-center justify-center w-12 h-12 text-primary z-10 hover:shadow-lg transition-all"
+            className="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-4 bg-card border border-border rounded-full shadow-md hidden md:flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 text-primary z-10 hover:shadow-lg hover:border-primary/30 transition-all"
             onClick={prevSlide}
             aria-label="Previous slide"
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
 
           <button
-            className="absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-4 bg-white dark:bg-gray-800 border border-border rounded-full shadow-md hidden md:flex items-center justify-center w-12 h-12 text-primary z-10 hover:shadow-lg transition-all"
+            className="absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-4 bg-card border border-border rounded-full shadow-md hidden md:flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 text-primary z-10 hover:shadow-lg hover:border-primary/30 transition-all"
             onClick={nextSlide}
             aria-label="Next slide"
           >
-            <ChevronRight className="w-6 h-6" />
+            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
 
           {/* Cards Container */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {getCurrentSlideMembers().map((member) => (
               <div key={member.id} className="flex justify-center">
                 <div className="w-full max-w-sm">
-                  <div className="bg-white dark:bg-gray-800 border border-border rounded-2xl p-8 shadow-md hover:shadow-lg transition-all">
+                  <div className="bg-card border border-border rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-all">
                     {/* Profile Image */}
-                    <div className="text-center mb-6">
-                      <div className="relative mx-auto w-32 h-32 mb-4">
-                        <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent rounded-full p-1">
-                          <div className="bg-white dark:bg-gray-800 rounded-full p-1 h-full w-full">
+                    <div className="text-center mb-3 sm:mb-4 md:mb-6">
+                      <div className="relative mx-auto w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 mb-2 sm:mb-3 md:mb-4">
+                        <div className="absolute inset-0 bg-primary/20 rounded-full p-1">
+                          <div className="bg-card rounded-full p-1 h-full w-full">
                             <div className="relative rounded-full overflow-hidden h-full w-full">
                               <img
                                 src={member.image}
@@ -172,13 +182,13 @@ const LeadershipCarousel: React.FC = () => {
                       </div>
 
                       {/* Name */}
-                      <h4 className="font-bold text-xl text-foreground mb-2">
+                      <h4 className="font-bold text-base sm:text-lg md:text-xl text-foreground mb-1.5 sm:mb-2">
                         {member.name}
                       </h4>
 
                       {/* Title */}
-                      <div className="bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 rounded-full px-4 py-2 inline-block">
-                        <p className="text-primary text-sm font-medium">
+                      <div className="bg-primary/10 border border-primary/20 rounded-full px-2.5 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 inline-block">
+                        <p className="text-primary text-xs sm:text-sm font-medium">
                           {member.title}
                         </p>
                       </div>
@@ -191,14 +201,14 @@ const LeadershipCarousel: React.FC = () => {
         </div>
 
         {/* Indicators */}
-        <div className="flex justify-center items-center gap-3 mt-12">
+        <div className="flex justify-center items-center gap-2 sm:gap-3 mt-8 sm:mt-12">
           {Array.from({ length: totalSlides }, (_, index) => (
             <button
               key={index}
               className={`rounded-full transition-all ${
                 currentSlide === index
-                  ? "w-8 h-3 bg-gradient-to-r from-primary to-accent"
-                  : "w-3 h-3 bg-gray-300 dark:bg-gray-600 hover:bg-primary"
+                  ? "w-6 sm:w-8 h-2.5 sm:h-3 bg-primary"
+                  : "w-2.5 sm:w-3 h-2.5 sm:h-3 bg-muted hover:bg-primary/50"
               }`}
               onClick={() => goToSlide(index)}
               aria-label={`Go to slide ${index + 1}`}

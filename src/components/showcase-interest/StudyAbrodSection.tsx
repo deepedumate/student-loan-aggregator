@@ -1,18 +1,30 @@
 import React from "react";
-import { motion, spring } from "framer-motion";
+import { easeOut, motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { GraduationCap, Globe, Star, MapPin, Award } from "lucide-react";
+import {
+  GraduationCap,
+  Globe,
+  Star,
+  MapPin,
+  Award,
+  DollarSign,
+  TrendingUp,
+  RotateCcw,
+  Zap,
+  Earth,
+  Building,
+} from "lucide-react";
 
 /**
- * STUDY ABROAD SECTION COMPONENT
+ * STUDY ABROAD SECTION COMPONENT - Improved Spacing & Layout
  *
- * Premium Features:
- * - Split layout with content and interactive flag grid
- * - Animated feature cards with icons
- * - Glassmorphic flag containers
- * - Hover effects with scale and shadow
- * - Gradient backgrounds and overlays
- * - Stats cards with animations
+ * Features:
+ * - Proper spacing matching Lending Partners section
+ * - Clean theme-based design (no gradients)
+ * - Split layout with content and flag grid
+ * - Lucide React icons only
+ * - Fully responsive with proper mobile/desktop padding
+ * - Dark mode support
  */
 
 const StudyAbroadSection = () => {
@@ -26,25 +38,25 @@ const StudyAbroadSection = () => {
       icon: GraduationCap,
       text: "All Degree Levels",
       description: "From UG to PhD programs",
-      gradient: "from-blue-500 to-blue-600",
+      color: "primary",
     },
     {
       icon: Globe,
       text: "Global Destinations",
       description: "30+ countries available",
-      gradient: "from-green-500 to-green-600",
+      color: "success",
     },
     {
       icon: Star,
       text: "Best Loan Options",
       description: "Competitive rates & terms",
-      gradient: "from-purple-500 to-purple-600",
+      color: "accent",
     },
     {
       icon: Award,
       text: "Top Universities",
       description: "3000+ partner institutions",
-      gradient: "from-orange-500 to-orange-600",
+      color: "primary",
     },
   ];
 
@@ -64,30 +76,30 @@ const StudyAbroadSection = () => {
   ];
 
   const benefits = [
-    { text: "No collateral for loans up to ₹40L", icon: "💰" },
-    { text: "Competitive interest rates from 8.5%", icon: "📈" },
-    { text: "Flexible repayment options", icon: "🔄" },
-    { text: "Quick approval process", icon: "⚡" },
+    { text: "No collateral for loans up to ₹40L", icon: DollarSign },
+    { text: "Competitive interest rates from 8.5%", icon: TrendingUp },
+    { text: "Flexible repayment options", icon: RotateCcw },
+    { text: "Quick approval process", icon: Zap },
   ];
 
   const statsDetails = [
     {
       number: "30+",
       label: "Countries",
-      icon: "🌍",
-      color: "text-blue-600 dark:text-blue-400",
+      icon: Earth,
+      color: "primary",
     },
     {
       number: "3000+",
       label: "Universities",
-      icon: "🏛️",
-      color: "text-green-600 dark:text-green-400",
+      icon: Building,
+      color: "success",
     },
     {
       number: "₹3Cr",
       label: "Max. Loan Amount",
-      icon: "💰",
-      color: "text-purple-600 dark:text-purple-400",
+      icon: DollarSign,
+      color: "accent",
     },
   ];
 
@@ -108,27 +120,21 @@ const StudyAbroadSection = () => {
       opacity: 1,
       y: 0,
       transition: {
-        type: spring,
-        stiffness: 100,
+        duration: 0.5,
+        ease: easeOut,
       },
     },
   };
 
   return (
     <section
-      className="py-16 md:py-20 bg-background relative overflow-hidden"
+      className="py-12 sm:py-16 md:py-20 bg-background relative overflow-hidden"
       ref={ref}
     >
-      {/* Background Elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-40 h-40 bg-accent/20 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-3xl" />
-      </div>
-
+      {/* FIXED: Changed from px-2 sm:px-4 to px-4 for proper mobile spacing */}
       <div className="container mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Content Side */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-12 lg:gap-16 items-center">
+          {/* Content Side - LEFT ALIGNED */}
           <motion.div
             className="order-2 lg:order-1"
             initial={{ opacity: 0, x: -30 }}
@@ -137,24 +143,22 @@ const StudyAbroadSection = () => {
           >
             {/* Tag */}
             <motion.div
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-8 border border-primary/20"
+              className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-xs sm:text-sm font-medium mb-4 sm:mb-6 border border-primary/20"
               whileHover={{ scale: 1.05 }}
             >
-              <MapPin className="w-4 h-4" />
+              <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>Global Education Partner</span>
             </motion.div>
 
             {/* Main Heading */}
-            <div className="mb-8">
-              <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
+            <div className="mb-6 sm:mb-8">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-heading leading-tight mb-4 sm:mb-6">
                 <span className="block text-foreground mb-2">
                   Your Gateway to
                 </span>
-                <span className="block bg-gradient-to-r from-accent via-primary to-accent bg-clip-text text-transparent">
-                  Global Education
-                </span>
+                <span className="block text-primary">Global Education</span>
               </h1>
-              <p className="text-xl text-muted-foreground leading-relaxed max-w-lg">
+              <p className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-2xl">
                 From undergraduate degrees to PhD programs, we provide
                 comprehensive loan solutions for your international education
                 journey.
@@ -163,7 +167,7 @@ const StudyAbroadSection = () => {
 
             {/* Features Grid */}
             <motion.div
-              className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8"
               variants={containerVariants}
               initial="hidden"
               animate={inView ? "visible" : "hidden"}
@@ -171,19 +175,33 @@ const StudyAbroadSection = () => {
               {features.map((feature, index) => (
                 <motion.div key={index} variants={itemVariants}>
                   <motion.div
-                    className="bg-card/60 backdrop-blur-xl border border-border rounded-2xl p-4 hover:shadow-xl transition-all duration-300"
+                    className="bg-card border border-border rounded-xl sm:rounded-2xl p-4 hover:shadow-md transition-all duration-300 hover:border-primary/30"
                     whileHover={{ y: -4, scale: 1.02 }}
                   >
                     <div className="flex items-center gap-3">
                       <motion.div
-                        className={`p-2 rounded-xl bg-gradient-to-r ${feature.gradient}`}
+                        className={`p-2 rounded-lg sm:rounded-xl flex-shrink-0 ${
+                          feature.color === "primary"
+                            ? "bg-primary/10"
+                            : feature.color === "success"
+                            ? "bg-success/10"
+                            : "bg-accent/10"
+                        }`}
                         whileHover={{ rotate: 360 }}
                         transition={{ duration: 0.6 }}
                       >
-                        <feature.icon size={20} className="text-white" />
+                        <feature.icon
+                          className={`w-4 h-4 sm:w-5 sm:h-5 ${
+                            feature.color === "primary"
+                              ? "text-primary"
+                              : feature.color === "success"
+                              ? "text-success"
+                              : "text-accent"
+                          }`}
+                        />
                       </motion.div>
-                      <div>
-                        <div className="font-semibold text-foreground text-sm">
+                      <div className="flex-1 min-w-0">
+                        <div className="font-semibold text-foreground text-xs sm:text-sm mb-1">
                           {feature.text}
                         </div>
                         <div className="text-xs text-muted-foreground">
@@ -197,20 +215,22 @@ const StudyAbroadSection = () => {
             </motion.div>
 
             {/* Benefits */}
-            <div className="mb-10">
-              <h3 className="text-lg font-bold text-foreground mb-4">
+            <div className="mb-8">
+              <h3 className="text-base sm:text-lg font-bold text-foreground mb-4">
                 Why Choose Our Loan Services?
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {benefits.map((benefit, index) => (
                   <motion.div
                     key={index}
-                    className="flex items-center gap-3 text-sm"
+                    className="flex items-center gap-3 text-xs sm:text-sm"
                     initial={{ opacity: 0, x: -20 }}
                     animate={inView ? { opacity: 1, x: 0 } : {}}
                     transition={{ delay: index * 0.1 }}
                   >
-                    <span className="text-lg">{benefit.icon}</span>
+                    <div className="p-1.5 sm:p-2 bg-success/10 rounded-lg flex-shrink-0">
+                      <benefit.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-success" />
+                    </div>
                     <span className="text-muted-foreground">
                       {benefit.text}
                     </span>
@@ -220,7 +240,7 @@ const StudyAbroadSection = () => {
             </div>
 
             {/* Description */}
-            <p className="text-md text-muted-foreground mb-10 leading-relaxed">
+            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
               No matter your degree or destination—US, UK, Canada, Australia, or
               Europe—we offer the{" "}
               <span className="font-semibold text-foreground bg-primary/10 px-2 py-1 rounded">
@@ -237,63 +257,59 @@ const StudyAbroadSection = () => {
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <div className="relative">
-              {/* Background Card */}
-              <div className="bg-card/60 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-border">
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-foreground mb-2">
-                    Study Destinations
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Choose from 15+ countries worldwide
-                  </p>
-                </div>
-
-                {/* Countries Grid */}
-                <motion.div
-                  className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-4 gap-4"
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate={inView ? "visible" : "hidden"}
-                >
-                  {countries.map((country, index) => (
-                    <motion.div key={index} variants={itemVariants}>
-                      <motion.div
-                        className="bg-card rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-border group cursor-pointer"
-                        whileHover={{ y: -4, scale: 1.05 }}
-                      >
-                        <div className="text-center">
-                          {/* Flag */}
-                          <div className="w-12 h-12 mx-auto mb-3 rounded-full overflow-hidden ring-2 ring-border group-hover:ring-primary transition-all duration-300">
-                            <img
-                              src={country.flag}
-                              alt={`${country.name} flag`}
-                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                            />
-                          </div>
-
-                          {/* Country name */}
-                          <div className="font-semibold text-foreground text-sm mb-1 group-hover:text-primary transition-colors">
-                            {country.name}
-                          </div>
-
-                          {/* Programs count */}
-                          <div className="text-xs text-muted-foreground">
-                            {country.programs}
-                          </div>
-                        </div>
-                      </motion.div>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </div>
+            {/* Header - RESPONSIVE ALIGNMENT */}
+            <div className="text-left lg:text-center mb-8 sm:mb-12">
+              <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2 sm:mb-4">
+                Study Destinations
+              </h3>
+              <p className="text-sm sm:text-base text-muted-foreground lg:mx-auto max-w-md">
+                Choose from 30+ countries worldwide
+              </p>
             </div>
+
+            {/* Countries Grid */}
+            <motion.div
+              className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6"
+              variants={containerVariants}
+              initial="hidden"
+              animate={inView ? "visible" : "hidden"}
+            >
+              {countries.map((country, index) => (
+                <motion.div key={index} variants={itemVariants}>
+                  <motion.div
+                    className="bg-card border border-border rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-300 group cursor-pointer hover:border-primary/30"
+                    whileHover={{ y: -4, scale: 1.05 }}
+                  >
+                    <div className="text-center">
+                      {/* Flag */}
+                      <div className="w-12 h-12 mx-auto mb-3 rounded-full overflow-hidden ring-2 ring-border group-hover:ring-primary transition-all duration-300">
+                        <img
+                          src={country.flag}
+                          alt={`${country.name} flag`}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                      </div>
+
+                      {/* Country name */}
+                      <div className="font-semibold text-foreground text-xs sm:text-sm mb-1 group-hover:text-primary transition-colors">
+                        {country.name}
+                      </div>
+
+                      {/* Programs count */}
+                      <div className="text-xs text-muted-foreground">
+                        {country.programs}
+                      </div>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              ))}
+            </motion.div>
           </motion.div>
         </div>
 
         {/* Stats Section */}
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-20 pt-12 border-t border-border"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-border"
           variants={containerVariants}
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
@@ -305,20 +321,46 @@ const StudyAbroadSection = () => {
               variants={itemVariants}
             >
               <motion.div
-                className="bg-card/60 backdrop-blur-xl rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-border"
+                className="bg-card border border-border rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-primary/30"
                 whileHover={{ y: -4 }}
               >
                 <motion.div
-                  className="text-2xl mb-2"
                   whileHover={{ scale: 1.2, rotate: 360 }}
                   transition={{ duration: 0.6 }}
+                  className="mb-3"
                 >
-                  {stat.icon}
+                  <div
+                    className={`inline-flex p-2 sm:p-3 rounded-lg sm:rounded-xl ${
+                      stat.color === "primary"
+                        ? "bg-primary/10"
+                        : stat.color === "success"
+                        ? "bg-success/10"
+                        : "bg-accent/10"
+                    }`}
+                  >
+                    <stat.icon
+                      className={`w-5 h-5 sm:w-6 sm:h-6 ${
+                        stat.color === "primary"
+                          ? "text-primary"
+                          : stat.color === "success"
+                          ? "text-success"
+                          : "text-accent"
+                      }`}
+                    />
+                  </div>
                 </motion.div>
-                <div className={`text-4xl font-bold mb-2 ${stat.color}`}>
+                <div
+                  className={`text-2xl sm:text-3xl font-bold mb-2 ${
+                    stat.color === "primary"
+                      ? "text-primary"
+                      : stat.color === "success"
+                      ? "text-success"
+                      : "text-accent"
+                  }`}
+                >
                   {stat.number}
                 </div>
-                <div className="text-muted-foreground text-sm font-medium">
+                <div className="text-muted-foreground text-xs sm:text-sm font-medium">
                   {stat.label}
                 </div>
               </motion.div>
