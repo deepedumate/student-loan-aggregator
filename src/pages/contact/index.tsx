@@ -21,18 +21,6 @@ const contactInfoData: ContactItem[] = [
   },
 ];
 
-/**
- * Contact Us Page - ChatJourney Theme Style
- *
- * Design Philosophy:
- * - Clean, theme-based design (no gradients)
- * - Consistent spacing and typography
- * - Smooth animations throughout
- * - Lucide React icons only
- * - Fully responsive for all devices
- * - Dark mode support via theme system
- * - Accessible with proper contrast ratios
- */
 const ContactUsPage: React.FC = () => {
   return (
     <motion.div

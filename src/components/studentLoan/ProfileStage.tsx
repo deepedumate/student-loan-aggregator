@@ -15,7 +15,7 @@ interface ProfileStageProps {
   initialData?: StudentProfile | null;
 }
 
-export function ProfileStage({ onComplete, initialData }: ProfileStageProps) {
+export default function ProfileStage({ onComplete, initialData }: ProfileStageProps) {
   const [formData, setFormData] = useState({
     fullName: initialData?.fullName || "",
     email: initialData?.email || "",

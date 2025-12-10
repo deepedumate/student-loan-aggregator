@@ -142,13 +142,10 @@ const StudyAbroadSection = () => {
             transition={{ duration: 0.6 }}
           >
             {/* Tag */}
-            <motion.div
-              className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-xs sm:text-sm font-medium mb-4 sm:mb-6 border border-primary/20"
-              whileHover={{ scale: 1.05 }}
-            >
-              <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 text-primary dark:text-primary-light px-4 py-2 rounded-full text-sm font-medium mb-6">
+              <MapPin className="w-4 h-4" />
               <span>Global Education Partner</span>
-            </motion.div>
+            </div>
 
             {/* Main Heading */}
             <div className="mb-6 sm:mb-8">

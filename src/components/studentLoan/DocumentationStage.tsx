@@ -15,7 +15,7 @@ interface DocumentationStageProps {
   onComplete: (documents: DocumentUpload[]) => void;
 }
 
-export function DocumentationStage({
+export default function DocumentationStage({
   lender,
   profile,
   onComplete,

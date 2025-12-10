@@ -23,7 +23,7 @@ interface LoanSummaryStageProps {
   application: Application;
 }
 
-export function LoanSummaryStage({
+export default function LoanSummaryStage({
   lender,
   application,
 }: LoanSummaryStageProps) {

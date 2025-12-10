@@ -14,10 +14,11 @@ import {
 import { Logo } from "../ui/logo";
 
 /**
- * Contact Header Component - ChatJourney Theme Style
+ * Contact Header Component - With Floating Orbs on RIGHT
  *
  * Features:
- * - Clean theme-based design (no gradients)
+ * - Large floating orbs positioned on right side
+ * - Clean theme-based design
  * - Parallax scroll effects
  * - Staggered animations
  * - Lucide React icons only
@@ -82,6 +83,72 @@ const ContactUsHeader: React.FC = () => {
       {/* Subtle background pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-[0.02] dark:opacity-[0.05]" />
 
+      {/* Large Floating Background Orbs - RIGHT SIDE */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Primary Blue Orb - Top Right */}
+        <motion.div
+          className="absolute -top-32 right-0 w-[500px] h-[500px] bg-primary/10 dark:bg-primary/8 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            x: [0, -50, 0],
+            y: [0, 40, 0],
+          }}
+          transition={{
+            duration: 22,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+
+        {/* Accent Orange Orb - Middle Right */}
+        <motion.div
+          className="absolute top-1/3 -right-32 w-[550px] h-[550px] bg-accent/8 dark:bg-accent/6 rounded-full blur-3xl"
+          animate={{
+            scale: [1.1, 1, 1.1],
+            x: [0, -60, 0],
+            y: [0, 50, 0],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1,
+          }}
+        />
+
+        {/* Success Green Orb - Bottom Right */}
+        <motion.div
+          className="absolute bottom-20 right-1/4 w-[480px] h-[480px] bg-success/8 dark:bg-success/6 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.15, 1],
+            x: [0, -40, 0],
+            y: [0, -30, 0],
+          }}
+          transition={{
+            duration: 24,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2,
+          }}
+        />
+
+        {/* Primary Blue Orb - Bottom Center-Right */}
+        <motion.div
+          className="absolute bottom-0 right-1/3 w-[450px] h-[450px] bg-primary/8 dark:bg-primary/6 rounded-full blur-3xl"
+          animate={{
+            scale: [1.05, 1, 1.05],
+            x: [0, -30, 0],
+            y: [0, 40, 0],
+          }}
+          transition={{
+            duration: 21,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 3,
+          }}
+        />
+      </div>
+
       <div className="pt-16 sm:pt-20 lg:pt-24">
         <div className="relative z-10 max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
           {/* Hero Section */}
@@ -100,29 +167,18 @@ const ContactUsHeader: React.FC = () => {
                 variants={itemVariants}
                 className="flex justify-start lg:justify-center"
               >
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center gap-2 bg-card border border-border text-foreground px-4 sm:px-6 py-2 sm:py-3 rounded-full text-xs sm:text-sm font-semibold shadow-sm hover:shadow-md transition-all duration-300"
-                >
-                  <motion.div
-                    animate={{ rotate: [0, 360] }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                  >
-                    <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
-                  </motion.div>
-                  <span>Get in Touch</span>
-                </motion.div>
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 text-primary dark:text-primary-light px-4 py-2 rounded-full text-sm font-medium mb-2">
+                  <Sparkles className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-semibold text-primary">
+                    Get in Touch
+                  </span>
+                </div>
               </motion.div>
 
               {/* Main Headline */}
               <motion.div
                 variants={itemVariants}
-                className="space-y-4 sm:space-y-6 md:space-y-8 text-left lg:text-center"
+                className="space-y-2 sm:space-y-6 md:space-y-8 text-left lg:text-center"
               >
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold font-heading text-foreground leading-tight">
                   Let's Talk About
@@ -264,6 +320,30 @@ const ContactUsHeader: React.FC = () => {
                   </div>
                 </motion.div>
 
+                {/* Trust Indicator Card - Secure & Confidential */}
+                <motion.div
+                  whileHover={{ y: -5 }}
+                  className="border border-border rounded-xl sm:rounded-2xl p-5 sm:p-6 bg-card shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300"
+                >
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <motion.div
+                      animate={{ rotate: [0, 10, -10, 0] }}
+                      transition={{ duration: 5, repeat: Infinity }}
+                      className="w-10 h-10 sm:w-12 sm:h-12 bg-success/10 rounded-xl flex items-center justify-center flex-shrink-0"
+                    >
+                      <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-success" />
+                    </motion.div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold text-sm sm:text-base text-foreground truncate">
+                        Secure & Confidential
+                      </div>
+                      <div className="text-xs sm:text-sm text-muted-foreground">
+                        Your data is protected with enterprise-grade security
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
                 {/* Social Media Card - Stay Connected */}
                 <motion.div
                   whileHover={{ y: -5 }}
@@ -317,30 +397,6 @@ const ContactUsHeader: React.FC = () => {
                       >
                         <Instagram className="w-5 h-5 sm:w-6 sm:h-6" />
                       </motion.a>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Trust Indicator Card - Secure & Confidential */}
-                <motion.div
-                  whileHover={{ y: -5 }}
-                  className="border border-border rounded-xl sm:rounded-2xl p-5 sm:p-6 bg-card shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300"
-                >
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <motion.div
-                      animate={{ rotate: [0, 10, -10, 0] }}
-                      transition={{ duration: 5, repeat: Infinity }}
-                      className="w-10 h-10 sm:w-12 sm:h-12 bg-success/10 rounded-xl flex items-center justify-center flex-shrink-0"
-                    >
-                      <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-success" />
-                    </motion.div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-semibold text-sm sm:text-base text-foreground truncate">
-                        Secure & Confidential
-                      </div>
-                      <div className="text-xs sm:text-sm text-muted-foreground">
-                        Your data is protected with enterprise-grade security
-                      </div>
                     </div>
                   </div>
                 </motion.div>

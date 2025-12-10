@@ -180,7 +180,7 @@ const UniversityLogosSection = () => {
             transition={{ duration: 0.6 }}
           >
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 backdrop-blur-xl bg-primary/5 border border-primary/20 rounded-full text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 text-primary dark:text-primary-light px-4 py-2 rounded-full text-sm font-medium mb-6">
               <GraduationCap className="w-4 h-4 text-primary" />
               <span className="text-primary">Partner Universities</span>
               {!isApiDataLoaded && !loading && (
@@ -196,7 +196,8 @@ const UniversityLogosSection = () => {
 
             {/* Subtitle */}
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Apply for education loans while applying to these institutions or any others globally
+              Apply for education loans while applying to these institutions or
+              any others globally
             </p>
           </motion.div>
         </div>
@@ -205,7 +206,9 @@ const UniversityLogosSection = () => {
         {loading && schoolLogos.length === 0 ? (
           <div className="flex items-center justify-center py-12">
             <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin"></div>
-            <span className="ml-3 text-muted-foreground font-medium">Loading universities...</span>
+            <span className="ml-3 text-muted-foreground font-medium">
+              Loading universities...
+            </span>
           </div>
         ) : (
           <>

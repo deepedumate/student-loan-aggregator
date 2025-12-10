@@ -12,10 +12,11 @@ import {
 } from "lucide-react";
 
 /**
- * About Us Header Component - ChatJourney Theme Style
+ * About Us Header Component - With Floating Orbs
  *
  * Features:
- * - Clean theme-based design (no gradients)
+ * - Large floating background orbs in theme colors
+ * - Clean theme-based design
  * - Staggered content animations
  * - Lucide React icons only
  * - Fully responsive for all devices
@@ -52,6 +53,56 @@ const AboutUsHeader: React.FC = () => {
     <section className="relative min-h-screen bg-background overflow-hidden">
       {/* Subtle background pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-[0.02] dark:opacity-[0.05]" />
+
+      {/* Large Floating Background Orbs */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Primary Blue Orb - Top Right */}
+        <motion.div
+          className="absolute top-20 right-1/4 w-[500px] h-[500px] bg-primary/10 dark:bg-primary/8 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            x: [0, 60, 0],
+            y: [0, -40, 0],
+          }}
+          transition={{
+            duration: 22,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+
+        {/* Accent Orange Orb - Bottom Left */}
+        <motion.div
+          className="absolute bottom-1/4 left-1/3 w-[550px] h-[550px] bg-accent/8 dark:bg-accent/6 rounded-full blur-3xl"
+          animate={{
+            scale: [1.1, 1, 1.1],
+            x: [0, -50, 0],
+            y: [0, 60, 0],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2,
+          }}
+        />
+
+        {/* Success Green Orb - Middle */}
+        <motion.div
+          className="absolute top-1/2 right-1/3 w-[450px] h-[450px] bg-success/8 dark:bg-success/6 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.15, 1],
+            x: [0, 40, 0],
+            y: [0, -50, 0],
+          }}
+          transition={{
+            duration: 24,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 4,
+          }}
+        />
+      </div>
 
       {/* Main content container with standardized spacing */}
       <div className="relative z-10 pt-20 sm:pt-24 lg:pt-28">
@@ -121,12 +172,12 @@ const AboutUsHeader: React.FC = () => {
                 className="lg:col-span-7 space-y-6 sm:space-y-8"
               >
                 {/* Badge */}
-                <motion.div variants={itemVariants}>
-                  <div className="inline-flex items-center gap-2 border border-border bg-card text-foreground px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold shadow-sm hover:shadow-md transition-all duration-300">
-                    <Award className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
-                    <span>About Edumate</span>
-                  </div>
-                </motion.div>
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 text-primary dark:text-primary-light px-4 py-2 rounded-full text-sm font-medium mb-6">
+                  <Shield className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-semibold text-primary">
+                    About Edumate
+                  </span>
+                </div>
 
                 {/* Main headline */}
                 <motion.div

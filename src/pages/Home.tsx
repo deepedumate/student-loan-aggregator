@@ -1,22 +1,11 @@
 import { useEffect, useState } from "react";
-import {
-  ArrowRight,
-  Shield,
-  TrendingDown,
-  Clock,
-  CheckCircle2,
-  Sparkles,
-  GraduationCap,
-  BadgeCheck,
-  ChevronRight,
-} from "lucide-react";
 import HeroSection from "@/components/home/HomeHero";
-import ToolsShowcaseSection from "@/components/home/Toolsshowcasesection";
 import WhyEdumate from "@/components/home/Whyedumate";
 import ProcessSteps from "@/components/home/ProcessSteps";
 import StudyAbroadSection from "@/components/home/Studyabroadsection";
 import Universities from "@/components/home/Universities";
 import LendingPartnersSlider from "@/components/home/LendingPartnersSlider";
+import ToolsShowcaseSection from "@/components/home/ToolsShowcaseSection";
 
 const HomePage = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -28,25 +17,25 @@ const HomePage = () => {
   return (
     <div className="min-h-screen overflow-hidden">
       <section className="relative py-10 lg:py-18">
-        <HeroSection/>
+        <HeroSection />
       </section>
       <section className="relative py-10 lg:py-18">
-        <ToolsShowcaseSection/>
+        <ToolsShowcaseSection />
       </section>
       <section className="relative py-10 lg:py-18">
-        <WhyEdumate/>
+        <WhyEdumate />
       </section>
       <section className="relative py-10 lg:py-18">
-        <ProcessSteps/>
+        <ProcessSteps />
+      </section>
+      {/* <section className="relative py-10 lg:py-18">
+        <StudyAbroadSection />
+      </section> */}
+      <section className="relative py-10 lg:py-18">
+        <Universities />
       </section>
       <section className="relative py-10 lg:py-18">
-        <StudyAbroadSection/>
-      </section>
-      <section className="relative py-10 lg:py-18">
-        <Universities/>
-      </section>
-      <section className="relative py-10 lg:py-18">
-        <LendingPartnersSlider/>
+        <LendingPartnersSlider />
       </section>
     </div>
   );

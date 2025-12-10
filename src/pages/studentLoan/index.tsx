@@ -12,24 +12,12 @@ import {
   Clock,
   Award,
 } from "lucide-react";
-import { ProfileStage } from "./ProfileStage";
-import { EligibilityStage } from "./EligibilityStage";
-import { LenderDiscoveryStage } from "./LenderDiscoveryStage";
-import { DocumentationStage } from "./DocumentationStage";
-import { ApplicationTrackingStage } from "./ApplicationTrackingStage";
-import { LoanSummaryStage } from "./LoanSummaryStage";
-
-/**
- * STUDENT LOAN APPLICATION - Theme Matched & Responsive
- *
- * Design Philosophy:
- * - Matches Edumate theme system perfectly
- * - Mobile: Left-aligned text, Desktop: Center-aligned
- * - Consistent spacing with other sections
- * - Glassmorphic cards with proper depth
- * - Smooth animations throughout
- * - NO HORIZONTAL SCROLL
- */
+import ProfileStage from "@/components/studentLoan/ProfileStage";
+import EligibilityStage from "@/components/studentLoan/EligibilityStage";
+import LenderDiscoveryStage from "@/components/studentLoan/LenderDiscoveryStage";
+import DocumentationStage from "@/components/studentLoan/DocumentationStage";
+import ApplicationTrackingStage from "@/components/studentLoan/ApplicationTrackingStage";
+import LoanSummaryStage from "@/components/studentLoan/LoanSummaryStage";   
 
 export default function StudentLoan() {
   // State Management

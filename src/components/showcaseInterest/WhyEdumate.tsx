@@ -143,15 +143,9 @@ const WhyEdumate = () => {
           </motion.div>
 
           {/* Main heading */}
-          <motion.h1
-            className="text-3xl sm:text-4xl md:text-5xl font-bold font-heading mb-4 sm:mb-6"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={inView ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            <span className="text-foreground">Why </span>
-            <span className="text-primary">Edumate?</span>
-          </motion.h1>
+          <h3 className="text-3xl lg:text-5xl font-bold text-foreground mb-6">
+            Why <span className="text-primary">Edumate?</span>
+          </h3>
 
           {/* Decorative divider */}
           <motion.div

@@ -10,17 +10,6 @@ import {
   Sparkles,
 } from "lucide-react";
 
-/**
- * FAQ Header Component - ChatJourney Theme Style
- *
- * Features:
- * - Clean theme-based design (no gradients)
- * - Staggered entrance animations
- * - Lucide React icons only
- * - Fully responsive for all devices
- * - Dark mode support
- */
-
 interface Category {
   icon: React.ElementType;
   title: string;
@@ -83,6 +72,72 @@ const FaqHeader: React.FC = () => {
       {/* Subtle background pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-[0.02] dark:opacity-[0.05]" />
 
+      {/* Large Floating Background Orbs */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Primary Blue Orb - Top Left */}
+        <motion.div
+          className="absolute -top-32 -left-32 w-[450px] h-[450px] bg-primary/10 dark:bg-primary/8 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            x: [0, 50, 0],
+            y: [0, 40, 0],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+
+        {/* Accent Orange Orb - Top Right */}
+        <motion.div
+          className="absolute -top-48 -right-48 w-[500px] h-[500px] bg-accent/8 dark:bg-accent/6 rounded-full blur-3xl"
+          animate={{
+            scale: [1.1, 1, 1.1],
+            x: [0, -40, 0],
+            y: [0, 50, 0],
+          }}
+          transition={{
+            duration: 22,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1,
+          }}
+        />
+
+        {/* Success Green Orb - Middle */}
+        <motion.div
+          className="absolute top-1/2 left-1/4 w-[400px] h-[400px] bg-success/8 dark:bg-success/6 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.15, 1],
+            x: [0, 60, 0],
+            y: [0, -40, 0],
+          }}
+          transition={{
+            duration: 24,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2,
+          }}
+        />
+
+        {/* Primary Blue Orb - Bottom Right */}
+        <motion.div
+          className="absolute bottom-20 right-1/3 w-[480px] h-[480px] bg-primary/8 dark:bg-primary/6 rounded-full blur-3xl"
+          animate={{
+            scale: [1.1, 1, 1.1],
+            x: [0, -50, 0],
+            y: [0, 30, 0],
+          }}
+          transition={{
+            duration: 21,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 3,
+          }}
+        />
+      </div>
+
       {/* Main content with proper spacing for fixed nav */}
       <div className="relative z-10 pt-20 sm:pt-24 lg:pt-28">
         <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
@@ -96,13 +151,13 @@ const FaqHeader: React.FC = () => {
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="lg:col-span-7 space-y-6 sm:space-y-8"
               >
-                {/* Badge */}
+                {/* Badge with GRADIENT */}
                 <motion.div
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.3, duration: 0.5 }}
                   whileHover={{ scale: 1.05 }}
-                  className="inline-flex items-center gap-2 bg-card border border-border text-foreground px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold shadow-sm hover:shadow-md transition-all duration-300 group"
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 border border-primary/20 text-foreground px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold shadow-sm hover:shadow-md transition-all duration-300 group"
                 >
                   <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary group-hover:rotate-12 transition-transform duration-300" />
                   <span>FAQ & Support</span>
@@ -285,11 +340,13 @@ const FaqHeader: React.FC = () => {
             <div className="border border-border rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10 bg-card shadow-md">
               {/* Section Header */}
               <div className="text-left mb-6 sm:mb-8 lg:mb-10">
+                {/* Badge with GRADIENT */}
                 <motion.div
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.8, duration: 0.5 }}
-                  className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold text-primary mb-4"
+                  whileHover={{ scale: 1.05 }}
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 border border-primary/20 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold text-primary mb-4"
                 >
                   <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   <span>Most Asked</span>

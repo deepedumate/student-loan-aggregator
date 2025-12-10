@@ -118,9 +118,11 @@ const LeadershipCarousel: React.FC = () => {
       <div className="container mx-auto px-2 sm:px-4">
         {/* Header */}
         <div className="text-left lg:text-center mb-10 sm:mb-12 md:mb-16">
-          <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary px-4 py-2 rounded-full text-xs sm:text-sm font-medium mb-4 sm:mb-6">
-            <Crown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            <span>Meet Our Team</span>
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 text-primary dark:text-primary-light px-4 py-2 rounded-full text-sm font-medium mb-6">
+            <Crown className="w-4 h-4 text-primary" />
+            <span className="text-sm font-semibold text-primary">
+              Our Values
+            </span>
           </div>
 
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-heading mb-3 sm:mb-4 md:mb-6">

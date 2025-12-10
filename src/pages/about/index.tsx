@@ -1,30 +1,102 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Sparkles, TrendingUp } from "lucide-react";
-import AboutUsHeader from "./AboutUsHeader";
-import LeadershipCarousel from "./LeadershipCarousel";
-import MissionCard from "./MissionCard";
-import ValuesSection from "./ValueSection";
-import VisionCard from "./VisionCard";
+import AboutUsHeader from "@/components/about/AboutUsHeader";
+import VisionCard from "@/components/about/VisionCard";
+import MissionCard from "@/components/about/MissionCard";
+import ValuesSection from "@/components/about/ValueSection";
+import LeadershipCarousel from "@/components/about/LeadershipCarousel";
 
-/**
- * About Page Component - ChatJourney Theme Style
- *
- * Features:
- * - Clean theme-based design (no gradients)
- * - Smooth animations
- * - Lucide React icons only
- * - Fully responsive
- * - Dark mode support
- */
 const AboutPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-background transition-colors duration-300">
+    <div className="min-h-screen bg-background transition-colors duration-300 relative overflow-hidden">
+      {/* Large Floating Background Orbs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+        {/* Primary Blue Orb - Top Left */}
+        <motion.div
+          className="absolute -top-48 -left-48 w-96 h-96 bg-primary/10 dark:bg-primary/8 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            x: [0, 50, 0],
+            y: [0, 30, 0],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+
+        {/* Accent Orange Orb - Top Right */}
+        <motion.div
+          className="absolute -top-32 -right-32 w-[500px] h-[500px] bg-accent/8 dark:bg-accent/6 rounded-full blur-3xl"
+          animate={{
+            scale: [1.2, 1, 1.2],
+            x: [0, -30, 0],
+            y: [0, 50, 0],
+          }}
+          transition={{
+            duration: 18,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1,
+          }}
+        />
+
+        {/* Primary Blue Orb - Middle Left */}
+        <motion.div
+          className="absolute top-1/3 -left-64 w-[600px] h-[600px] bg-primary/8 dark:bg-primary/6 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.3, 1],
+            x: [0, 80, 0],
+            y: [0, -40, 0],
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2,
+          }}
+        />
+
+        {/* Success Green Orb - Bottom Right */}
+        <motion.div
+          className="absolute bottom-32 -right-48 w-[550px] h-[550px] bg-success/8 dark:bg-success/6 rounded-full blur-3xl"
+          animate={{
+            scale: [1.1, 1, 1.1],
+            x: [0, -60, 0],
+            y: [0, -30, 0],
+          }}
+          transition={{
+            duration: 22,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 3,
+          }}
+        />
+
+        {/* Accent Orange Orb - Bottom Left */}
+        <motion.div
+          className="absolute bottom-0 left-1/4 w-[450px] h-[450px] bg-accent/8 dark:bg-accent/6 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            x: [0, 40, 0],
+            y: [0, -50, 0],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 4,
+          }}
+        />
+      </div>
+
       {/* Hero Section */}
       <AboutUsHeader />
 
       {/* Main Content Area */}
-      <div className="bg-background transition-colors duration-300">
+      <div className="bg-background transition-colors duration-300 relative">
         {/* Enhanced Intro Section */}
         <section className="py-12 sm:py-16 lg:py-20 px-2 sm:px-4">
           <div className="container mx-auto relative z-10 px-2 sm:px-4">
@@ -39,16 +111,12 @@ const AboutPage: React.FC = () => {
               <div className="sm:border sm:border-border sm:rounded-2xl lg:rounded-3xl p-0 sm:p-8 lg:p-12 sm:bg-card sm:shadow-md relative overflow-hidden">
                 <div className="text-left lg:text-center max-w-5xl lg:mx-auto">
                   {/* Badge */}
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: 0.1 }}
-                    className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold mb-4 sm:mb-6 md:mb-8 shadow-sm"
-                  >
-                    <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                    <span>About Edumate Global</span>
-                  </motion.div>
+                  <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 text-primary dark:text-primary-light px-4 py-2 rounded-full text-sm font-medium mb-6">
+                    <Sparkles className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-semibold text-primary">
+                      About Edumate Global
+                    </span>
+                  </div>
 
                   {/* Main headline */}
                   <motion.h1
@@ -175,9 +243,11 @@ const AboutPage: React.FC = () => {
               transition={{ duration: 0.5 }}
               className="text-left lg:text-center mb-12 sm:mb-16"
             >
-              <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold mb-4 sm:mb-6 shadow-sm">
-                <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                <span>Our Foundation</span>
+              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 text-primary dark:text-primary-light px-4 py-2 rounded-full text-sm font-medium mb-6">
+                <Sparkles className="w-4 h-4 text-primary" />
+                <span className="text-sm font-semibold text-primary">
+                  Our Foundation
+                </span>
               </div>
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-heading text-foreground mb-3 sm:mb-4">
                 Vision & Mission

@@ -7,271 +7,410 @@ import {
   Target,
   Heart,
   Trophy,
-  Sparkles,
   CheckCircle2,
-  ArrowUpRight,
+  ArrowRight,
+  Sparkles,
 } from "lucide-react";
 import ContactForm from "./ContactForm";
 
 const edumateReasons = [
   {
-    title: "No Service Fee for Students",
-    desc: "We don't charge you a rupee for our support. Our guidance, counselling, and end-to-end assistance come at no cost to you. That's our promise – fair and student-first.",
-    image: "/images/primary-images/loan_expert.png",
+    title: "No Service Fee",
+    subtitle: "100% Free for Students",
+    desc: "We don't charge you a rupee. Our guidance, counselling, and end-to-end assistance come at absolutely no cost to you.",
     icon: Heart,
+    stat: "₹0",
+    statLabel: "Service Fee",
+    iconGradient: "from-rose-500 to-pink-600",
+    iconBg: "bg-gradient-to-br from-rose-500 to-pink-600",
+    progressGradient: "from-rose-500 to-pink-600",
+    hoverGlow: "rose",
+    textAccent: "text-rose-600",
   },
   {
-    title: "100% Transparent Process",
-    desc: "We explain the loan process in a way that makes sense. No hidden costs, no fine print. Just clarity, so you always know what's happening and why.",
-    image: "/images/primary-images/loan_offers.png",
+    title: "100% Transparent",
+    subtitle: "Crystal Clear Process",
+    desc: "No hidden costs, no fine print. We explain everything in simple terms so you always know what's happening.",
     icon: Shield,
+    stat: "100%",
+    statLabel: "Transparency",
+    iconGradient: "from-blue-500 to-cyan-600",
+    iconBg: "bg-gradient-to-br from-blue-500 to-cyan-600",
+    progressGradient: "from-blue-500 to-cyan-600",
+    hoverGlow: "blue",
+    textAccent: "text-blue-600",
   },
   {
-    title: "Smooth Coordination with Financial Institutions",
-    desc: "We manage communication with banks and NBFCs, helping you avoid back-and-forth or confusion. You focus on your goals – we'll take care of the paperwork.",
-    image: "/images/primary-images/document_submission.png",
+    title: "Expert Coordination",
+    subtitle: "Seamless Communication",
+    desc: "We handle all communication with banks and NBFCs, saving you from endless back-and-forth.",
     icon: Users,
+    stat: "12+",
+    statLabel: "Partners",
+    iconGradient: "from-emerald-500 to-teal-600",
+    iconBg: "bg-gradient-to-br from-emerald-500 to-teal-600",
+    progressGradient: "from-emerald-500 to-teal-600",
+    hoverGlow: "emerald",
+    textAccent: "text-emerald-600",
   },
   {
-    title: "Customised Loan Options",
-    desc: "Every student is different. That's why we assess your profile carefully and recommend loan products that are best suited to your needs – not just what's available.",
-    image: "/images/primary-images/loan_approval.png",
+    title: "Personalized Match",
+    subtitle: "Tailored Just for You",
+    desc: "Every student is unique. We analyze your profile and recommend the perfect loan options for your specific needs.",
     icon: Target,
+    stat: "50K+",
+    statLabel: "Success Stories",
+    iconGradient: "from-violet-500 to-purple-600",
+    iconBg: "bg-gradient-to-br from-violet-500 to-purple-600",
+    progressGradient: "from-violet-500 to-purple-600",
+    hoverGlow: "violet",
+    textAccent: "text-violet-600",
   },
   {
-    title: "Student-Centric Support, Always",
-    desc: "You're not just another application to us. Whether you're at the initial inquiry or the final approval stage, we're here to simplify, explain, and support – like a friend who's done this before.",
-    image: "/images/primary-images/loan_expert.png",
+    title: "Always There",
+    subtitle: "Round-the-Clock Support",
+    desc: "You're never alone in this journey. We're here 24/7 to answer questions, provide guidance, and offer support.",
     icon: Star,
+    stat: "24/7",
+    statLabel: "Support",
+    iconGradient: "from-amber-500 to-orange-600",
+    iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
+    progressGradient: "from-amber-500 to-orange-600",
+    hoverGlow: "amber",
+    textAccent: "text-amber-600",
   },
   {
-    title: "Trusted by Students and Institutions Alike",
-    desc: "Backed by years of experience at SEED Global Education and industry experts, Edumate is trusted by top universities and lending partners to guide students toward their global education dreams.",
-    image: "/images/primary-images/loan_offers.png",
+    title: "Proven Track Record",
+    subtitle: "Excellence You Can Trust",
+    desc: "Backed by SEED Global Education with years of expertise, trusted by universities and lending partners worldwide.",
     icon: Trophy,
+    stat: "99.2%",
+    statLabel: "Success Rate",
+    iconGradient: "from-indigo-500 to-blue-600",
+    iconBg: "bg-gradient-to-br from-indigo-500 to-blue-600",
+    progressGradient: "from-indigo-500 to-blue-600",
+    hoverGlow: "indigo",
+    textAccent: "text-indigo-600",
   },
-];
-
-const features = [
-  { text: "No hidden fees", icon: CheckCircle2 },
-  { text: "Expert guidance", icon: CheckCircle2 },
-  { text: "Quick approval", icon: CheckCircle2 },
-  { text: "24/7 support", icon: CheckCircle2 },
 ];
 
 const WhyEdumate = () => {
   const formRef = useRef<HTMLDivElement>(null);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    if (window.location.hash === "#form" || window.location.hash === "#contactForm") {
+    if (
+      window.location.hash === "#form" ||
+      window.location.hash === "#contactForm"
+    ) {
       setTimeout(() => {
         formRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 100);
     }
   }, []);
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({
-        x: (e.clientX / window.innerWidth - 0.5) * 10,
-        y: (e.clientY / window.innerHeight - 0.5) * 10,
-      });
+  // Get glow color based on card color
+  const getGlowColor = (color: string) => {
+    const glowColors: { [key: string]: string } = {
+      rose: "rgba(244, 63, 94, 0.15)",
+      blue: "rgba(59, 130, 246, 0.15)",
+      emerald: "rgba(16, 185, 129, 0.15)",
+      violet: "rgba(139, 92, 246, 0.15)",
+      amber: "rgba(245, 158, 11, 0.15)",
+      indigo: "rgba(99, 102, 241, 0.15)",
     };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+    return glowColors[color] || "rgba(59, 130, 246, 0.15)";
+  };
 
   return (
-    <div className="relative py-16 lg:py-20 overflow-hidden bg-background">
-      {/* Ambient Background */}
-      <div className="absolute inset-0">
-        <div
-          className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/[0.02] rounded-full blur-[120px] transition-transform duration-1000 ease-out"
-          style={{
-            transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`,
-          }}
-        />
-        <div
-          className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-accent/[0.02] rounded-full blur-[120px] transition-transform duration-1000 ease-out"
-          style={{
-            transform: `translate(${-mousePosition.x}px, ${-mousePosition.y}px)`,
-          }}
-        />
-      </div>
+    <div className="relative py-12 sm:py-16 lg:py-20 overflow-hidden bg-muted/30">
+      {/* Subtle Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/20 to-background" />
 
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header Section */}
-        <div className="text-center mb-12 lg:mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 backdrop-blur-xl bg-primary/5 border border-primary/20 rounded-full mb-6">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-primary">Why Students Choose Us</span>
-            </div>
+        {/* Header Section - No Fade Animation */}
+        <div className="text-center mb-10 sm:mb-12 lg:mb-16 max-w-4xl mx-auto">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 text-primary dark:text-primary-light px-4 py-2 rounded-full text-sm font-medium mb-6">
+            <Shield className="w-4 h-4 text-primary" />
+            <span className="text-sm font-semibold text-primary">
+              Why Students Choose Us
+            </span>
+          </div>
 
-            {/* Title */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-6">
-              <span className="text-foreground">Why </span>
-              <span className="text-primary">Edumate?</span>
-            </h1>
+          {/* Title */}
+          <h2 className="text-3xl lg:text-5xl font-bold text-foreground mb-6">
+            Why <span className="text-primary">Edumate?</span>
+          </h2>
 
-            {/* Subtitle */}
-            <p className="text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-8">
-              We simplify your education loan journey – no jargon, no pressure, just genuine support from experts who care about your success.
-            </p>
-
-            {/* Features Pills */}
-            <div className="flex flex-wrap justify-center gap-3 mb-8">
-              {features.map((feature, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.4, delay: 0.1 * index }}
-                  className="inline-flex items-center gap-2 px-4 py-2 backdrop-blur-xl bg-card/40 border border-border/50 rounded-full"
-                >
-                  <feature.icon className="w-4 h-4 text-success" />
-                  <span className="text-sm font-medium text-foreground">{feature.text}</span>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+          {/* Subtitle */}
+          <p className="text-xl lg:text-2xl text-muted-foreground leading-relaxed">
+            We simplify your education loan journey – no jargon, no pressure,
+            just genuine support from experts who care about your success.
+          </p>
         </div>
 
+        {/* Main Grid - No Fade Animation */}
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 lg:gap-12">
-          {/* Form Section */}
-          <motion.div
-            className="xl:col-span-5 order-2 xl:order-1"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <div className="xl:sticky xl:top-8">
-              <div className="relative backdrop-blur-xl bg-card/40 border border-border/50 rounded-2xl overflow-hidden">
+          {/* Contact Form - Sticky */}
+          <div className="xl:col-span-5 order-2 xl:order-1">
+            <div className="xl:sticky xl:top-24">
+              <motion.div
+                className="relative bg-card border border-border rounded-2xl overflow-hidden"
+                whileHover={{
+                  y: -4,
+                  boxShadow: "0 10px 30px -10px hsl(var(--primary) / 0.1)",
+                }}
+                transition={{ duration: 0.3 }}
+              >
                 {/* Form Header */}
-                <div className="relative bg-gradient-to-br from-primary to-primary-light text-primary-foreground p-6 lg:p-8">
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
-                      <Sparkles className="w-5 h-5" />
-                    </div>
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 rounded-full text-xs font-medium">
+                <div className="relative bg-gradient-to-br from-primary to-primary-light text-primary-foreground p-8 lg:p-10">
+                  <div className="flex items-center gap-3 mb-6">
+                    <motion.div
+                      className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center"
+                      whileHover={{ rotate: 180, scale: 1.1 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <Sparkles className="w-6 h-6" />
+                    </motion.div>
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/20 rounded-full text-xs font-semibold">
                       Get Started Today
                     </div>
                   </div>
-                  <h2 className="text-2xl lg:text-3xl font-display font-bold mb-2">
+
+                  <h3 className="text-3xl lg:text-4xl font-bold mb-3">
                     Showcase Your Interest
-                  </h2>
-                  <p className="text-primary-foreground/90 text-sm lg:text-base">
+                  </h3>
+                  <p className="text-primary-foreground/90 text-base">
                     Take the first step towards your global education dreams
                   </p>
                 </div>
 
-                {/* Form Container */}
-                <div className="p-6 lg:p-8" ref={formRef}>
+                {/* Form */}
+                <div className="p-8 lg:p-10" ref={formRef}>
                   <ContactForm />
                 </div>
-              </div>
+              </motion.div>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Cards Grid */}
+          {/* Colorful Reason Cards - No Fade Animation */}
           <div className="xl:col-span-7 order-1 xl:order-2">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
               {edumateReasons.map((reason, idx) => (
-                <motion.div
+                <div
                   key={idx}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.1 * idx }}
-                  className="group cursor-pointer"
                   onMouseEnter={() => setHoveredCard(idx)}
                   onMouseLeave={() => setHoveredCard(null)}
+                  className="group"
                 >
-                  <div className="relative backdrop-blur-xl bg-card/40 border border-border/50 rounded-2xl overflow-hidden h-[360px] hover:border-primary/30 transition-all duration-500 hover:shadow-xl hover:-translate-y-1">
-                    {/* Image */}
-                    <div className="absolute inset-0">
-                      <img
-                        src={reason.image}
-                        alt={reason.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    </div>
+                  <motion.div
+                    className="relative h-full bg-card border border-border rounded-2xl p-8 overflow-hidden"
+                    whileHover={{
+                      y: -12,
+                      scale: 1.02,
+                    }}
+                    animate={{
+                      boxShadow:
+                        hoveredCard === idx
+                          ? `0 20px 40px -15px ${getGlowColor(
+                              reason.hoverGlow
+                            )}`
+                          : "0 0 0 0 rgba(0,0,0,0)",
+                    }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 25,
+                    }}
+                  >
+                    {/* Subtle Background Glow */}
+                    <motion.div
+                      className={`absolute inset-0 bg-gradient-to-br ${reason.iconGradient} opacity-0 group-hover:opacity-5`}
+                      transition={{ duration: 0.5 }}
+                    />
 
-                    {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/70 to-slate-900/40 dark:from-slate-950/95 dark:via-slate-950/70 dark:to-slate-950/40" />
+                    {/* Floating Particles on Hover */}
+                    {hoveredCard === idx && (
+                      <>
+                        {[...Array(3)].map((_, i) => (
+                          <motion.div
+                            key={i}
+                            className={`absolute w-1.5 h-1.5 ${reason.iconBg} opacity-60 rounded-full`}
+                            initial={{
+                              x: Math.random() * 200,
+                              y: Math.random() * 200,
+                              opacity: 0,
+                            }}
+                            animate={{
+                              y: [null, Math.random() * -80 - 20],
+                              opacity: [0, 0.6, 0],
+                            }}
+                            transition={{
+                              duration: 1.5,
+                              delay: i * 0.2,
+                              repeat: Infinity,
+                            }}
+                          />
+                        ))}
+                      </>
+                    )}
 
-                    {/* Icon */}
-                    <div className="absolute top-6 right-6 z-20">
-                      <div className="p-3 rounded-xl bg-primary/90 backdrop-blur-xl shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:bg-primary">
-                        <reason.icon className="w-5 h-5 text-primary-foreground" />
+                    {/* Colorful Icon and Stat */}
+                    <div className="relative flex items-start justify-between mb-6">
+                      <motion.div
+                        className={`p-4 rounded-xl ${reason.iconBg} text-white shadow-lg`}
+                        whileHover={{
+                          rotate: [0, -8, 8, 0],
+                          scale: 1.15,
+                        }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <reason.icon className="w-6 h-6" />
+                      </motion.div>
+
+                      <div className="text-right">
+                        <motion.div
+                          className="text-3xl font-bold text-foreground"
+                          whileHover={{ scale: 1.1 }}
+                        >
+                          {reason.stat}
+                        </motion.div>
+                        <div className="text-xs text-muted-foreground font-medium mt-1">
+                          {reason.statLabel}
+                        </div>
                       </div>
                     </div>
 
                     {/* Content */}
-                    <div className="absolute inset-x-0 bottom-0 p-6 lg:p-8 text-white">
-                      <div className="space-y-3">
-                        <h3 className="text-lg lg:text-xl font-display font-bold leading-tight">
+                    <div className="relative space-y-3">
+                      <div>
+                        <h3 className="text-xl font-semibold text-foreground mb-1">
                           {reason.title}
                         </h3>
-                        <p className="text-white/90 text-sm leading-relaxed line-clamp-3">
-                          {reason.desc}
+                        <p
+                          className={`text-sm font-medium ${reason.textAccent}`}
+                        >
+                          {reason.subtitle}
                         </p>
+                      </div>
 
-                        {/* Progress Bar */}
-                        <div className="h-1 bg-white/20 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full bg-primary rounded-full transition-all duration-500 ${
-                              hoveredCard === idx ? "w-full" : "w-0"
-                            }`}
+                      <p className="text-muted-foreground text-sm leading-relaxed">
+                        {reason.desc}
+                      </p>
+
+                      {/* Animated Progress Bar */}
+                      <div className="pt-4">
+                        <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                          <motion.div
+                            className={`h-full bg-gradient-to-r ${reason.progressGradient} rounded-full`}
+                            initial={{ width: "0%" }}
+                            animate={{
+                              width: hoveredCard === idx ? "100%" : "0%",
+                            }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
                           />
                         </div>
-
-                        {/* Learn More Link */}
-                        <div
-                          className={`flex items-center gap-2 text-sm font-semibold text-primary transition-all duration-300 ${
-                            hoveredCard === idx ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
-                          }`}
-                        >
-                          Learn more
-                          <ArrowUpRight className="w-4 h-4" />
-                        </div>
                       </div>
+
+                      {/* Learn More with Arrow Animation */}
+                      <motion.div
+                        className={`flex items-center gap-2 text-sm font-semibold ${reason.textAccent} pt-2`}
+                        animate={{
+                          x: hoveredCard === idx ? 8 : 0,
+                        }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <span>Learn more</span>
+                        <motion.div
+                          animate={{
+                            x: hoveredCard === idx ? [0, 5, 0] : 0,
+                          }}
+                          transition={{
+                            duration: 0.8,
+                            repeat: hoveredCard === idx ? Infinity : 0,
+                          }}
+                        >
+                          <ArrowRight className="w-4 h-4" />
+                        </motion.div>
+                      </motion.div>
                     </div>
-                  </div>
-                </motion.div>
+
+                    {/* Corner Shine Effect */}
+                    <motion.div
+                      className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-white/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100"
+                      transition={{ duration: 0.5 }}
+                    />
+                  </motion.div>
+                </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Bottom CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="mt-16 text-center backdrop-blur-xl bg-card/30 border border-border/50 rounded-2xl p-8 lg:p-12"
-        >
-          <h3 className="text-2xl lg:text-3xl font-display font-bold text-foreground mb-4">
-            Ready to Start Your Journey?
-          </h3>
-          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            Join thousands of students who trusted Edumate for their education loan needs
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary hover:bg-primary/90 h-11 rounded-md px-8 shadow-lg hover:shadow-xl transition-all bg-gradient-to-r from-accent to-accent-light text-white">
-              Get Started Now
-            </button>
-            <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary hover:bg-primary/90 h-11 rounded-md px-8 shadow-lg hover:shadow-xl transition-all text-white">
-              Talk to Expert
-            </button>
+        {/* Bottom CTA - No Fade Animation */}
+        <div className="mt-12 sm:mt-16 lg:mt-20">
+          <div className="relative bg-card border border-border rounded-2xl p-10 lg:p-16 text-center overflow-hidden">
+            {/* Subtle Background Animation */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-primary/3 via-transparent to-primary/3"
+              animate={{
+                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+              }}
+              transition={{ duration: 15, repeat: Infinity }}
+              style={{ backgroundSize: "200% 100%" }}
+            />
+
+            <div className="relative">
+              {/* Trust Badge */}
+              <motion.div
+                className="inline-flex items-center gap-2 bg-success/10 px-4 py-2.5 rounded-full mb-8"
+                whileHover={{ scale: 1.05 }}
+              >
+                <CheckCircle2 className="w-5 h-5 text-success" />
+                <span className="text-sm font-semibold text-success">
+                  Trusted by 50,000+ Students Worldwide
+                </span>
+              </motion.div>
+
+              {/* CTA Title */}
+              <h3 className="text-3xl lg:text-5xl font-bold text-foreground mb-6">
+                Ready to Start Your{" "}
+                <span className="text-primary">Journey?</span>
+              </h3>
+
+              <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
+                Join thousands of students who trusted Edumate for their
+                education loan needs
+              </p>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <motion.button
+                  className="group px-10 py-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl transition-all duration-300 inline-flex items-center gap-3 shadow-lg hover:shadow-xl hover:shadow-primary/20"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  Get Started Now
+                  <motion.div
+                    animate={{ x: [0, 4, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    <ArrowRight className="w-5 h-5" />
+                  </motion.div>
+                </motion.button>
+
+                <motion.button
+                  className="px-10 py-4 bg-card hover:bg-muted border-2 border-border hover:border-primary/40 text-foreground font-semibold rounded-xl transition-all duration-300"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  Talk to Expert
+                </motion.button>
+              </div>
+            </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

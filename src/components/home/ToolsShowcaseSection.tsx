@@ -1,109 +1,222 @@
-// ToolsShowcaseSection.tsx
 import React from "react";
 import { motion } from "framer-motion";
 import { Calculator, Sparkles, ArrowRight, Check } from "lucide-react";
 
-/**
- * Neo-Fintech Tools showcase.
- * Uses card-premium / glass-card aesthetics to match hero.
- */
-
-type Tool = {
+interface ToolCardProps {
   title: string;
   description: string;
   features: string[];
   icon: React.ReactNode;
+  iconGradient: string;
   href: string;
   ctaText: string;
-  variant: "primary" | "accent";
-};
+  index: number;
+  badge?: string;
+}
 
-const ToolCard: React.FC<{ tool: Tool; index: number }> = ({ tool, index }) => {
-  const isPrimary = tool.variant === "primary";
-
+/**
+ * Mobile-Optimized Tool Card
+ * - Colorful icons (blue/orange)
+ * - Primary buttons (consistent)
+ * - Beautiful mobile spacing
+ */
+const ToolCard: React.FC<ToolCardProps> = ({
+  title,
+  description,
+  features,
+  icon,
+  iconGradient,
+  href,
+  ctaText,
+  index,
+  badge,
+}) => {
   return (
     <motion.a
-      href={tool.href}
-      initial={{ opacity: 0, y: 8 }}
+      href={href}
+      className="group block h-full"
+      initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.08 * index, duration: 0.42 }}
-      className="group block transform"
+      transition={{
+        duration: 0.5,
+        delay: index * 0.15,
+        ease: [0.22, 0.61, 0.36, 1],
+      }}
+      whileHover={{ y: -4 }}
     >
-      <div
-        className={`h-full p-6 rounded-2xl border border-border transition-shadow duration-300 ${isPrimary ? "card-premium" : "card-featured"} hover:shadow-strong`}
-      >
-        <div className="flex items-start gap-4">
-          <div className={`flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center ${isPrimary ? "bg-primary text-primary-foreground" : "bg-accent text-accent-foreground"}`}>
-            {tool.icon}
-          </div>
+      <div className="h-full bg-card rounded-2xl border border-border hover:border-primary/40 transition-all duration-300 hover:shadow-xl p-6 sm:p-8 flex flex-col">
+        {/* Colorful Icon and Badge */}
+        <div className="flex items-start justify-between mb-6">
+          <motion.div
+            className={`inline-flex w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br ${iconGradient} text-white rounded-2xl items-center justify-center shadow-lg`}
+            whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
+            transition={{ duration: 0.5 }}
+          >
+            {icon}
+          </motion.div>
 
-          <div className="flex-1">
-            <h3 className="text-xl font-semibold text-foreground mb-1">{tool.title}</h3>
-            <p className="text-sm text-muted-foreground line-clamp-3">{tool.description}</p>
-
-            <ul className="mt-4 space-y-2">
-              {tool.features.map((f, idx) => (
-                <li key={idx} className="flex items-start gap-3 text-sm text-foreground/85">
-                  <Check className="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
-                  <span>{f}</span>
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-6 pt-4 border-t border-border flex items-center justify-between">
-              <span className={`inline-flex items-center gap-2 text-sm font-medium ${isPrimary ? "text-primary" : "text-accent"}`}>
-                {tool.ctaText}
-                <ArrowRight className="w-4 h-4" />
+          {badge && (
+            <motion.div
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-success/10 rounded-full"
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: index * 0.15 + 0.3 }}
+            >
+              <div className="w-1.5 h-1.5 bg-success rounded-full animate-pulse" />
+              <span className="text-xs font-semibold text-success">
+                {badge}
               </span>
-              <span className="text-xs text-muted-foreground">Free to use</span>
-            </div>
-          </div>
+            </motion.div>
+          )}
         </div>
+
+        {/* Content */}
+        <div className="flex-1 space-y-4 mb-6">
+          <div>
+            <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-3 tracking-tight leading-tight">
+              {title}
+            </h3>
+            <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
+              {description}
+            </p>
+          </div>
+
+          {/* Features - Mobile Optimized */}
+          <ul className="space-y-3">
+            {features.map((feature, idx) => (
+              <motion.li
+                key={idx}
+                className="flex items-start gap-3 text-sm sm:text-base text-foreground/80"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.15 + 0.4 + idx * 0.1 }}
+              >
+                <Check className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
+                <span>{feature}</span>
+              </motion.li>
+            ))}
+          </ul>
+        </div>
+
+        {/* CTA Button - PRIMARY COLOR (Consistent for both!) */}
+        <motion.div
+          className="w-full px-6 py-3.5 sm:py-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl transition-all duration-300 inline-flex items-center justify-center gap-2 shadow-md hover:shadow-lg group-hover:gap-3"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <span>{ctaText}</span>
+          <ArrowRight className="w-5 h-5 transition-transform duration-300" />
+        </motion.div>
       </div>
     </motion.a>
   );
 };
 
+/**
+ * Mobile-Optimized Tools Showcase Section
+ *
+ * Features:
+ * - Colorful icons (AI = Blue, EMI = Orange)
+ * - Consistent primary buttons
+ * - Perfect mobile spacing
+ * - Touch-optimized
+ */
 const ToolsShowcaseSection: React.FC = () => {
-  const tools: Tool[] = [
+  const tools = [
     {
       title: "AI Eligibility Checker",
-      description: "Instant AI assessment — find your eligibility before applying. No credit impact.",
-      features: ["Instant results", "Personalized suggestions", "No credit hit", "Secure & private"],
-      icon: <Sparkles className="w-6 h-6" />,
-      href: "/resources/tools/ai-loan-eligibility-checker",
+      description:
+        "Instant AI assessment — find your eligibility before applying. No credit hit.",
+      features: [
+        "Instant results",
+        "Personalized suggestions",
+        "No credit hit",
+        "Secure & private",
+      ],
+      icon: <Sparkles className="w-7 h-7 sm:w-8 sm:h-8" />,
+      iconGradient: "from-blue-500 to-blue-600", // Blue gradient
+      href: "https://edumateglobal.com/resources/tools/ai-loan-eligibility-checker",
       ctaText: "Check Eligibility",
-      variant: "primary",
+      badge: "Free to use",
     },
     {
       title: "EMI Calculator",
-      description: "Compare repayment plans and optimize for interest savings with multiple scenarios.",
-      features: ["Real-time EMI", "Multiple scenarios", "Amortization table", "Export schedule"],
-      icon: <Calculator className="w-6 h-6" />,
-      href: "/resources/tools/loan-emi-calculator",
+      description:
+        "Compare repayment options and plan your finances with our smart EMI calculator.",
+      features: [
+        "Real-time calculations",
+        "Multiple scenarios",
+        "Interest breakdown",
+        "Payment schedule",
+      ],
+      icon: <Calculator className="w-7 h-7 sm:w-8 sm:h-8" />,
+      iconGradient: "from-orange-500 to-orange-600", // Orange gradient
+      href: "https://edumateglobal.com/resources/tools/loan-emi-calculator",
       ctaText: "Calculate EMI",
-      variant: "accent",
+      badge: "Free to use",
     },
   ];
 
   return (
-      <div className="max-w-6xl mx-auto px-6 sm:px-8">
-        <div className="max-w-3xl mb-12">
-          <div className="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-primary/10 mb-4">
-            <div className="w-2.5 h-2.5 bg-primary rounded-full" />
-            <span className="text-xs font-medium text-primary uppercase tracking-wide">Free Tools</span>
-          </div>
+    <section className="py-12 sm:py-16 lg:py-20 bg-background">
+      <div className="container mx-auto px-4 sm:px-6">
+        {/* Section Header - Mobile Optimized */}
+        <div className="max-w-3xl mb-10 sm:mb-12 lg:mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-6">
+              <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+              <span className="text-xs sm:text-sm font-semibold text-primary uppercase tracking-wide">
+                Free Tools
+              </span>
+            </div>
 
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">Smart tools for better decisions</h2>
-          <p className="text-lg text-muted-foreground">Use our AI-powered tools to check eligibility and plan repayments with confidence.</p>
+            {/* Title - Mobile Optimized */}
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 sm:mb-6 tracking-tight leading-tight">
+              Smart Tools for Better Decisions
+            </h2>
+
+            {/* Description - Mobile Optimized */}
+            <p className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed">
+              Use our AI-powered tools to check your eligibility and calculate
+              monthly repayments before applying for your education loan.
+            </p>
+          </motion.div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {tools.map((t, i) => (
-            <ToolCard key={i} tool={t} index={i} />
+        {/* Tools Grid - Mobile Optimized Spacing */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+          {tools.map((tool, index) => (
+            <ToolCard key={index} {...tool} index={index} />
           ))}
         </div>
+
+        {/* Bottom Trust Banner - Mobile Optimized */}
+        <motion.div
+          className="mt-12 sm:mt-16 lg:mt-20 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+        >
+          <div className="inline-flex flex-col sm:flex-row items-center gap-3 sm:gap-4 px-6 py-4 bg-card border border-border rounded-2xl">
+            <div className="flex items-center gap-2">
+              <Check className="w-5 h-5 text-success" />
+              <span className="text-sm sm:text-base font-medium text-foreground">
+                Trusted by 50,000+ students
+              </span>
+            </div>
+            <div className="hidden sm:block w-1 h-1 bg-border rounded-full" />
+            <span className="text-sm sm:text-base text-muted-foreground">
+              100% Free • No Hidden Charges
+            </span>
+          </div>
+        </motion.div>
       </div>
+    </section>
   );
 };
 

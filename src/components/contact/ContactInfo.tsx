@@ -1,11 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { motion, useInView } from "framer-motion";
 import {
   Mail,
   Phone,
   MapPin,
-  Copy,
-  Check,
   Clock,
   Users,
   Award,
@@ -23,30 +21,19 @@ interface ContactInfoProps {
 }
 
 /**
- * Contact Information Component - ChatJourney Theme Style
+ * Contact Information Component - No Copy Buttons
  *
  * Features:
  * - Clean theme-based design (no gradients)
- * - Copy-to-clipboard functionality
+ * - NO copy-to-clipboard functionality
  * - Staggered reveal animations
  * - Lucide React icons only
  * - Fully responsive for all devices
  * - Dark mode support
  */
 const ContactInfo: React.FC<ContactInfoProps> = ({ items }) => {
-  const [copied, setCopied] = useState<string | null>(null);
   const ref = React.useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-  const handleCopy = async (text: string, index: number) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopied(index.toString());
-      setTimeout(() => setCopied(null), 2000);
-    } catch (err) {
-      console.error("Failed to copy text: ", err);
-    }
-  };
 
   // Icon mapping
   const iconMap: Record<
@@ -192,42 +179,22 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ items }) => {
                       {isEmail ? (
                         <a
                           href={`mailto:${item.value}`}
-                          className="block text-sm sm:text-base text-muted-foreground hover:text-primary mb-3 sm:mb-4 leading-relaxed transition-colors break-all"
+                          className="block text-sm sm:text-base text-muted-foreground hover:text-primary leading-relaxed transition-colors break-all"
                         >
                           {item.value}
                         </a>
                       ) : isPhone ? (
                         <a
                           href={`tel:${item.value}`}
-                          className="block text-sm sm:text-base text-muted-foreground hover:text-primary mb-3 sm:mb-4 leading-relaxed transition-colors"
+                          className="block text-sm sm:text-base text-muted-foreground hover:text-primary leading-relaxed transition-colors"
                         >
                           {item.value}
                         </a>
                       ) : (
-                        <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4 leading-relaxed">
+                        <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                           {item.value}
                         </p>
                       )}
-
-                      {/* Copy Button */}
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => handleCopy(item.value, index)}
-                        className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-secondary hover:bg-primary/10 text-secondary-foreground hover:text-primary rounded-lg sm:rounded-xl transition-all duration-300 text-xs sm:text-sm font-medium shadow-sm hover:shadow-md"
-                      >
-                        {copied === index.toString() ? (
-                          <>
-                            <Check className="w-3 h-3 sm:w-4 sm:h-4" />
-                            <span>Copied!</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
-                            <span>Copy</span>
-                          </>
-                        )}
-                      </motion.button>
                     </div>
                   </motion.div>
                 );
@@ -265,41 +232,20 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ items }) => {
                       {addressItem.value}
                     </p>
 
-                    {/* Action Buttons */}
-                    <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 justify-center">
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => handleCopy(addressItem.value, 999)}
-                        className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-secondary hover:bg-primary/10 text-secondary-foreground hover:text-primary rounded-lg sm:rounded-xl transition-all duration-300 text-xs sm:text-sm font-medium shadow-sm hover:shadow-md"
-                      >
-                        {copied === "999" ? (
-                          <>
-                            <Check className="w-3 h-3 sm:w-4 sm:h-4" />
-                            <span>Copied!</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
-                            <span>Copy</span>
-                          </>
-                        )}
-                      </motion.button>
-
-                      <motion.a
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        href={`https://maps.google.com/?q=${encodeURIComponent(
-                          addressItem.value
-                        )}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 bg-primary text-primary-foreground rounded-lg sm:rounded-xl transition-all duration-300 text-xs sm:text-sm font-semibold shadow-md hover:shadow-lg"
-                      >
-                        <MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
-                        <span>View on Maps</span>
-                      </motion.a>
-                    </div>
+                    {/* View on Maps Button - No Copy */}
+                    <motion.a
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      href={`https://maps.google.com/?q=${encodeURIComponent(
+                        addressItem.value
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 bg-primary text-primary-foreground rounded-lg sm:rounded-xl transition-all duration-300 text-xs sm:text-sm font-semibold shadow-md hover:shadow-lg"
+                    >
+                      <MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
+                      <span>View on Maps</span>
+                    </motion.a>
                   </div>
                 </motion.div>
               )}

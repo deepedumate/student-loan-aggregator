@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+} from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Clock,
@@ -7,13 +13,11 @@ import {
   TrendingUp,
   Users,
   Shield,
-  // CheckCircle,
   ArrowLeft,
   ArrowRight,
 } from "lucide-react";
-import ToolsShowcaseSection from "./Toolsshowcasesection";
 
-// ✅ Constants for better maintainability
+// Constants
 const ANIMATION_DELAYS = {
   VISIBILITY_DELAY: 100,
   CAROUSEL_INTERVAL: 5000,
@@ -29,7 +33,6 @@ const METRICS = {
   LENDERS_COUNT: "12+",
 } as const;
 
-// ✅ Types for better TypeScript support
 interface Country {
   code: string;
   name: string;
@@ -45,31 +48,23 @@ interface Insight {
   ariaLabel: string;
 }
 
-// interface StaticContent {
-//   mainTitle: string;
-//   subTitle: string;
-// }
-
 /**
- * Premium Fintech Hero Section Component
- * Features:
- * - Glassmorphic design with backdrop blur
- * - Typewriter animation effect
- * - Animated country flags carousel
- * - Statistics cards with hover effects
- * - Insights carousel with smooth transitions
- * - Framer Motion animations throughout
- * - Responsive design
+ * Clean Premium Fintech Hero Section
+ * - Matches existing design aesthetic
+ * - Fixed right sidebar visibility
+ * - Glassmorphic cards
+ * - Clean animations
  */
-const HeroSection= () => {
+const HeroSection = () => {
   const [currentInsight, setCurrentInsight] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
-  const [userPrefersReducedMotion, setUserPrefersReducedMotion] = useState(false);
+  const [userPrefersReducedMotion, setUserPrefersReducedMotion] =
+    useState(false);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [currentText, setCurrentText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // ✅ Check for reduced motion preference
+  // Check for reduced motion preference
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     setUserPrefersReducedMotion(mediaQuery.matches);
@@ -82,7 +77,7 @@ const HeroSection= () => {
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
-  // ✅ Optimized countries data
+  // Countries data
   const countries: Country[] = useMemo(
     () => [
       { code: "US", name: "United States", flag: "/images/flags2/usa.jpg" },
@@ -99,7 +94,7 @@ const HeroSection= () => {
     []
   );
 
-  // ✅ Enhanced insights with accessibility labels
+  // Insights data
   const insights: Insight[] = useMemo(
     () => [
       {
@@ -109,7 +104,8 @@ const HeroSection= () => {
           "Our AI continuously monitors interest rates across financial institutions.",
         data: "Updated every 15 minutes",
         icon: "📊",
-        ariaLabel: "Market intelligence showing real-time rates from over 12+ lenders",
+        ariaLabel:
+          "Market intelligence showing real-time rates from over 12+ lenders",
       },
       {
         title: "Approval Analytics",
@@ -118,7 +114,8 @@ const HeroSection= () => {
           "Advanced algorithms pre-qualify candidates based on academic performance.",
         data: `Based on ${METRICS.STUDENTS_FUNDED} applications`,
         icon: "🎯",
-        ariaLabel: "Approval analytics with 99.2% success rate for qualified applicants",
+        ariaLabel:
+          "Approval analytics with 99.2% success rate for qualified applicants",
       },
       {
         title: "Speed Optimization",
@@ -132,10 +129,12 @@ const HeroSection= () => {
       {
         title: "Cost Transparency",
         metric: "₹0 hidden charges",
-        description: "Edumate doesn't charge anything. Complete fee transparency.",
+        description:
+          "Edumate doesn't charge anything. Complete fee transparency.",
         data: "Save ₹15,000+ on average",
         icon: "💎",
-        ariaLabel: "Cost transparency with zero processing fees and hidden charges",
+        ariaLabel:
+          "Cost transparency with zero processing fees and hidden charges",
       },
     ],
     []
@@ -152,7 +151,7 @@ const HeroSection= () => {
     []
   );
 
-  // ✅ Typewriter effect
+  // Typewriter effect
   useEffect(() => {
     if (userPrefersReducedMotion) {
       setCurrentText(words[0]);
@@ -177,13 +176,21 @@ const HeroSection= () => {
           }
         }
       },
-      isDeleting ? ANIMATION_DELAYS.TYPEWRITER_BACK_SPEED : ANIMATION_DELAYS.TYPEWRITER_SPEED
+      isDeleting
+        ? ANIMATION_DELAYS.TYPEWRITER_BACK_SPEED
+        : ANIMATION_DELAYS.TYPEWRITER_SPEED
     );
 
     return () => clearTimeout(timeout);
-  }, [currentText, isDeleting, currentWordIndex, words, userPrefersReducedMotion]);
+  }, [
+    currentText,
+    isDeleting,
+    currentWordIndex,
+    words,
+    userPrefersReducedMotion,
+  ]);
 
-  // ✅ Optimized carousel effect
+  // Carousel effect
   useEffect(() => {
     if (!isVisible || userPrefersReducedMotion) return;
 
@@ -194,14 +201,17 @@ const HeroSection= () => {
     return () => clearInterval(interval);
   }, [isVisible, insights.length, userPrefersReducedMotion]);
 
-  // ✅ Intersection Observer for performance
+  // Intersection Observer
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          const timer = setTimeout(() => setIsVisible(true), ANIMATION_DELAYS.VISIBILITY_DELAY);
+          const timer = setTimeout(
+            () => setIsVisible(true),
+            ANIMATION_DELAYS.VISIBILITY_DELAY
+          );
           return () => clearTimeout(timer);
         }
       },
@@ -215,7 +225,7 @@ const HeroSection= () => {
     return () => observer.disconnect();
   }, []);
 
-  // ✅ Navigation handlers
+  // Navigation handlers
   const handlePrevInsight = useCallback(() => {
     setCurrentInsight((prev) => (prev - 1 + insights.length) % insights.length);
   }, [insights.length]);
@@ -223,37 +233,6 @@ const HeroSection= () => {
   const handleNextInsight = useCallback(() => {
     setCurrentInsight((prev) => (prev + 1) % insights.length);
   }, [insights.length]);
-
-  // Statistics data
-  const stats = useMemo(
-    () => [
-      {
-        icon: <Users className="w-5 h-5 sm:w-6 sm:h-6" />,
-        value: METRICS.STUDENTS_FUNDED,
-        label: "Students Funded",
-        color: "from-blue-500 to-cyan-500",
-      },
-      {
-        icon: <IndianRupee className="w-5 h-5 sm:w-6 sm:h-6" />,
-        value: METRICS.TOTAL_DISBURSED,
-        label: "Loans Disbursed",
-        color: "from-green-500 to-emerald-500",
-      },
-      {
-        icon: <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6" />,
-        value: METRICS.SUCCESS_RATE,
-        label: "Success Rate",
-        color: "from-purple-500 to-pink-500",
-      },
-      {
-        icon: <Clock className="w-5 h-5 sm:w-6 sm:h-6" />,
-        value: METRICS.PROCESSING_TIME,
-        label: "Avg Processing",
-        color: "from-orange-500 to-red-500",
-      },
-    ],
-    []
-  );
 
   // Feature cards data
   const features = useMemo(
@@ -281,12 +260,13 @@ const HeroSection= () => {
   );
 
   return (
-    <div
-      className={`relative min-h-screen bg-gradient-to-br from-background via-muted/30 to-background overflow-hidden `}
+    <section
+      ref={sectionRef}
+      className="relative min-h-screen bg-gradient-to-br from-background via-muted/30 to-background overflow-hidden"
     >
       {/* Animated background patterns */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]"></div>
-      
+      <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]" />
+
       {/* Floating gradient orbs */}
       <motion.div
         className="absolute top-20 right-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl"
@@ -317,13 +297,14 @@ const HeroSection= () => {
       {/* Main Content */}
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 lg:pt-32 pb-16">
         <div className="max-w-7xl mx-auto">
-          <main className="grid lg:grid-cols-[1fr,400px] xl:grid-cols-[1fr,450px] gap-8 lg:gap-12 items-start">
-            {/* Left Column - Hero Content */}
+          {/* FIXED GRID - This was the issue! */}
+          <main className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            {/* Left Column - Hero Content (8 columns on desktop) */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="space-y-6 sm:space-y-8"
+              className="lg:col-span-8 space-y-6 sm:space-y-8"
             >
               {/* Trust Badge */}
               <motion.div
@@ -342,7 +323,7 @@ const HeroSection= () => {
                 </span>
               </motion.div>
 
-              {/* Main Heading with Typewriter */}
+              {/* Main Heading */}
               <div className="space-y-3 sm:space-y-4">
                 <motion.h1
                   initial={{ opacity: 0, y: 20 }}
@@ -373,51 +354,11 @@ const HeroSection= () => {
                 </motion.div>
               </div>
 
-              {/* Subtitle */}
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-                className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-2xl"
-              >
-                Access exclusive education loan rates, get instant approvals, and make
-                data-driven decisions with our comprehensive comparison platform.
-              </motion.p>
-
-              {/* Statistics Cards */}
-              {/* <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
-                className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 pt-4 sm:pt-6"
-              >
-                {stats.map((stat, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.9 + index * 0.1 }}
-                    whileHover={{ y: -5, scale: 1.05 }}
-                    className="glass-card p-4 rounded-2xl shadow-soft hover:shadow-md transition-all duration-300 group"
-                  >
-                    <div className={`inline-flex p-2 rounded-xl bg-gradient-to-br ${stat.color} text-white mb-2`}>
-                      {stat.icon}
-                    </div>
-                    <div className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">
-                      {stat.value}
-                    </div>
-                    <div className="text-xs sm:text-sm text-muted-foreground">
-                      {stat.label}
-                    </div>
-                  </motion.div>
-                ))}
-              </motion.div> */}
-
               {/* Feature Cards */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.2 }}
+                transition={{ delay: 0.8 }}
                 className="grid sm:grid-cols-3 gap-4 pt-4"
               >
                 {features.map((feature, index) => (
@@ -425,7 +366,7 @@ const HeroSection= () => {
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.3 + index * 0.1 }}
+                    transition={{ delay: 0.9 + index * 0.1 }}
                     whileHover={{ y: -3 }}
                     className={`glass-card p-4 rounded-xl shadow-soft hover:shadow-md transition-all duration-300 bg-gradient-to-br ${feature.gradient}`}
                   >
@@ -446,11 +387,11 @@ const HeroSection= () => {
                 ))}
               </motion.div>
 
-              {/* Country Flags Carousel */}
+              {/* Country Flags */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.5 }}
+                transition={{ delay: 1.2 }}
                 className="pt-6"
               >
                 <div className="glass-card p-6 rounded-2xl shadow-soft">
@@ -463,7 +404,7 @@ const HeroSection= () => {
                         key={country.code}
                         initial={{ opacity: 0, scale: 0 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 1.6 + index * 0.05 }}
+                        transition={{ delay: 1.3 + index * 0.05 }}
                         whileHover={{ scale: 1.1, rotate: 5 }}
                         className="group relative"
                       >
@@ -485,127 +426,110 @@ const HeroSection= () => {
               </motion.div>
             </motion.div>
 
-            {/* Right Column - Insights Carousel */}
+            {/* Right Column - Insights Carousel (4 columns on desktop) - FIXED! */}
             <motion.aside
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
-              className="lg:sticky lg:top-32"
+              className="lg:col-span-4 lg:sticky lg:top-32"
             >
-              {isVisible && (
-                <div className="glass-card p-6 rounded-2xl shadow-lg">
-                  <header className="mb-6">
-                    <h2 className="text-xl font-bold text-foreground font-heading">
-                      Platform Intelligence
-                    </h2>
-                    <p className="text-muted-foreground text-sm mt-1">
-                      Data-driven insights
-                    </p>
-                  </header>
+              <div className="glass-card p-6 rounded-2xl shadow-lg">
+                <header className="mb-6">
+                  <h2 className="text-xl font-bold text-foreground font-heading">
+                    Platform Intelligence
+                  </h2>
+                  <p className="text-muted-foreground text-sm mt-1">
+                    Data-driven insights
+                  </p>
+                </header>
 
-                  {/* Insights Carousel */}
-                  <div className="relative min-h-[360px] overflow-hidden rounded-xl bg-gradient-to-br from-primary/5 to-accent/5">
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={currentInsight}
-                        initial={{ opacity: 0, x: 100 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -100 }}
-                        transition={{ duration: 0.5 }}
-                        className="p-6 h-full flex flex-col justify-between gap-4"
-                      >
-                        <div className="flex-1">
-                          <div className="flex items-start gap-3 mb-4">
-                            <div className="text-2xl" aria-hidden="true">
-                              {insights[currentInsight].icon}
-                            </div>
-                            <div className="text-sm font-semibold text-primary uppercase tracking-wide">
-                              {insights[currentInsight].title}
-                            </div>
+                {/* Insights Carousel */}
+                <div className="relative min-h-[360px] overflow-hidden rounded-xl bg-gradient-to-br from-primary/5 to-accent/5">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={currentInsight}
+                      initial={{ opacity: 0, x: 100 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -100 }}
+                      transition={{ duration: 0.5 }}
+                      className="p-6 h-full flex flex-col justify-between gap-4"
+                    >
+                      <div className="flex-1">
+                        <div className="flex items-start gap-3 mb-4">
+                          <div className="text-2xl" aria-hidden="true">
+                            {insights[currentInsight].icon}
                           </div>
-
-                          <div className="mb-4">
-                            <div className="text-xl font-bold text-foreground mb-2">
-                              {insights[currentInsight].metric}
-                            </div>
-                            <p className="text-sm text-muted-foreground">
-                              {insights[currentInsight].description}
-                            </p>
+                          <div className="text-sm font-semibold text-primary uppercase tracking-wide">
+                            {insights[currentInsight].title}
                           </div>
                         </div>
 
-                        <div className="glass-card p-4 rounded-xl">
-                          <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-                            Data point
+                        <div className="mb-4">
+                          <div className="text-xl font-bold text-foreground mb-2">
+                            {insights[currentInsight].metric}
                           </div>
-                          <div className="text-sm font-semibold text-foreground">
-                            {insights[currentInsight].data}
-                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            {insights[currentInsight].description}
+                          </p>
                         </div>
-                      </motion.div>
-                    </AnimatePresence>
-                  </div>
+                      </div>
 
-                  {/* Navigation Controls */}
-                  <div className="flex items-center justify-center gap-2 mt-4">
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      onClick={handlePrevInsight}
-                      className="p-3 bg-muted hover:bg-muted-foreground/20 rounded-xl transition-colors"
-                      aria-label="Previous insight"
-                    >
-                      <ArrowLeft className="w-5 h-5" />
-                    </motion.button>
-
-                    {/* Dots Indicator */}
-                    <div className="flex gap-2">
-                      {insights.map((_, index) => (
-                        <button
-                          key={index}
-                          onClick={() => setCurrentInsight(index)}
-                          className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                            index === currentInsight
-                              ? "bg-primary w-6"
-                              : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
-                          }`}
-                          aria-label={`Go to insight ${index + 1}`}
-                        />
-                      ))}
-                    </div>
-
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      onClick={handleNextInsight}
-                      className="p-3 bg-primary hover:bg-primary-light text-primary-foreground rounded-xl transition-colors"
-                      aria-label="Next insight"
-                    >
-                      <ArrowRight className="w-5 h-5" />
-                    </motion.button>
-                  </div>
+                      <div className="glass-card p-4 rounded-xl">
+                        <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                          Data point
+                        </div>
+                        <div className="text-sm font-semibold text-foreground">
+                          {insights[currentInsight].data}
+                        </div>
+                      </div>
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
-              )}
+
+                {/* Navigation Controls */}
+                <div className="flex items-center justify-center gap-2 mt-4">
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={handlePrevInsight}
+                    className="p-3 bg-muted hover:bg-muted-foreground/20 rounded-xl transition-colors"
+                    aria-label="Previous insight"
+                  >
+                    <ArrowLeft className="w-5 h-5" />
+                  </motion.button>
+
+                  {/* Dots Indicator */}
+                  <div className="flex gap-2">
+                    {insights.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentInsight(index)}
+                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                          index === currentInsight
+                            ? "bg-primary w-6"
+                            : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                        }`}
+                        aria-label={`Go to insight ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={handleNextInsight}
+                    className="p-3 bg-primary hover:bg-primary-light text-primary-foreground rounded-xl transition-colors"
+                    aria-label="Next insight"
+                  >
+                    <ArrowRight className="w-5 h-5" />
+                  </motion.button>
+                </div>
+              </div>
             </motion.aside>
           </main>
         </div>
-
-        {/* Footer Info */}
-        <motion.footer
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.8 }}
-          className="border-t border-border/30 mt-16"
-        >
-          <div className="max-w-7xl mx-auto py-8 text-center">
-            <p className="text-muted-foreground text-sm">
-              Trusted by students at 3000+ Pre Approved Universities | 30+ Countries
-              Supported | Loans available for UG, Certification, Executive & PG Programs
-            </p>
-          </div>
-        </motion.footer>
       </div>
-    </div>
+    </section>
   );
 };
 

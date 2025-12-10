@@ -33,7 +33,7 @@ interface LenderDiscoveryStageProps {
   onLenderSelected: (selection: SelectedLender) => void;
 }
 
-export function LenderDiscoveryStage({
+export default function LenderDiscoveryStage({
   profile,
   eligibilityScore,
   onLenderSelected,

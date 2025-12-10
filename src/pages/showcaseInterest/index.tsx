@@ -1,25 +1,14 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, CheckCircle2 } from "lucide-react";
-import HomeHeroSection from "./HomeHeroSection";
-import WhyEdumate from "./WhyEdumate";
-import ProcessSteps from "./ProcessStep";
-import StudyAbroadSection from "./StudyAbrodSection";
-import LendingPartnersSlider from "./LendingPartnerSlider";
-import UniversityLogosSection from "./UniversityLogosSection";
+import HomeHeroSection from "@/components/showcaseInterest/HomeHeroSection";
+import WhyEdumate from "@/components/home/Whyedumate";
+import ProcessSteps from "@/components/showcaseInterest/ProcessStep";
+import StudyAbroadSection from "@/components/showcaseInterest/StudyAbroadSection";
+import UniversityLogosSection from "@/components/showcaseInterest/UniversityLogosSection";
+import LendingPartnersSlider from "@/components/showcaseInterest/LendingPartnersSlider";
 
-/**
- * MAIN HOME PAGE COMPONENT - ChatJourney Theme Style
- *
- * Features:
- * - Clean theme-based design (no gradients)
- * - Smooth animations
- * - Lucide React icons only
- * - Fully responsive with mobile-left/desktop-center alignment
- * - Dark mode support
- */
-
-const ShowcaseInterest = () => {
+const ShowcaseInterestPage = () => {
   // Animation variants
   const sectionVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -291,4 +280,4 @@ const ScrollToTop = () => {
   );
 };
 
-export default ShowcaseInterest;
+export default ShowcaseInterestPage;

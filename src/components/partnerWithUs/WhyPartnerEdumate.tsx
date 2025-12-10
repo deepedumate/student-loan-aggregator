@@ -168,14 +168,13 @@ const WhyPartnerEdumate = () => {
           className="text-left lg:text-center mb-12 sm:mb-16"
         >
           {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={isInView ? { opacity: 1, scale: 1 } : {}}
-            transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 backdrop-blur-xl bg-card/40 border border-border/50 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium mb-4 sm:mb-6 shadow-sm"
-          >
-            <Handshake className="w-4 h-4 text-primary" />
-            <span className="text-foreground">Partnership Benefits</span>
+          <motion.div className="flex justify-start lg:justify-center">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 text-primary dark:text-primary-light px-4 py-2 rounded-full text-sm font-medium mb-6">
+              <Sparkles className="w-4 h-4 text-primary" />
+              <span className="text-sm font-semibold text-primary">
+                Partnership Benefits
+              </span>
+            </div>
           </motion.div>
 
           {/* Main Heading */}

@@ -20,7 +20,7 @@ interface ApplicationTrackingStageProps {
   onViewSummary: () => void;
 }
 
-export function ApplicationTrackingStage({
+export default function ApplicationTrackingStage({
   application,
   onViewSummary,
 }: ApplicationTrackingStageProps) {

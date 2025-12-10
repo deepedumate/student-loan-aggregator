@@ -12,6 +12,7 @@ import {
   Train,
   Bus,
   Car,
+  ArrowRight,
 } from "lucide-react";
 
 /**
@@ -30,24 +31,6 @@ const ContactMap: React.FC = () => {
   const [mapLoaded, setMapLoaded] = useState(false);
   const ref = React.useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-  const transportOptions = [
-    {
-      icon: Train,
-      type: "Metro",
-      info: "Lower Parel Station - 5 min walk",
-    },
-    {
-      icon: Bus,
-      type: "Bus",
-      info: "Multiple routes available",
-    },
-    {
-      icon: Car,
-      type: "Taxi",
-      info: "Uber/Ola pickup point nearby",
-    },
-  ];
 
   const locationFeatures = [
     {
@@ -253,55 +236,6 @@ const ContactMap: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Transport Options */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-12 sm:mb-16"
-        >
-          <div className="text-left lg:text-center mb-6 sm:mb-8">
-            <h3 className="text-xl sm:text-2xl font-bold font-heading text-foreground mb-2">
-              Easy to Reach
-            </h3>
-            <p className="text-sm sm:text-base text-muted-foreground max-w-2xl lg:mx-auto">
-              Multiple transport options available
-            </p>
-          </div>
-
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
-          >
-            {transportOptions.map((option, index) => (
-              <motion.div
-                key={index}
-                variants={itemVariants}
-                whileHover={{ y: -5, scale: 1.02 }}
-                className="border border-border rounded-xl sm:rounded-2xl p-5 sm:p-6 bg-card shadow-sm hover:shadow-md transition-all duration-300 text-center"
-              >
-                <motion.div
-                  whileHover={{ rotate: [0, -10, 10, 0] }}
-                  transition={{ duration: 0.5 }}
-                  className="w-12 h-12 sm:w-14 sm:h-14 bg-primary/10 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4"
-                >
-                  <option.icon className="w-6 h-6 sm:w-7 sm:h-7 text-primary" />
-                </motion.div>
-                <h4 className="text-base sm:text-lg font-semibold text-foreground mb-2">
-                  {option.type}
-                </h4>
-                <p className="text-xs sm:text-sm text-muted-foreground">
-                  {option.info}
-                </p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </motion.div>
-
         {/* Virtual Meeting CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -310,11 +244,11 @@ const ContactMap: React.FC = () => {
           transition={{ duration: 0.6 }}
         >
           <motion.div
-            whileHover={{ scale: 1.01 }}
-            className="border-2 border-border rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10 bg-card shadow-lg hover:shadow-xl hover:border-primary/20 transition-all duration-300 max-w-md sm:max-w-xl lg:max-w-4xl mx-auto"
+            whileHover={{ scale: 1.01, y: -2 }}
+            className="border-2 border-border rounded-3xl p-8 sm:p-10 lg:p-12 bg-card shadow-lg hover:shadow-xl hover:border-primary/20 transition-all duration-300 max-w-md sm:max-w-2xl lg:max-w-4xl mx-auto"
           >
             <div className="text-center">
-              {/* Icon */}
+              {/* Simple Icon */}
               <motion.div
                 animate={{
                   rotate: [0, 5, -5, 0],
@@ -325,51 +259,28 @@ const ContactMap: React.FC = () => {
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-                className="w-14 h-14 sm:w-16 sm:h-16 bg-primary/10 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-5 md:mb-6"
+                className="w-14 h-14 sm:w-16 sm:h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-5"
               >
                 <Video className="w-7 h-7 sm:w-8 sm:h-8 text-primary" />
               </motion.div>
 
-              <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold font-heading text-foreground mb-3 sm:mb-4 px-2">
+              {/* Title */}
+              <h3 className="text-2xl sm:text-3xl font-bold font-heading text-foreground mb-3 px-2">
                 Prefer Virtual Meetings?
               </h3>
-              <p className="text-sm sm:text-base lg:text-lg text-muted-foreground mb-6 sm:mb-7 md:mb-8 max-w-2xl mx-auto leading-relaxed px-2">
-                We also offer online consultations for your convenience.
+
+              {/* Description */}
+              <p className="text-base sm:text-lg text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed px-2">
                 Schedule a video call with our education loan experts from
                 anywhere.
               </p>
 
-              {/* Benefits List */}
-              <div className="flex flex-col gap-3 sm:gap-3.5 mb-6 sm:mb-7 md:mb-8 max-w-sm mx-auto">
-                {[
-                  { icon: CheckCircle2, text: "Same expert guidance" },
-                  { icon: Calendar, text: "Flexible scheduling" },
-                  { icon: MessageSquare, text: "Screen sharing support" },
-                ].map((benefit, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    className="flex items-center gap-3 text-left"
-                  >
-                    <div className="w-8 h-8 sm:w-9 sm:h-9 bg-success/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <benefit.icon className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-success" />
-                    </div>
-                    <span className="text-sm sm:text-base text-muted-foreground font-medium">
-                      {benefit.text}
-                    </span>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* CTA Buttons */}
-              <div className="flex flex-col gap-3 sm:gap-3.5 max-w-sm mx-auto px-2">
+              {/* Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto px-2">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full px-6 py-3.5 sm:py-4 bg-primary text-primary-foreground font-bold rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2.5"
+                  className="flex-1 px-6 py-3.5 bg-primary text-primary-foreground font-bold rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
                   onClick={() =>
                     window.open(
                       "https://calendly.com/priyank-edumateglobal/speak-to-our-financing-expert?month=2025-07",
@@ -378,20 +289,16 @@ const ContactMap: React.FC = () => {
                     )
                   }
                 >
-                  <Video className="w-5 h-5 flex-shrink-0" />
-                  <span className="text-base whitespace-nowrap">
-                    Schedule Video Call
-                  </span>
-                  <Calendar className="w-5 h-5 flex-shrink-0" />
+                  <span className="text-base">Schedule Consultation</span>
+                  <ArrowRight className="w-5 h-5 flex-shrink-0" />
                 </motion.button>
 
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full px-6 py-3.5 sm:py-4 bg-card border-2 border-border hover:border-primary/50 text-foreground font-semibold rounded-xl hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2.5"
+                  className="flex-1 px-6 py-3.5 bg-card border-2 border-border hover:border-primary/50 text-foreground font-semibold rounded-xl hover:shadow-md transition-all duration-300"
                   onClick={() => (window.location.href = "tel:+917208743607")}
                 >
-                  <Phone className="w-5 h-5 flex-shrink-0" />
                   <span className="text-base">Call Now</span>
                 </motion.button>
               </div>

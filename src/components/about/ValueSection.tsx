@@ -78,9 +78,11 @@ const ValueSection: React.FC = () => {
           className="text-left lg:text-center mb-12 sm:mb-16"
         >
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold mb-4 sm:mb-6 shadow-sm">
-            <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            <span>Our Values</span>
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 text-primary dark:text-primary-light px-4 py-2 rounded-full text-sm font-medium mb-6">
+            <Heart className="w-4 h-4 text-primary" />
+            <span className="text-sm font-semibold text-primary">
+              Our Values
+            </span>
           </div>
 
           {/* Section title */}

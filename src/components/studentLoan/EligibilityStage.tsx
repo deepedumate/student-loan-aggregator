@@ -12,7 +12,7 @@ interface EligibilityStageProps {
   onComplete: (score: EligibilityScore) => void;
 }
 
-export function EligibilityStage({
+export default function EligibilityStage({
   profile,
   onComplete,
 }: EligibilityStageProps) {

@@ -3,7 +3,6 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-// import { ThemeProvider } from "next-themes";
 import { Provider } from "react-redux";
 import { store } from "@/store";
 
@@ -29,12 +28,12 @@ import {
   Notifications,
   Profile,
 } from "./pages/student";
-import ContactUsPage from "./components/contact/ContactUs";
-import AboutPage from "./components/about/AboutUsPage";
-import FAQPage from "./components/faq/FaqPage";
-import ShowcaseInterest from "./components/showcase-interest/ShowcaseInterest";
-import StudentLoan from "./components/student-loan/StudentLoan";
-import PartnerUs from "./components/partnerWithUs/PartnerUs";
+import AboutPage from "./pages/about";
+import FAQPage from "./pages/faq";
+import PartnerWithUsPage from "./pages/partnerWithUs";
+import ContactUsPage from "./pages/contact";
+import ShowcaseInterest from "./pages/showcaseInterest";
+import StudentLoan from "./pages/studentLoan";
 
 const queryClient = new QueryClient();
 
@@ -52,16 +51,16 @@ const App = () => (
                 <Route path="/contact-us" element={<ContactUsPage />} />
                 <Route path="/about-us" element={<AboutPage />} />
                 <Route path="/faq" element={<FAQPage />} />
-                <Route path="/partner-with-us" element={<PartnerUs />} />
+                <Route
+                  path="/partner-with-us"
+                  element={<PartnerWithUsPage />}
+                />
                 <Route
                   path="/showcase-interest"
                   element={<ShowcaseInterest />}
                 />
                 <Route path="/student-loan" element={<StudentLoan />} />
               </Route>
-              {/* Contact Us */}
-              <Route path="/" element={<Home />} />
-
               {/* Student Portal Routes */}
               <Route path="/student" element={<StudentLayout />}>
                 <Route path="dashboard" element={<Dashboard />} />

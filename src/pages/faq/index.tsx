@@ -10,18 +10,7 @@ import {
   Users,
   Clock,
 } from "lucide-react";
-import FaqHeader from "./FaqHeader";
-
-/**
- * FAQ Page Component - ChatJourney Theme Style
- *
- * Features:
- * - Clean theme-based design (no gradients)
- * - Smooth Framer Motion animations
- * - Lucide React icons only
- * - Fully responsive for all devices
- * - Dark mode support
- */
+import FaqHeader from "@/components/faq/FaqHeader";
 
 interface FAQ {
   id: string;
@@ -146,19 +135,20 @@ const FAQPage: React.FC = () => {
       {/* Main Content */}
       <section className="py-12 sm:py-16 lg:py-20 px-2 sm:px-4">
         <div className="container mx-auto max-w-7xl px-2 sm:px-4">
-          {/* Section Header with Framer Motion */}
+          {/* Section Header - CENTER ON DESKTOP, LEFT ON MOBILE */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="text-left mb-12 sm:mb-16 lg:mb-20"
+            className="text-left lg:text-center mb-12 sm:mb-16 lg:mb-20 max-w-4xl lg:mx-auto"
           >
-            {/* Badge with subtle animation */}
+            {/* Badge with GRADIENT background */}
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold mb-4 sm:mb-6 shadow-sm"
+              whileHover={{ scale: 1.05 }}
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 border border-primary/20 text-primary px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold mb-4 sm:mb-6 shadow-sm"
             >
               <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>Frequently Asked Questions</span>
@@ -177,12 +167,12 @@ const FAQPage: React.FC = () => {
               <span className="text-primary">Questions Answered</span>
             </motion.h2>
 
-            {/* Animated divider */}
+            {/* Animated divider - CENTER ON DESKTOP */}
             <motion.div
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
               transition={{ delay: 0.5, duration: 0.8 }}
-              className="w-16 sm:w-20 lg:w-24 h-1 sm:h-1.5 bg-primary mb-6 sm:mb-8 rounded-full"
+              className="w-16 sm:w-20 lg:w-24 h-1 sm:h-1.5 bg-primary mb-6 sm:mb-8 rounded-full lg:mx-auto"
             />
 
             {/* Description */}
@@ -190,7 +180,7 @@ const FAQPage: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6, duration: 0.6 }}
-              className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-3xl"
+              className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed"
             >
               Get quick answers to the most common queries about our services,
               eligibility, documentation, and how{" "}
@@ -231,12 +221,12 @@ const FAQPage: React.FC = () => {
                       aria-controls={faq.id}
                     >
                       <div className="flex flex-col sm:flex-row sm:items-start gap-1.5 sm:gap-2 md:gap-3 lg:gap-4 flex-1 min-w-0">
-                        {/* Category Badge with animation */}
+                        {/* Category Badge with GRADIENT */}
                         <motion.div
                           whileHover={{ scale: 1.05 }}
                           className="flex-shrink-0"
                         >
-                          <span className="inline-flex items-center gap-1.5 bg-primary/10 text-primary px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs font-semibold border border-primary/20">
+                          <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 text-primary px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs font-semibold border border-primary/20">
                             <CheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                             <span>{faq.category}</span>
                           </span>
@@ -318,12 +308,13 @@ const FAQPage: React.FC = () => {
                 <div className="absolute inset-0 bg-grid-pattern" />
               </div>
 
-              <div className="relative max-w-3xl text-left">
-                {/* Badge */}
+              <div className="relative max-w-3xl text-left lg:text-center lg:mx-auto">
+                {/* Badge with GRADIENT */}
                 <motion.div
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 1, duration: 0.5 }}
+                  whileHover={{ scale: 1.05 }}
                   className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold mb-4 sm:mb-6"
                 >
                   <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -373,7 +364,7 @@ const FAQPage: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Stats Section with enhanced cards */}
+          {/* Stats Section */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
