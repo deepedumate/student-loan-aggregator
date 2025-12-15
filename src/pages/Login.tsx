@@ -333,7 +333,7 @@ export default function Login() {
         // Continue with login success regardless of contact save result
         toast.success("Login successful!");
         dispatch(setUserInput("")); // ✅ Clear OTP input
-        navigate("/loan-offers");
+        navigate("/loan-application");
       } else {
         const errorMessage = data?.message || "Invalid OTP. Please try again.";
         toast.error(errorMessage);

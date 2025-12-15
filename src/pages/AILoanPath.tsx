@@ -135,7 +135,10 @@ const ChatJourney = () => {
   );
   const totalProgramCost = useSelector(
     (state: RootState) => state.chat.formData?.program?.total_program_cost || null
+  );
 
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.contactAuth.isAuthenticated || false
   );
 
 
@@ -916,7 +919,20 @@ const ChatJourney = () => {
     };
 
     await addTypingMessage(responses[type]);
-    dispatch(setStep("otp"));
+    if(isAuthenticated) {
+        dispatch(setIsTyping(true));
+
+        await saveContactData(formData);
+
+        // Continue with verification success regardless of contact save result
+        dispatch(setIsTyping(false));
+        await addTypingMessage(
+          "✅ Your profile is now updated. Choose an option below to continue:"
+        );
+        dispatch(setStep("verified"));
+    } else {
+      dispatch(setStep("otp"));
+    }
   };
 
   const validatePhoneNumber = (
@@ -1071,6 +1087,25 @@ const ChatJourney = () => {
     });
   };
 
+  const saveContactData = async (formData: any) => {
+    try {
+      // Prepare contact payload
+      const contactPayload = prepareContactPayload(formData);
+      console.log("Saving contact data:", contactPayload);
+
+      // Call signup thunk to save contact data
+      const result = await dispatch(signupUser(contactPayload) as any);
+
+      if (result.payload) {
+        console.log("Contact saved successfully:", result.payload);
+      } else if (result.error) {
+        console.error("Failed to save contact:", result.error);
+      }
+    } catch (contactError) {
+      console.error("Error saving contact:", contactError);
+    }
+  };
+
   const handleOTPVerify = async () => {
     if (userInput.length !== 6) {
       toast({
@@ -1102,22 +1137,7 @@ const ChatJourney = () => {
         // OTP verified successfully - now save contact data
         dispatch(setIsTyping(true));
 
-        try {
-          // Prepare contact payload
-          const contactPayload = prepareContactPayload(formData);
-          console.log("Saving contact data:", contactPayload);
-
-          // Call signup thunk to save contact data
-          const result = await dispatch(signupUser(contactPayload) as any);
-
-          if (result.payload) {
-            console.log("Contact saved successfully:", result.payload);
-          } else if (result.error) {
-            console.error("Failed to save contact:", result.error);
-          }
-        } catch (contactError) {
-          console.error("Error saving contact:", contactError);
-        }
+        await saveContactData(formData);
 
         // Continue with verification success regardless of contact save result
         dispatch(setIsTyping(false));
@@ -1214,13 +1234,13 @@ const ChatJourney = () => {
 
   return (
     <>
-      <div className="flex flex-col h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 dark:from-background dark:via-primary/10 dark:to-accent/10 relative overflow-hidden">
+      <div className="flex flex-col h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 dark:from-background dark:via-primary/10 dark:to-accent/10 relative overflow-hidden mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-24 lg:pt-28 pb-16">
         {/* Decorative gradient orbs */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-radial from-primary/20 to-transparent rounded-full blur-3xl -z-10 opacity-30 dark:opacity-20"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-radial from-accent/20 to-transparent rounded-full blur-3xl -z-10 opacity-20 dark:opacity-15"></div>
         <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-gradient-radial from-blue-400/10 to-transparent rounded-full blur-3xl -z-10 opacity-20 dark:opacity-10"></div>
        
-      <div className="flex flex-col h-screen relative">
+      {/* <div className="flex flex-col h-screen relative"> */}
       <div className="flex-1 overflow-hidden relative">
         {step !== "loans" ? (
           <>
@@ -1356,28 +1376,28 @@ const ChatJourney = () => {
                     </div>
                   )}
 
-                      {step === "programs" && !isTyping && programData?.data?.programs && (
-                        <ProgramSelector
-                          programs={programData.data.programs}
-                          currencyDisplayMode={currencyDisplayMode}
-                          onCurrencyDisplayModeChange={(mode) => dispatch(setCurrencyDisplayMode(mode))}
-                          preferredCurrency={preferredCurrency}
-                          onPreferredCurrencyChange={(currency) => dispatch(setPreferredCurrency(currency))}
-                          formCurrency={formData.currency}
-                          onProgramSelect={handleProgramSelect}
-                          onOtherProgramClick={handleOtherProgramClick}
-                          isOtherProgramSelected={isOtherProgramSelected}
-                          customProgramName={customProgramName}
-                          onCustomProgramNameChange={(name) => dispatch(setCustomProgramName(name))}
-                          onCustomProgramSubmit={handleCustomProgramSubmit}
-                          onCustomProgramCancel={() => {
-                            dispatch(setIsOtherProgramSelected(false));
-                            dispatch(setCustomProgramName(""));
-                          }}
-                          formatCurrencyWithConversion={formatCurrencyWithConversion}
-                          isLoading={false} // Set to true when fetching custom program details
-                        />
-                      )}
+                  {step === "programs" && !isTyping && programData?.data?.programs && (
+                    <ProgramSelector
+                      programs={programData.data.programs}
+                      currencyDisplayMode={currencyDisplayMode}
+                      onCurrencyDisplayModeChange={(mode) => dispatch(setCurrencyDisplayMode(mode))}
+                      preferredCurrency={preferredCurrency}
+                      onPreferredCurrencyChange={(currency) => dispatch(setPreferredCurrency(currency))}
+                      formCurrency={formData.currency}
+                      onProgramSelect={handleProgramSelect}
+                      onOtherProgramClick={handleOtherProgramClick}
+                      isOtherProgramSelected={isOtherProgramSelected}
+                      customProgramName={customProgramName}
+                      onCustomProgramNameChange={(name) => dispatch(setCustomProgramName(name))}
+                      onCustomProgramSubmit={handleCustomProgramSubmit}
+                      onCustomProgramCancel={() => {
+                        dispatch(setIsOtherProgramSelected(false));
+                        dispatch(setCustomProgramName(""));
+                      }}
+                      formatCurrencyWithConversion={formatCurrencyWithConversion}
+                      isLoading={false} // Set to true when fetching custom program details
+                    />
+                  )}
 
                   {step === "university" && !isTyping && (
                     <div className="relative py-4">
@@ -1437,25 +1457,25 @@ const ChatJourney = () => {
                         </div>
                       )}
 
-                      {step === "loan-amount" && !isTyping && costBreakdown && totalProgramCost && (
-                        <div className="py-4 space-y-3 max-w-lg mx-auto">
-                          {/* Compact Cost Breakdown - Horizontal Layout */}
-                          <div className="animate-fade-in">
-                            <CompactCostBreakdownCard {...costBreakdown} />
-                          </div>
+                  {step === "loan-amount" && !isTyping && costBreakdown && totalProgramCost && (
+                    <div className="py-4 space-y-3 max-w-lg mx-auto">
+                      {/* Compact Cost Breakdown - Horizontal Layout */}
+                      <div className="animate-fade-in">
+                        <CompactCostBreakdownCard {...costBreakdown} />
+                      </div>
 
-                          {/* Streamlined Loan Amount Input */}
-                          <div className="animate-fade-in" style={{ animationDelay: '100ms' }}>
-                            <StreamlinedLoanAmountInput
-                              totalCost={parseFloat(totalProgramCost)}
-                              currency={formData.currency}
-                              value={userInput}
-                              onChange={(value) => dispatch(setUserInput(value))}
-                              onSubmit={handleLoanAmount}
-                            />
-                          </div>
-                        </div>
-                      )}
+                      {/* Streamlined Loan Amount Input */}
+                      <div className="animate-fade-in" style={{ animationDelay: '100ms' }}>
+                        <StreamlinedLoanAmountInput
+                          totalCost={parseFloat(totalProgramCost)}
+                          currency={formData.currency}
+                          value={userInput}
+                          onChange={(value) => dispatch(setUserInput(value))}
+                          onSubmit={handleLoanAmount}
+                        />
+                      </div>
+                    </div>
+                  )}
 
                   {step === "loan-type" && !isTyping && (
                     <div className="flex py-4">
@@ -1798,7 +1818,7 @@ const ChatJourney = () => {
           </div>
         )}
       </div>
-    </div>
+    {/* </div> */}
     </div>
     </>
   );

@@ -241,6 +241,7 @@ export interface LoanProductFilters {
   product_status?: string;
   partner_name?: string;
   supported_countries?: string;
+  loan_type?: string;
 
   // Financial filters
   interest_rate_min?: number;

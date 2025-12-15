@@ -60,7 +60,7 @@ import {
 } from "@/store/slices/loanProductSlice";
 import { LoanProduct, LoanProductFilters } from "@/types/loanProduct";
 import { fetchLenders, selectLenders } from "@/store/slices/lenderSlice";
-import { updateUser } from "@/store/slices/contactAuthSlice";
+import { login, updateUser } from "@/store/slices/contactAuthSlice";
 
 export default function LoanList() {
   const dispatch = useAppDispatch();
@@ -148,6 +148,28 @@ export default function LoanList() {
     dispatch(fetchLenders());
   }, []);
 
+  const studentDataByPhoneNumber = async () => {
+    const contactPayload = {
+      phoneNumber: contact?.phone_number || ""
+    };
+
+    console.log("Logging in with payload:", contactPayload);
+
+    try {
+      const result = await dispatch(login(contactPayload) as any);
+      console.log("Login result:", result);
+    } catch (error) {
+      console.error("Login failed:", error);
+      // Handle login error (e.g., show a toast notification)
+      toast 
+    }
+
+  }
+
+  useEffect(() => {
+    const result = studentDataByPhoneNumber();
+  }, [contact?.phone_number]);
+
   // Convert filters to component format
   const componentFilters = useMemo(() => {
     return {
@@ -161,6 +183,7 @@ export default function LoanList() {
       totalTuitionFee: filters.total_tuition_fee,
       totalCostOfLiving: filters.cost_of_living,
       supportedCountries: filters.supported_countries,
+      loan_type: filters.loan_type,
       searchQuery: search,
     };
   }, [filters, search]);
@@ -187,6 +210,8 @@ export default function LoanList() {
       apiFilters.cost_of_living = newFilters.totalCostOfLiving;
     if (newFilters.supportedCountries)
       apiFilters.supported_countries = newFilters.supportedCountries;
+    if (newFilters.loan_type)
+      apiFilters.loan_type = newFilters.loan_type;
 
     dispatch(setFilters(apiFilters));
 

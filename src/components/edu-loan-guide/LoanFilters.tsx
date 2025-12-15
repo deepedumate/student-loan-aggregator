@@ -34,6 +34,7 @@ export interface FilterValues {
   totalTuitionFee?: number;
   totalCostOfLiving?: number;
   supportedCountries?: string;
+  loan_type?: string;
   searchQuery?: string;
 }
 
@@ -221,6 +222,16 @@ export function LoanFilters({
     // Extract intake year
     if (contact.intake_year) {
       autoFilters.intakeYear = contact.intake_year.toString();
+      hasData = true;
+    }
+
+    // Extract loan type
+    if (contact?.loan_preference?.loan_type_preference) {
+      const mapping = {
+        Secured: "Secured Education Loan",
+        Unsecured: "Unsecured Education Loan",
+      };
+      autoFilters.loan_type = mapping[contact.loan_preference?.loan_type_preference];
       hasData = true;
     }
 
@@ -487,6 +498,27 @@ export function LoanFilters({
                         {country}
                       </SelectItem>
                     ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Loan Type */}
+              <div className="space-y-3">
+                <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                  Loan Type
+                </Label>
+                <Select
+                  value={pendingFilters.loan_type}
+                  onValueChange={(value) =>
+                    handlePendingFilterChange("loan_type", value)
+                  }
+                >
+                  <SelectTrigger className="h-11 rounded-lg bg-card border-border/50 hover:border-primary/40 transition-colors">
+                    <SelectValue placeholder="Select loan type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Secured Education Loan">Secured</SelectItem>
+                    <SelectItem value="Unsecured Education Loan">Unsecured</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
