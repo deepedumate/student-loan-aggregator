@@ -1,27 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronDown, ChevronRight, Sun, Moon } from "lucide-react";
-import { Button } from "../ui/button";
-import { useTheme } from "../chat-journey/ThemeProvider";
-
-// Theme Toggle Component (you can replace with your existing ThemeToggle)
-const ThemeToggle: React.FC = () => {
-const { theme, setTheme } = useTheme();
-
-  return (
-<Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="h-9 w-9"
-          >
-            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            <span className="sr-only">Toggle theme</span>
-          </Button>
-  );
-};
+import { Menu, X, ChevronDown, ChevronRight } from "lucide-react";
+import ThemeToggle from "../ui/ThemeToggle";
 
 interface NestedDropdownItem {
   label: string;

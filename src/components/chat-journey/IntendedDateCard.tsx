@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { Calendar } from "lucide-react";
+import { Calendar, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
@@ -42,13 +42,18 @@ export const IntendedDateCard = ({ onSelect }: IntendedDateCardProps) => {
             key={year}
             onClick={() => setSelectedYear(year)}
             className={cn(
-              "flex-1 px-4 py-2.5 rounded-lg font-semibold transition-all duration-200",
+              "relative flex-1 px-4 py-2.5 rounded-lg font-semibold transition-all duration-200",
               selectedYear === year
                 ? "bg-primary text-primary-foreground shadow-md"
                 : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"
             )}
           >
             {year}
+            {selectedYear === year && (
+                  <div className="absolute top-2 right-2">
+                    <Check className="w-4 h-4" />
+                  </div>
+                )}
           </button>
         ))}
       </div>

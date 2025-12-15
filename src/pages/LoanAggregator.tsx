@@ -446,12 +446,6 @@ export default function LoanList() {
           {/* Stats */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8">
             <div className="p-4 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50">
-              <p className="text-2xl font-bold text-primary">
-                {isLoading ? "..." : pagination.total}
-              </p>
-              <p className="text-sm text-muted-foreground">Loan Products</p>
-            </div>
-            <div className="p-4 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50">
               <p className="text-2xl font-bold text-accent">
                 {isLoading ? "..." : lenders?.length || 0}
               </p>
@@ -465,7 +459,13 @@ export default function LoanList() {
             </div>
             <div className="p-4 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50">
               <p className="text-2xl font-bold text-primary">
-                {favoriteLoanIds.length}
+                {isLoading ? "..." : userInterested.length}
+              </p>
+              <p className="text-sm text-muted-foreground">Interested</p>
+            </div>
+            <div className="p-4 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50">
+              <p className="text-2xl font-bold text-primary">
+                {userFavorites.length}
               </p>
               <p className="text-sm text-muted-foreground">Favorites</p>
             </div>

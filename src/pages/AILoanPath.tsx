@@ -32,7 +32,6 @@ import { OptionButton } from "@/components/chat-journey/OptionButton";
 import { CostBreakdownCard } from "@/components/chat-journey/CostBreakdownCard";
 import { IntendedDateCard } from "@/components/chat-journey/IntendedDateCard";
 import { CurrencyDisplay } from "@/components/chat-journey/CurrencyDisplay";
-import { ThemeToggle } from "@/components/chat-journey/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -53,6 +52,7 @@ import {
   Sparkles,
   ArrowRight,
   CheckCircle2,
+  ChevronRight,
 } from "lucide-react";
 import {
   Select,
@@ -64,6 +64,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { apiService } from "@/lib/apiService";
 import { googleMapsService } from "@/lib/Googlemapsservice";
+import { ChatBackgroundLogoFloat, ChatBackgroundLogoScattered, ChatBackgroundLogoWatermark } from "@/components/chat-journey/Chatbackground";
 
 interface UniversitySuggestion {
   name: string; // "Harvard University, Cambridge, MA, USA"
@@ -1198,7 +1199,14 @@ const ChatJourney = () => {
   ];
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <>
+      <div className="flex flex-col h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 dark:from-background dark:via-primary/10 dark:to-accent/10 relative overflow-hidden">
+        {/* Decorative gradient orbs */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-radial from-primary/20 to-transparent rounded-full blur-3xl -z-10 opacity-30 dark:opacity-20"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-radial from-accent/20 to-transparent rounded-full blur-3xl -z-10 opacity-20 dark:opacity-15"></div>
+        <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-gradient-radial from-blue-400/10 to-transparent rounded-full blur-3xl -z-10 opacity-20 dark:opacity-10"></div>
+       
+      <div className="flex flex-col h-screen relative">
       <div className="flex-1 overflow-hidden relative">
         {step !== "loans" ? (
           <>
@@ -1226,7 +1234,17 @@ const ChatJourney = () => {
                 {/* Interactive Elements - Inside chat window */}
                 <div className="max-w-3xl mx-auto px-4">
                   {step === "welcome" && !isTyping && (
-                    <div className="flex justify-center py-6">
+                    <div className="flex flex-col items-center py-10 space-y-6">
+                      {/* Hero CTA Section */}
+                      <div className="text-center space-y-3 max-w-md">
+                        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium">
+                          <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                          12+ Partner Lenders
+                        </div>
+                        <p className="text-muted-foreground text-base">
+                          Compare rates from top education loan providers in under 2 minutes
+                        </p>
+                      </div>
                       <Button
                         onClick={async () => {
                           await addTypingMessage(
@@ -1237,7 +1255,29 @@ const ChatJourney = () => {
                         className="gradient-primary px-6 py-3 text-base font-semibold rounded-lg transition-all duration-300 hover:shadow-glow transform hover:scale-105 active:scale-95"
                       >
                         Get Started
+                        <ChevronRight className="ml-2 h-5 w-5" />
                       </Button>
+                    {/* Trust Indicators */}
+                      <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-1.5">
+                          <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          <span>No fees</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          <span>Instant comparison</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          <span>Best rates</span>
+                        </div>
+                      </div>
                     </div>
                   )}
 
@@ -1885,6 +1925,8 @@ const ChatJourney = () => {
         )}
       </div>
     </div>
+    </div>
+    </>
   );
 };
 

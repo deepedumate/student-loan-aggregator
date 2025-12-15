@@ -247,7 +247,7 @@ export function LoanCard({
     loan.repayment_terms?.repayment_period_maximum || 0;
   const repaymentPeriod = `${Math.floor(repaymentPeriodMonths / 12)} years`;
   const processingFee = parseFloat(
-    loan.financial_terms?.processing_fee_percentage || "0"
+    loan.financial_terms?.processing_fee_amount || "0"
   );
   const rating = Math.round(
     parseFloat(loan.performance_metrics?.customer_satisfaction_rating || "0")

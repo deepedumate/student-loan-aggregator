@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { Provider } from "react-redux";
 import { store } from "@/store";
 
@@ -34,11 +35,13 @@ import PartnerWithUsPage from "./pages/partnerWithUs";
 import ContactUsPage from "./pages/contact";
 import ShowcaseInterest from "./pages/showcaseInterest";
 import StudentLoan from "./pages/studentLoan";
+import ExploreLoans from "./pages/explore-loans/ExploreLoans";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <Provider store={store}>
+    <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light">
         <TooltipProvider>
@@ -82,6 +85,7 @@ const App = () => (
 
               {/* AI Loan Path Routes with Minimal Layout */}
               <Route element={<ChatJourneyLayout />}>
+                <Route path="/explore-loans" element={<ExploreLoans />} />
                 <Route path="/loan-application" element={<ChatJourney />} />
               </Route>
 
@@ -92,6 +96,7 @@ const App = () => (
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
+    </HelmetProvider>
   </Provider>
 );
 

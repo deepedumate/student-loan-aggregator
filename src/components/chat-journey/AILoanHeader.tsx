@@ -1,9 +1,9 @@
-import { ThemeToggle } from "./ThemeToggle";
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '@/store';
 import { Button } from '@/components/ui/button';
 import { RotateCcw } from 'lucide-react';
 import { resetChat } from '@/store/slices/chatSlice';
+import ThemeToggle from '../ui/ThemeToggle';
 
 const AILoanHeader = () => {
   const dispatch = useDispatch();
