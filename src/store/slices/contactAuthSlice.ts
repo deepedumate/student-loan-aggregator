@@ -6,41 +6,49 @@ import {
   UpdatePayload,
 } from "@/services/contactUser";
 
-export interface User {
-  id: string;
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  phoneNumber?: string;
-  baseCurrency?: string;
-  studyDestinationCurrency?: string;
-  selectedLoanCurrency?: string;
-  levelOfEducation?: string;
-  studyDestination?: string;
-  courseType?: string;
-  loanPreference?: string;
-  intakeMonth?: string;
-  intakeYear?: string;
-  loanAmount?: string;
-  analyticalExam?: Record<string, string>;
-  languageExam?: Record<string, string>;
-  coApplicant?: string;
-  coApplicantIncomeType?: string;
-  coApplicantAnnualIncome?: string;
-  coApplicantMobile?: string;
-  coApplicantEmail?: string;
-  utm_source?: string;
+// Contact interface
+export interface Contact {
+  base_currency: string;
+  study_destination_currency: string;
+  phone_number: string;
+  current_education_level?: string | null;
+  target_degree_level?: string;
+  preferred_study_destination?: string;
+  intake_month?: string;
+  intake_year?: string;
   utm_campaign?: string;
+  utm_source?: string;
   utm_medium?: string;
-  formType?: string;
-  submissionDate?: string;
-  userAgent?: string;
-  referrer?: string;
 }
 
+// Student interface
+export interface Student {
+  id: number;
+  contact_id: number;
+  email?: string;
+  password_hash?: string | null;
+  first_name?: string | null;
+  last_name?: string | null;
+  full_name?: string | null;
+  phone?: string;
+  is_active: boolean;
+  favourite: number[];
+  interested: number[];
+  source?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// Combined data structure
+export interface ContactAuthData {
+  contact: Contact;
+  student: Student;
+}
+
+// Updated state interface
 interface ContactAuthState {
   isLoading: boolean;
-  data: User | null;
+  data: ContactAuthData | null;  // ✅ Changed to match API structure
   error: string | null;
   isSigningUp: boolean;
   isLoggingIn: boolean;
@@ -130,7 +138,7 @@ export const contactAuthSlice = createSlice({
   name: "contactAuth",
   initialState,
   reducers: {
-    setUser(state, action: PayloadAction<User>) {
+    setUser(state, action: PayloadAction<ContactAuthData>) {
       state.data = action.payload;
       state.isAuthenticated = true;
     },
@@ -154,7 +162,7 @@ export const contactAuthSlice = createSlice({
       state.updateError = null;
     },
 
-    updateFormData(state, action: PayloadAction<Partial<User>>) {
+    updateFormData(state, action: PayloadAction<Partial<ContactAuthData>>) {
       if (state.data) {
         state.data = { ...state.data, ...action.payload };
       }

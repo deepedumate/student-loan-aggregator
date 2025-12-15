@@ -175,27 +175,7 @@ export default function LoanDetails() {
   const isInterested = loan ? userInterested.includes(loan.id) : false;
 
   // Build features array dynamically
-  const features: string[] = [];
-  if (loan.collateral_security?.collateral_required === "No") {
-    features.push("No collateral required");
-  }
-  if (loan.repayment_terms?.moratorium_period) {
-    features.push(
-      `${loan.repayment_terms.moratorium_period} months moratorium`
-    );
-  }
-  if (loan.repayment_terms?.prepayment_allowed === "Yes") {
-    features.push("Prepayment allowed");
-  }
-  if (loan.special_features?.digital_features) {
-    features.push(loan.special_features.digital_features);
-  }
-  if (loan.special_features?.tax_benefits_available === "Yes") {
-    features.push("Tax benefits available");
-  }
-  if (loan.processing_details?.application_mode) {
-    features.push(`${loan.processing_details.application_mode} application`);
-  }
+  const features: string[] = loan.key_features ?? [];
 
   // Build eligibility criteria
   const eligibilityCriteria: string[] = [];
@@ -665,36 +645,24 @@ export default function LoanDetails() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <Tabs defaultValue="overview" className="space-y-8">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5 h-auto bg-white dark:bg-muted border border-gray-200 dark:border-border">
+          <TabsList className="flex flex-wrap w-full h-auto bg-white dark:bg-muted border border-gray-200 dark:border-border">
             <TabsTrigger
               value="overview"
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-gray-700 dark:text-foreground"
+              className="flex-1 min-w-[120px] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-gray-700 dark:text-foreground"
             >
               Overview
             </TabsTrigger>
             <TabsTrigger
               value="eligibility"
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-gray-700 dark:text-foreground"
+              className="flex-1 min-w-[120px] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-gray-700 dark:text-foreground"
             >
               Eligibility
             </TabsTrigger>
             <TabsTrigger
-              value="terms"
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-gray-700 dark:text-foreground"
-            >
-              Terms & Conditions
-            </TabsTrigger>
-            <TabsTrigger
               value="application"
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-gray-700 dark:text-foreground"
+              className="flex-1 min-w-[120px] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-gray-700 dark:text-foreground"
             >
               Application
-            </TabsTrigger>
-            <TabsTrigger
-              value="reviews"
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-gray-700 dark:text-foreground"
-            >
-              Reviews
             </TabsTrigger>
           </TabsList>
 
@@ -819,37 +787,6 @@ export default function LoanDetails() {
             )}
           </TabsContent>
 
-          {/* Terms & Conditions Tab */}
-          <TabsContent value="terms" className="space-y-6">
-            <Card className="bg-white dark:bg-card border-gray-200 dark:border-border">
-              <CardHeader>
-                <CardTitle className="text-gray-900 dark:text-white">
-                  Terms & Conditions
-                </CardTitle>
-                <CardDescription className="text-gray-600 dark:text-muted-foreground">
-                  Important terms you should know before applying
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {termsAndConditions.map((term, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 dark:border-border/50"
-                    >
-                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 dark:bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
-                        {index + 1}
-                      </div>
-                      <p className="text-sm leading-relaxed text-gray-700 dark:text-foreground">
-                        {term}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
           {/* Application Tab */}
           <TabsContent value="application" className="space-y-6">
             <Card className="bg-white dark:bg-card border-gray-200 dark:border-border">
@@ -909,125 +846,8 @@ export default function LoanDetails() {
                   className="w-full bg-gradient-to-r from-accent to-accent-light text-white shadow-md hover:shadow-lg"
                   onClick={handleInterested}
                 >
-                  {isInterested ? "Already Interested" : "Apply Now"}
+                  {isInterested ? "Interested" : "Show Interest"}
                 </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Reviews Tab */}
-          <TabsContent value="reviews" className="space-y-6">
-            <Card className="bg-white dark:bg-card border-gray-200 dark:border-border">
-              <CardHeader>
-                <CardTitle className="text-gray-900 dark:text-white">
-                  Customer Reviews
-                </CardTitle>
-                <CardDescription className="text-gray-600 dark:text-muted-foreground">
-                  See what other students say about {lenderName}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-6 p-4 bg-gray-50 dark:bg-muted/50 rounded-lg">
-                  <div className="text-center">
-                    <div className="text-4xl font-bold text-primary">
-                      {averageRating.toFixed(1)}
-                    </div>
-                    <div className="flex items-center gap-1 mt-2">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-4 h-4 ${
-                            i < Math.round(averageRating)
-                              ? "fill-accent text-accent"
-                              : "text-gray-300 dark:text-muted-foreground"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <p className="text-sm text-gray-600 dark:text-muted-foreground mt-1">
-                      Based on {reviews.length} reviews
-                    </p>
-                  </div>
-                  <Separator
-                    orientation="vertical"
-                    className="h-20 bg-gray-200 dark:bg-border"
-                  />
-                  <div className="flex-1 space-y-2">
-                    {[5, 4, 3, 2, 1].map((stars) => {
-                      const count = reviews.filter(
-                        (r) => r.rating === stars
-                      ).length;
-                      const percentage = (count / reviews.length) * 100;
-                      return (
-                        <div key={stars} className="flex items-center gap-2">
-                          <span className="text-sm w-3 text-gray-700 dark:text-foreground">
-                            {stars}
-                          </span>
-                          <Star className="w-3 h-3 fill-accent text-accent" />
-                          <Progress value={percentage} className="h-2 flex-1" />
-                          <span className="text-sm text-gray-600 dark:text-muted-foreground w-8">
-                            {count}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <Separator className="bg-gray-200 dark:bg-border" />
-
-                <div className="space-y-4">
-                  {reviews.map((review) => (
-                    <div
-                      key={review.id}
-                      className="p-4 rounded-lg border border-gray-200 dark:border-border/50 bg-white dark:bg-card"
-                    >
-                      <div className="flex items-start justify-between mb-3">
-                        <div>
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-semibold text-gray-900 dark:text-white">
-                              {review.userName}
-                            </span>
-                            <Badge
-                              variant="secondary"
-                              className="text-xs bg-gray-100 dark:bg-secondary"
-                            >
-                              Verified Borrower
-                            </Badge>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className={`w-3 h-3 ${
-                                  i < review.rating
-                                    ? "fill-accent text-accent"
-                                    : "text-gray-300 dark:text-muted-foreground"
-                                }`}
-                              />
-                            ))}
-                            <span className="text-xs text-gray-600 dark:text-muted-foreground ml-2">
-                              {new Date(review.date).toLocaleDateString()}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <p className="text-sm leading-relaxed mb-3 text-gray-700 dark:text-foreground">
-                        {review.comment}
-                      </p>
-                      <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-muted-foreground">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 text-xs hover:bg-gray-100 dark:hover:bg-muted"
-                        >
-                          <CheckCircle2 className="w-3 h-3 mr-1" />
-                          Helpful ({review.helpful})
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
               </CardContent>
             </Card>
           </TabsContent>

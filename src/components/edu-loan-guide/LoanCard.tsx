@@ -254,45 +254,45 @@ export function LoanCard({
   );
 
   // ✅ FIXED: Build features array from API data
-  const features: string[] = [];
+  const features: string[] = loan.key_features ?? [];
 
-  if (
-    loan.collateral_security?.collateral_required === "No" ||
-    loan.collateral_security?.collateral_required === null
-  ) {
-    features.push("No collateral required");
-  }
+  // if (
+  //   loan.collateral_security?.collateral_required === "No" ||
+  //   loan.collateral_security?.collateral_required === null
+  // ) {
+  //   features.push("No collateral required");
+  // }
 
-  if (loan.repayment_terms?.moratorium_period) {
-    features.push(
-      `${loan.repayment_terms.moratorium_period} months moratorium`
-    );
-  }
+  // if (loan.repayment_terms?.moratorium_period) {
+  //   features.push(
+  //     `${loan.repayment_terms.moratorium_period} months moratorium`
+  //   );
+  // }
 
-  if (loan.repayment_terms?.prepayment_allowed === "Yes") {
-    features.push("Prepayment allowed");
-  }
+  // if (loan.repayment_terms?.prepayment_allowed === "Yes") {
+  //   features.push("Prepayment allowed");
+  // }
 
-  if (loan.special_features?.digital_features) {
-    features.push(loan.special_features.digital_features);
-  }
+  // if (loan.special_features?.digital_features) {
+  //   features.push(loan.special_features.digital_features);
+  // }
 
-  if (loan.special_features?.tax_benefits_available === "Yes") {
-    features.push("Tax benefits available");
-  }
+  // if (loan.special_features?.tax_benefits_available === "Yes") {
+  //   features.push("Tax benefits available");
+  // }
 
-  if (loan.processing_details?.application_mode) {
-    features.push(`${loan.processing_details.application_mode} application`);
-  }
+  // if (loan.processing_details?.application_mode) {
+  //   features.push(`${loan.processing_details.application_mode} application`);
+  // }
 
-  // Ensure at least 3 features
-  if (features.length === 0) {
-    features.push(
-      "Competitive interest rates",
-      "Flexible repayment",
-      "Quick approval"
-    );
-  }
+  // // Ensure at least 3 features
+  // if (features.length === 0) {
+  //   features.push(
+  //     "Competitive interest rates",
+  //     "Flexible repayment",
+  //     "Quick approval"
+  //   );
+  // }
 
   return (
     <div

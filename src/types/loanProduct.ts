@@ -1,5 +1,3 @@
-// Types based on your API response structure
-
 export interface HSLender {
   id: number;
   lender_name: string;
@@ -219,6 +217,7 @@ export interface LoanProduct {
   deleted_by: string | null;
   deleted_on: string | null;
   source: string | null;
+  key_features: string[];
   lender: HSLender | null;
   eligibility_criteria: EligibilityCriteria | null;
   financial_terms: FinancialTerms | null;
@@ -241,6 +240,7 @@ export interface LoanProductFilters {
   product_category?: string;
   product_status?: string;
   partner_name?: string;
+  supported_countries?: string;
 
   // Financial filters
   interest_rate_min?: number;

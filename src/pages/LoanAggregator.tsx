@@ -78,6 +78,11 @@ export default function LoanList() {
   const favoriteLoanIds = useAppSelector(selectFavoriteLoanIds);
   const showFavoritesOnly = useAppSelector(selectShowFavoritesOnly);
   const appliedFiltersCount = useAppSelector(selectAppliedFiltersCount);
+  const contact = useAppSelector(
+    (state: any) => state.contactAuth?.data?.contact || null
+  );
+  console.log("contact", contact);
+
   const contactAuth = useAppSelector(
     (state: any) => state.contactAuth?.data?.student || null
   );
@@ -93,6 +98,15 @@ export default function LoanList() {
   const previousSearch = useRef(search);
   // Debounce timer ref
   const searchDebounceTimer = useRef<NodeJS.Timeout | null>(null);
+
+  const displayedLoans = useMemo(() => {
+    if (showFavoritesOnly && userFavorites.length > 0) {
+      return loans.filter((loan) => userFavorites.includes(loan.id));
+    }
+    return loans;
+  }, [loans, showFavoritesOnly, userFavorites]);
+
+  const displayedCount = displayedLoans.length;
 
   useEffect(() => {
     // Check if only search changed
@@ -146,9 +160,11 @@ export default function LoanList() {
       maxLoanAmount: filters.loan_amount_max,
       totalTuitionFee: filters.total_tuition_fee,
       totalCostOfLiving: filters.cost_of_living,
+      supportedCountries: filters.supported_countries,
       searchQuery: search,
     };
   }, [filters, search]);
+  console.log("componentFilters", componentFilters);
 
   // Convert component filters back to API format
   const handleComponentFilterChange = (newFilters: any) => {
@@ -169,6 +185,8 @@ export default function LoanList() {
       apiFilters.total_tuition_fee = newFilters.totalTuitionFee;
     if (newFilters.totalCostOfLiving)
       apiFilters.cost_of_living = newFilters.totalCostOfLiving;
+    if (newFilters.supportedCountries)
+      apiFilters.supported_countries = newFilters.supportedCountries;
 
     dispatch(setFilters(apiFilters));
 
@@ -564,20 +582,30 @@ export default function LoanList() {
           <div className="flex items-center justify-between mb-6 animate-fade-in">
             <div>
               <h2 className="text-xl font-bold font-heading">
-                {pagination.total} Loan Options Available
+                {showFavoritesOnly
+                  ? `${displayedCount} Favorite Loan${
+                      displayedCount !== 1 ? "s" : ""
+                    }`
+                  : `${pagination.total} Loan Options Available`}
               </h2>
               <p className="text-sm text-muted-foreground mt-1">
-                {pagination.totalPages > 1 && (
+                {showFavoritesOnly ? (
+                  `Showing your saved favorites`
+                ) : (
                   <>
-                    Showing {(pagination.page - 1) * pagination.size + 1}-
-                    {Math.min(
-                      pagination.page * pagination.size,
-                      pagination.total
-                    )}{" "}
-                    of {pagination.total} •{" "}
+                    {pagination.totalPages > 1 && (
+                      <>
+                        Showing {(pagination.page - 1) * pagination.size + 1}-
+                        {Math.min(
+                          pagination.page * pagination.size,
+                          pagination.total
+                        )}{" "}
+                        of {pagination.total} •{" "}
+                      </>
+                    )}
+                    Sorted by {sort.sortKey.replace(/_/g, " ")}
                   </>
                 )}
-                Sorted by {sort.sortKey.replace(/_/g, " ")}
               </p>
             </div>
           </div>
@@ -590,10 +618,10 @@ export default function LoanList() {
               <LoanCardSkeleton key={index} />
             ))}
           </div>
-        ) : loans.length > 0 ? (
+        ) : displayedLoans.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
-              {loans.map((loan, index) => (
+              {displayedLoans.map((loan, index) => (
                 <div
                   key={loan.id}
                   className="animate-fade-in"
@@ -613,7 +641,7 @@ export default function LoanList() {
             </div>
 
             {/* Pagination */}
-            {pagination.totalPages > 1 && (
+            {pagination.totalPages > 1 && !showFavoritesOnly && (
               <div className="mt-12 mb-8 flex justify-center animate-fade-in">
                 <Pagination>
                   <PaginationContent>
@@ -723,17 +751,25 @@ export default function LoanList() {
               <GraduationCap className="w-8 h-8 text-muted-foreground" />
             </div>
             <h3 className="text-xl font-bold mb-2">
-              No loans match your criteria
+              {showFavoritesOnly
+                ? "No favorites yet"
+                : "No loans match your criteria"}
             </h3>
             <p className="text-muted-foreground mb-6">
-              Try adjusting your filters to see more options
+              {showFavoritesOnly
+                ? "Start adding loans to your favorites to see them here"
+                : "Try adjusting your filters to see more options"}
             </p>
             <Button
-              onClick={handleClearAllFilters}
+              onClick={
+                showFavoritesOnly
+                  ? handleToggleShowFavorites
+                  : handleClearAllFilters
+              }
               variant="outline"
               className="border-primary/40 hover:bg-primary/5"
             >
-              Clear All Filters
+              {showFavoritesOnly ? "Show All Loans" : "Clear All Filters"}
             </Button>
           </div>
         )}
