@@ -244,7 +244,7 @@ export interface LoanProductFilters {
   loan_type?: string;
 
   // Financial filters
-  interest_rate_min?: number;
+  interest_rate?: number;
   interest_rate_max?: number;
   loan_amount_min?: number;
   loan_amount_max?: number;

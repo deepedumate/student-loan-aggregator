@@ -68,9 +68,9 @@ import { googleMapsService } from "@/lib/Googlemapsservice";
 import { ChatBackgroundLogoFloat, ChatBackgroundLogoScattered, ChatBackgroundLogoWatermark } from "@/components/chat-journey/Chatbackground";
 import { OptionsGrid } from "@/components/chat-journey/OptionsGrid";
 import { LoanAmountInput } from "@/components/chat-journey/LoanAmountInput";
-import { CompactCostBreakdownCard } from "@/components/chat-journey/Compactcostbreakdowncard";
-import { StreamlinedLoanAmountInput } from "@/components/chat-journey/Streamlinedloanamountinput";
 import { ProgramSelector } from "@/components/chat-journey/ProgramSelector";
+import { CompactCostBreakdownCard } from "@/components/chat-journey/CompactCostBreakdownCard";
+import { StreamlinedLoanAmountInput } from "@/components/chat-journey/StreamlinedLoanAmountInput";
 
 interface UniversitySuggestion {
   name: string; // "Harvard University, Cambridge, MA, USA"

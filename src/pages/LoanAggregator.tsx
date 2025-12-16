@@ -150,7 +150,7 @@ export default function LoanList() {
 
   const studentDataByPhoneNumber = async () => {
     const contactPayload = {
-      phoneNumber: contact?.phone_number || ""
+      phoneNumber: contact?.phone_number || "",
     };
 
     console.log("Logging in with payload:", contactPayload);
@@ -161,10 +161,9 @@ export default function LoanList() {
     } catch (error) {
       console.error("Login failed:", error);
       // Handle login error (e.g., show a toast notification)
-      toast 
+      toast;
     }
-
-  }
+  };
 
   useEffect(() => {
     const result = studentDataByPhoneNumber();
@@ -173,6 +172,7 @@ export default function LoanList() {
   // Convert filters to component format
   const componentFilters = useMemo(() => {
     return {
+      lenderName: filters.lender_name,
       intakeMonth: filters.intake_month,
       intakeYear: filters.intake_year?.toString(),
       studyLevel: filters.study_level,
@@ -183,6 +183,10 @@ export default function LoanList() {
       totalTuitionFee: filters.total_tuition_fee,
       totalCostOfLiving: filters.cost_of_living,
       supportedCountries: filters.supported_countries,
+      interestRateMin: filters.interest_rate,
+      interestRateMax: filters.interest_rate_max,
+      collateralRequired: filters.collateral_required,
+      guarantorRequired: filters.guarantor_required,
       loan_type: filters.loan_type,
       searchQuery: search,
     };
@@ -191,6 +195,7 @@ export default function LoanList() {
 
   // Convert component filters back to API format
   const handleComponentFilterChange = (newFilters: any) => {
+    console.log("newFilters", newFilters);
     const apiFilters: LoanProductFilters = {};
 
     if (newFilters.intakeMonth)
@@ -202,16 +207,20 @@ export default function LoanList() {
     if (newFilters.program) apiFilters.program_name = newFilters.program;
     if (newFilters.minLoanAmount)
       apiFilters.loan_amount_min = newFilters.minLoanAmount;
-    if (newFilters.maxLoanAmount)
-      apiFilters.loan_amount_max = newFilters.maxLoanAmount;
+    // if (newFilters.maxLoanAmount)
+    //   apiFilters.loan_amount_max = newFilters.maxLoanAmount;
     if (newFilters.totalTuitionFee)
       apiFilters.total_tuition_fee = newFilters.totalTuitionFee;
     if (newFilters.totalCostOfLiving)
       apiFilters.cost_of_living = newFilters.totalCostOfLiving;
     if (newFilters.supportedCountries)
       apiFilters.supported_countries = newFilters.supportedCountries;
-    if (newFilters.loan_type)
-      apiFilters.loan_type = newFilters.loan_type;
+    if (newFilters.loan_type) apiFilters.loan_type = newFilters.loan_type;
+    if (newFilters.interestRateMax)
+      apiFilters.interest_rate_max = newFilters.interestRateMax;
+    if (newFilters.interestRateMin)
+      apiFilters.interest_rate = newFilters.interestRateMin;
+    if (newFilters.lenderName) apiFilters.lender_name = newFilters.lenderName;
 
     dispatch(setFilters(apiFilters));
 
@@ -530,7 +539,7 @@ export default function LoanList() {
           >
             <Heart
               className={`w-4 h-4 mr-2 transition-all duration-300 group-hover:scale-125 ${
-                showFavoritesOnly ? "fill-current animate-pulse" : ""
+                showFavoritesOnly ? "fill-current" : ""
               }`}
             />
             {showFavoritesOnly

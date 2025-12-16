@@ -1,8 +1,11 @@
+// @/components/loan/LoanFilters.tsx
+
 import { useState, useEffect, useRef } from "react";
-import { Filter, X, Search, Save, Bookmark, Trash2 } from "lucide-react";
+import { Filter, X, Search, Bookmark, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 import {
   Select,
@@ -22,19 +25,19 @@ import {
 } from "@/components/ui/sheet";
 import { LoanProductFilters } from "@/types/loanProduct";
 import { useAppSelector } from "@/store/hooks";
+import { selectLenders } from "@/store/slices/lenderSlice";
+
 export interface FilterValues {
-  intakeMonth?: string;
-  intakeYear?: string;
+  lenderName?: string;
   studyLevel?: string;
-  status?: string;
-  school?: string;
-  program?: string;
-  minLoanAmount?: number;
-  maxLoanAmount?: number;
-  totalTuitionFee?: number;
-  totalCostOfLiving?: number;
   supportedCountries?: string;
   loan_type?: string;
+  interestRateMin?: number;
+  interestRateMax?: number;
+  minLoanAmount?: number;
+  maxLoanAmount?: number;
+  collateralRequired?: string;
+  guarantorRequired?: string;
   searchQuery?: string;
 }
 
@@ -56,23 +59,14 @@ interface LoanFiltersProps {
 }
 
 const STUDY_LEVELS = ["Undergraduate", "MBA", "Specialised Masters", "PhD"];
-
-const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
 const SUPPORTED_COUNTRIES = ["USA", "India", "Non USA"];
+const COLLATERAL_OPTIONS = ["Yes", "No", "Optional"];
+
+// ✅ Slider ranges
+const INTEREST_RATE_MIN = 0;
+const INTEREST_RATE_MAX = 20;
+const LOAN_AMOUNT_MIN = 0;
+const LOAN_AMOUNT_MAX = 10000000; // 1 Crore
 
 export function LoanFilters({
   filters,
@@ -85,79 +79,48 @@ export function LoanFilters({
 }: LoanFiltersProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [presetName, setPresetName] = useState("");
-  const [showSavePreset, setShowSavePreset] = useState(false);
   const [showPresetsList, setShowPresetsList] = useState(false);
   const hasAutoPopulated = useRef(false);
   const contact = useAppSelector(
     (state: any) => state.contactAuth?.data?.contact || null
   );
+  const lenders = useAppSelector(selectLenders);
 
-  // ✅ LOCAL STATE for pending filters (not applied yet)
+  // ✅ LOCAL STATE for pending filters
   const [pendingFilters, setPendingFilters] = useState<FilterValues>(filters);
+
+  // ✅ Slider state for interest rate
+  const [interestRateRange, setInterestRateRange] = useState<[number, number]>([
+    pendingFilters.interestRateMin || INTEREST_RATE_MIN,
+    pendingFilters.interestRateMax || INTEREST_RATE_MAX,
+  ]);
+
+  // ✅ Slider state for loan amount
+  const [loanAmountRange, setLoanAmountRange] = useState<[number, number]>([
+    pendingFilters.minLoanAmount || LOAN_AMOUNT_MIN,
+    pendingFilters.maxLoanAmount || LOAN_AMOUNT_MAX,
+  ]);
 
   // ✅ Sync pending filters with applied filters when they change externally
   useEffect(() => {
     if (isOpen) {
       setPendingFilters(filters);
+      setInterestRateRange([
+        filters.interestRateMin || INTEREST_RATE_MIN,
+        filters.interestRateMax || INTEREST_RATE_MAX,
+      ]);
+      setLoanAmountRange([
+        filters.minLoanAmount || LOAN_AMOUNT_MIN,
+        filters.maxLoanAmount || LOAN_AMOUNT_MAX,
+      ]);
     }
   }, [filters, isOpen]);
-
-  // ✅ Helper to convert month name to lowercase format
-  const normalizeMonthName = (month: string | number): string | undefined => {
-    // If it's already lowercase month name, return it
-    if (typeof month === "string") {
-      const lowercased = month.toLowerCase();
-      const validMonths = [
-        "january",
-        "february",
-        "march",
-        "april",
-        "may",
-        "june",
-        "july",
-        "august",
-        "september",
-        "october",
-        "november",
-        "december",
-      ];
-
-      if (validMonths.includes(lowercased)) {
-        return lowercased;
-      }
-    }
-
-    // If it's a number (1-12), convert to month name
-    if (typeof month === "number" || !isNaN(Number(month))) {
-      const monthNum = typeof month === "number" ? month : parseInt(month);
-      const monthNames = [
-        "january",
-        "february",
-        "march",
-        "april",
-        "may",
-        "june",
-        "july",
-        "august",
-        "september",
-        "october",
-        "november",
-        "december",
-      ];
-      if (monthNum >= 1 && monthNum <= 12) {
-        return monthNames[monthNum - 1];
-      }
-    }
-
-    return undefined;
-  };
 
   // ✅ Helper to map study level
   const normalizeStudyLevel = (
     level: string | undefined | null
   ): string | undefined => {
     if (!level) return undefined;
-
     const normalized = level.toLowerCase();
 
     if (
@@ -177,7 +140,7 @@ export function LoanFilters({
       return "Undergraduate";
     }
 
-    return level; // Return original if no match
+    return level;
   };
 
   // ✅ Helper to map study destination
@@ -185,7 +148,6 @@ export function LoanFilters({
     destination: string | undefined | null
   ): string | undefined => {
     if (!destination) return undefined;
-
     const normalized = destination.trim().toLowerCase();
 
     if (
@@ -210,34 +172,24 @@ export function LoanFilters({
     const autoFilters: FilterValues = {};
     let hasData = false;
 
-    // Extract intake month (handle both string name and number)
-    if (contact.intake_month) {
-      const normalizedMonth = normalizeMonthName(contact.intake_month);
-      if (normalizedMonth) {
-        autoFilters.intakeMonth = normalizedMonth;
+    // Extract loan type
+    if (contact?.loan_preference?.loan_type_preference) {
+      const loanTypePref = contact.loan_preference.loan_type_preference;
+      const mapping: { [key: string]: string } = {
+        Secured: "Secured Education Loan",
+        Unsecured: "Unsecured Education Loan",
+      };
+      if (mapping[loanTypePref]) {
+        autoFilters.loan_type = mapping[loanTypePref];
         hasData = true;
       }
     }
 
-    // Extract intake year
-    if (contact.intake_year) {
-      autoFilters.intakeYear = contact.intake_year.toString();
-      hasData = true;
-    }
-
-    // Extract loan type
-    if (contact?.loan_preference?.loan_type_preference) {
-      const mapping = {
-        Secured: "Secured Education Loan",
-        Unsecured: "Unsecured Education Loan",
-      };
-      autoFilters.loan_type = mapping[contact.loan_preference?.loan_type_preference];
-      hasData = true;
-    }
-
     // Extract study level
-    if (contact.target_degree_level) {
-      const normalizedLevel = normalizeStudyLevel(contact.target_degree_level);
+    if (contact.academic_profile?.target_degree_level) {
+      const normalizedLevel = normalizeStudyLevel(
+        contact.academic_profile?.target_degree_level
+      );
       if (normalizedLevel) {
         autoFilters.studyLevel = normalizedLevel;
         hasData = true;
@@ -245,9 +197,9 @@ export function LoanFilters({
     }
 
     // Extract supported countries from preferred study destination
-    if (contact.preferred_study_destination) {
+    if (contact?.academic_profile?.preferred_study_destination) {
       const mappedCountry = mapStudyDestinationToFilter(
-        contact.preferred_study_destination
+        contact?.academic_profile?.preferred_study_destination
       );
       if (mappedCountry) {
         autoFilters.supportedCountries = mappedCountry;
@@ -272,7 +224,7 @@ export function LoanFilters({
     }
   }, [contact, onFilterChange]);
 
-  // ✅ Handle pending filter changes (update local state only)
+  // ✅ Handle pending filter changes
   const handlePendingFilterChange = (key: keyof FilterValues, value: any) => {
     setPendingFilters((prev) => ({
       ...prev,
@@ -282,7 +234,33 @@ export function LoanFilters({
 
   // ✅ Apply filters when button is clicked
   const handleApplyFilters = () => {
-    onFilterChange(pendingFilters);
+    // Apply slider values to pending filters
+    const finalFilters = {
+      ...pendingFilters,
+    };
+
+    // ✅ FIXED: Only exclude if BOTH values are at default
+    const isInterestRateDefault =
+      interestRateRange[0] === INTEREST_RATE_MIN &&
+      interestRateRange[1] === INTEREST_RATE_MAX;
+
+    const isLoanAmountDefault =
+      loanAmountRange[0] === LOAN_AMOUNT_MIN &&
+      loanAmountRange[1] === LOAN_AMOUNT_MAX;
+
+    if (!isInterestRateDefault) {
+      finalFilters.interestRateMin = interestRateRange[0];
+      // finalFilters.interestRateMax = interestRateRange[1];
+    }
+
+    if (!isLoanAmountDefault) {
+      finalFilters.minLoanAmount = loanAmountRange[0];
+      finalFilters.maxLoanAmount = loanAmountRange[1];
+    }
+
+    console.log("Applying filters:", finalFilters);
+
+    onFilterChange(finalFilters);
     setIsOpen(false);
     toast.success("Filters applied successfully");
   };
@@ -293,6 +271,8 @@ export function LoanFilters({
       searchQuery: pendingFilters.searchQuery,
     };
     setPendingFilters(clearedFilters);
+    setInterestRateRange([INTEREST_RATE_MIN, INTEREST_RATE_MAX]);
+    setLoanAmountRange([LOAN_AMOUNT_MIN, LOAN_AMOUNT_MAX]);
     onFilterChange(clearedFilters);
     toast.success("All filters cleared");
   };
@@ -316,24 +296,25 @@ export function LoanFilters({
 
     const apiFilters: LoanProductFilters = {};
 
-    if (filters.intakeMonth) apiFilters.intake_month = filters.intakeMonth;
-    if (filters.intakeYear)
-      apiFilters.intake_year = parseInt(filters.intakeYear);
     if (filters.studyLevel) apiFilters.study_level = filters.studyLevel;
-    if (filters.school) apiFilters.school_name = filters.school;
-    if (filters.program) apiFilters.program_name = filters.program;
+    if (filters.loan_type) apiFilters.product_type = filters.loan_type;
+    if (filters.supportedCountries)
+      apiFilters.supported_countries = filters.supportedCountries;
     if (filters.minLoanAmount)
       apiFilters.loan_amount_min = filters.minLoanAmount;
     if (filters.maxLoanAmount)
       apiFilters.loan_amount_max = filters.maxLoanAmount;
-    if (filters.totalTuitionFee)
-      apiFilters.total_tuition_fee = filters.totalTuitionFee;
-    if (filters.totalCostOfLiving)
-      apiFilters.cost_of_living = filters.totalCostOfLiving;
+    if (filters.interestRateMin)
+      apiFilters.interest_rate = filters.interestRateMin;
+    // if (filters.interestRateMax)
+    //   apiFilters.interest_rate_max = filters.interestRateMax;
+    if (filters.collateralRequired)
+      apiFilters.collateral_required = filters.collateralRequired;
+    if (filters.guarantorRequired)
+      apiFilters.guarantor_required = filters.guarantorRequired;
 
     onSavePreset(presetName.trim(), apiFilters);
     setPresetName("");
-    setShowSavePreset(false);
   };
 
   const handleLoadPreset = (preset: FilterPreset) => {
@@ -341,12 +322,17 @@ export function LoanFilters({
     setShowPresetsList(false);
   };
 
-  const handleDeletePreset = (presetId: string, presetName: string) => {
+  const handleDeletePreset = (presetId: string) => {
     onDeletePreset(presetId);
   };
 
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 5 }, (_, i) => currentYear + i);
+  // Format currency for display
+  const formatCurrency = (value: number) => {
+    if (value >= 10000000) return `₹${(value / 10000000).toFixed(1)}Cr`;
+    if (value >= 100000) return `₹${(value / 100000).toFixed(1)}L`;
+    if (value >= 1000) return `₹${(value / 1000).toFixed(0)}K`;
+    return `₹${value}`;
+  };
 
   return (
     <div className="space-y-4">
@@ -367,22 +353,20 @@ export function LoanFilters({
         </div>
 
         {/* Preset Management Buttons */}
-        <div className="preset-actions">
-          {presets.length > 0 && (
-            <Button
-              onClick={() => setShowPresetsList(!showPresetsList)}
-              variant="outline"
-              size="lg"
-              className="h-12 px-6 rounded-xl border-border/50 hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
-            >
-              <Bookmark className="w-5 h-5 mr-2" />
-              Presets
-              <Badge className="ml-2 bg-accent/10 text-accent border-accent/20">
-                {presets.length}
-              </Badge>
-            </Button>
-          )}
-        </div>
+        {presets.length > 0 && (
+          <Button
+            onClick={() => setShowPresetsList(!showPresetsList)}
+            variant="outline"
+            size="lg"
+            className="h-12 px-6 rounded-xl border-border/50 hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
+          >
+            <Bookmark className="w-5 h-5 mr-2" />
+            Presets
+            <Badge className="ml-2 bg-accent/10 text-accent border-accent/20">
+              {presets.length}
+            </Badge>
+          </Button>
+        )}
 
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
@@ -411,7 +395,227 @@ export function LoanFilters({
             </SheetHeader>
 
             <div className="mt-8 space-y-6">
-              {/* Intake Period */}
+              {/* Study Level */}
+              <div className="space-y-3">
+                <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                  Study Level
+                </Label>
+                <Select
+                  value={pendingFilters.studyLevel}
+                  onValueChange={(value) =>
+                    handlePendingFilterChange("studyLevel", value)
+                  }
+                >
+                  <SelectTrigger className="h-11 rounded-lg bg-card border-border/50 hover:border-primary/40 transition-colors">
+                    <SelectValue placeholder="Select study level" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {STUDY_LEVELS.map((level) => (
+                      <SelectItem key={level} value={level}>
+                        {level}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Supported Countries */}
+              <div className="space-y-3">
+                <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                  Supported Countries
+                </Label>
+                <Select
+                  value={pendingFilters.supportedCountries}
+                  onValueChange={(value) =>
+                    handlePendingFilterChange("supportedCountries", value)
+                  }
+                >
+                  <SelectTrigger className="h-11 rounded-lg bg-card border-border/50 hover:border-primary/40 transition-colors">
+                    <SelectValue placeholder="Select destination" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SUPPORTED_COUNTRIES.map((country) => (
+                      <SelectItem key={country} value={country}>
+                        {country}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Loan Type */}
+              <div className="space-y-3">
+                <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                  Loan Type
+                </Label>
+                <Select
+                  value={pendingFilters.loan_type}
+                  onValueChange={(value) =>
+                    handlePendingFilterChange("loan_type", value)
+                  }
+                >
+                  <SelectTrigger className="h-11 rounded-lg bg-card border-border/50 hover:border-primary/40 transition-colors">
+                    <SelectValue placeholder="Select loan type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Secured Education Loan">
+                      Secured
+                    </SelectItem>
+                    <SelectItem value="Unsecured Education Loan">
+                      Unsecured
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-3">
+                <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                  Lender
+                </Label>
+                <Select
+                  value={pendingFilters.lenderName}
+                  onValueChange={(value) =>
+                    handlePendingFilterChange("lenderName", value)
+                  }
+                >
+                  <SelectTrigger className="h-11 rounded-lg bg-card border-border/50 hover:border-primary/40 transition-colors">
+                    <SelectValue placeholder="Select lender" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px]">
+                    {lenders && lenders.length > 0 ? (
+                      lenders
+                        .filter(
+                          (lender) => lender.is_active && !lender.is_deleted
+                        )
+                        .map((lender) => (
+                          <SelectItem
+                            key={lender.id}
+                            value={lender.lender_name}
+                          >
+                            {lender.lender_name || lender.lender_name}
+                          </SelectItem>
+                        ))
+                    ) : (
+                      <SelectItem value="no-lenders" disabled>
+                        No lenders available
+                      </SelectItem>
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* ✅ Interest Rate Range Slider */}
+              <div className="space-y-3">
+                <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                  Interest Rate Range
+                </Label>
+                <div className="space-y-4 pt-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="font-medium text-primary">
+                      {interestRateRange[0]}%
+                    </span>
+                    <span className="font-medium text-primary">
+                      {interestRateRange[1]}%
+                    </span>
+                  </div>
+                  <Slider
+                    value={interestRateRange}
+                    onValueChange={(value) =>
+                      setInterestRateRange(value as [number, number])
+                    }
+                    min={INTEREST_RATE_MIN}
+                    max={INTEREST_RATE_MAX}
+                    step={0.5}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>{INTEREST_RATE_MIN}%</span>
+                    <span>{INTEREST_RATE_MAX}%</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* ✅ Loan Amount Range Slider */}
+              <div className="space-y-3">
+                <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                  Loan Amount Range
+                </Label>
+                <div className="space-y-4 pt-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="font-medium text-primary">
+                      {formatCurrency(loanAmountRange[0])}
+                    </span>
+                    <span className="font-medium text-primary">
+                      {formatCurrency(loanAmountRange[1])}
+                    </span>
+                  </div>
+                  <Slider
+                    value={loanAmountRange}
+                    onValueChange={(value) =>
+                      setLoanAmountRange(value as [number, number])
+                    }
+                    min={LOAN_AMOUNT_MIN}
+                    max={LOAN_AMOUNT_MAX}
+                    step={50000}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>{formatCurrency(LOAN_AMOUNT_MIN)}</span>
+                    <span>{formatCurrency(LOAN_AMOUNT_MAX)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Collateral Required */}
+              {/* <div className="space-y-3">
+                <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                  Collateral Required
+                </Label>
+                <Select
+                  value={pendingFilters.collateralRequired}
+                  onValueChange={(value) =>
+                    handlePendingFilterChange("collateralRequired", value)
+                  }
+                >
+                  <SelectTrigger className="h-11 rounded-lg bg-card border-border/50 hover:border-primary/40 transition-colors">
+                    <SelectValue placeholder="Select requirement" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {COLLATERAL_OPTIONS.map((option) => (
+                      <SelectItem key={option} value={option}>
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div> */}
+
+              {/* Guarantor Required */}
+              {/* <div className="space-y-3">
+                <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                  Guarantor Required
+                </Label>
+                <Select
+                  value={pendingFilters.guarantorRequired}
+                  onValueChange={(value) =>
+                    handlePendingFilterChange("guarantorRequired", value)
+                  }
+                >
+                  <SelectTrigger className="h-11 rounded-lg bg-card border-border/50 hover:border-primary/40 transition-colors">
+                    <SelectValue placeholder="Select requirement" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {COLLATERAL_OPTIONS.map((option) => (
+                      <SelectItem key={option} value={option}>
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div> */}
+
+              {/* ❌ COMMENTED OUT FILTERS */}
+              {/* 
               <div className="space-y-3">
                 <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                   Intake Period
@@ -455,75 +659,6 @@ export function LoanFilters({
                 </div>
               </div>
 
-              {/* Study Level */}
-              <div className="space-y-3">
-                <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                  Study Level
-                </Label>
-                <Select
-                  value={pendingFilters.studyLevel}
-                  onValueChange={(value) =>
-                    handlePendingFilterChange("studyLevel", value)
-                  }
-                >
-                  <SelectTrigger className="h-11 rounded-lg bg-card border-border/50 hover:border-primary/40 transition-colors">
-                    <SelectValue placeholder="Select study level" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {STUDY_LEVELS.map((level) => (
-                      <SelectItem key={level} value={level}>
-                        {level}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-3">
-                <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                  Supported Countries
-                </Label>
-                <Select
-                  value={pendingFilters.supportedCountries}
-                  onValueChange={(value) =>
-                    handlePendingFilterChange("supportedCountries", value)
-                  }
-                >
-                  <SelectTrigger className="h-11 rounded-lg bg-card border-border/50 hover:border-primary/40 transition-colors">
-                    <SelectValue placeholder="Select destination" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {SUPPORTED_COUNTRIES.map((country) => (
-                      <SelectItem key={country} value={country}>
-                        {country}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Loan Type */}
-              <div className="space-y-3">
-                <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                  Loan Type
-                </Label>
-                <Select
-                  value={pendingFilters.loan_type}
-                  onValueChange={(value) =>
-                    handlePendingFilterChange("loan_type", value)
-                  }
-                >
-                  <SelectTrigger className="h-11 rounded-lg bg-card border-border/50 hover:border-primary/40 transition-colors">
-                    <SelectValue placeholder="Select loan type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Secured Education Loan">Secured</SelectItem>
-                    <SelectItem value="Unsecured Education Loan">Unsecured</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* School */}
               <div className="space-y-3">
                 <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                   School
@@ -539,7 +674,6 @@ export function LoanFilters({
                 />
               </div>
 
-              {/* Program */}
               <div className="space-y-3">
                 <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                   Program
@@ -555,40 +689,6 @@ export function LoanFilters({
                 />
               </div>
 
-              {/* Loan Amount Range */}
-              <div className="space-y-3">
-                <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                  Loan Amount Range
-                </Label>
-                <div className="grid grid-cols-2 gap-3">
-                  <Input
-                    type="number"
-                    placeholder="Min Amount"
-                    value={pendingFilters.minLoanAmount || ""}
-                    onChange={(e) =>
-                      handlePendingFilterChange(
-                        "minLoanAmount",
-                        parseInt(e.target.value) || undefined
-                      )
-                    }
-                    className="h-11 rounded-lg bg-card border-border/50 hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300"
-                  />
-                  <Input
-                    type="number"
-                    placeholder="Max Amount"
-                    value={pendingFilters.maxLoanAmount || ""}
-                    onChange={(e) =>
-                      handlePendingFilterChange(
-                        "maxLoanAmount",
-                        parseInt(e.target.value) || undefined
-                      )
-                    }
-                    className="h-11 rounded-lg bg-card border-border/50 hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300"
-                  />
-                </div>
-              </div>
-
-              {/* Total Tuition Fee */}
               <div className="space-y-3">
                 <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                   Total Tuition Fee
@@ -607,7 +707,6 @@ export function LoanFilters({
                 />
               </div>
 
-              {/* Total Cost of Living */}
               <div className="space-y-3">
                 <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                   Total Cost of Living
@@ -625,8 +724,9 @@ export function LoanFilters({
                   className="h-11 rounded-lg bg-card border-border/50 hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300"
                 />
               </div>
+              */}
 
-              {/* ✅ Action Buttons - Apply filters on click */}
+              {/* ✅ Action Buttons */}
               <div className="flex gap-3 pt-4">
                 <Button
                   onClick={handleClearAll}
@@ -647,7 +747,7 @@ export function LoanFilters({
         </Sheet>
       </div>
 
-      {/* Presets List Dropdown - unchanged */}
+      {/* Presets List Dropdown */}
       {showPresetsList && presets.length > 0 && (
         <div className="relative">
           <div className="absolute top-2 right-0 w-80 max-h-96 overflow-y-auto rounded-xl bg-card border border-border/50 shadow-xl z-50 animate-scale-in">
@@ -687,7 +787,7 @@ export function LoanFilters({
                     </p>
                   </button>
                   <Button
-                    onClick={() => handleDeletePreset(preset.id, preset.name)}
+                    onClick={() => handleDeletePreset(preset.id)}
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/10 hover:text-destructive"
@@ -701,14 +801,24 @@ export function LoanFilters({
         </div>
       )}
 
-      {/* Active Filters Display - unchanged */}
+      {/* Active Filters Display */}
       {appliedFiltersCount > 0 && (
         <div className="flex flex-wrap gap-2">
           {Object.entries(filters).map(([key, value]) => {
             if (!value || key === "searchQuery") return null;
 
             let displayValue = value;
-            if (typeof value === "number") {
+            let displayKey = key;
+
+            // Format display for specific keys
+            if (key === "interestRateMin" || key === "interestRateMax") {
+              displayValue = `${value}%`;
+              displayKey = key === "interestRateMin" ? "Min Rate" : "Max Rate";
+            } else if (key === "minLoanAmount" || key === "maxLoanAmount") {
+              displayValue = formatCurrency(value as number);
+              displayKey =
+                key === "minLoanAmount" ? "Min Amount" : "Max Amount";
+            } else if (typeof value === "number") {
               displayValue = value.toLocaleString();
             }
 
@@ -719,7 +829,7 @@ export function LoanFilters({
                 className="px-3 py-1.5 rounded-lg bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors"
               >
                 <span className="text-xs font-medium">
-                  {key.replace(/([A-Z])/g, " $1").trim()}: {displayValue}
+                  {displayKey.replace(/([A-Z])/g, " $1").trim()}: {displayValue}
                 </span>
                 <button
                   onClick={() => handleRemoveFilter(key as keyof FilterValues)}
