@@ -183,7 +183,7 @@ export default function LoanList() {
       totalTuitionFee: filters.total_tuition_fee,
       totalCostOfLiving: filters.cost_of_living,
       supportedCountries: filters.supported_countries,
-      interestRateMin: filters.interest_rate_min,
+      interestRateMin: filters.interest_rate,
       interestRateMax: filters.interest_rate_max,
       collateralRequired: filters.collateral_required,
       guarantorRequired: filters.guarantor_required,
@@ -207,8 +207,8 @@ export default function LoanList() {
     if (newFilters.program) apiFilters.program_name = newFilters.program;
     if (newFilters.minLoanAmount)
       apiFilters.loan_amount_min = newFilters.minLoanAmount;
-    if (newFilters.maxLoanAmount)
-      apiFilters.loan_amount_max = newFilters.maxLoanAmount;
+    // if (newFilters.maxLoanAmount)
+    //   apiFilters.loan_amount_max = newFilters.maxLoanAmount;
     if (newFilters.totalTuitionFee)
       apiFilters.total_tuition_fee = newFilters.totalTuitionFee;
     if (newFilters.totalCostOfLiving)
@@ -219,7 +219,7 @@ export default function LoanList() {
     if (newFilters.interestRateMax)
       apiFilters.interest_rate_max = newFilters.interestRateMax;
     if (newFilters.interestRateMin)
-      apiFilters.interest_rate_min = newFilters.interestRateMin;
+      apiFilters.interest_rate = newFilters.interestRateMin;
     if (newFilters.lenderName) apiFilters.lender_name = newFilters.lenderName;
 
     dispatch(setFilters(apiFilters));

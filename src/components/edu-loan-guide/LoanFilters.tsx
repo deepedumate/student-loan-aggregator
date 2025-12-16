@@ -186,8 +186,10 @@ export function LoanFilters({
     }
 
     // Extract study level
-    if (contact.target_degree_level) {
-      const normalizedLevel = normalizeStudyLevel(contact.target_degree_level);
+    if (contact.academic_profile?.target_degree_level) {
+      const normalizedLevel = normalizeStudyLevel(
+        contact.academic_profile?.target_degree_level
+      );
       if (normalizedLevel) {
         autoFilters.studyLevel = normalizedLevel;
         hasData = true;
@@ -195,9 +197,9 @@ export function LoanFilters({
     }
 
     // Extract supported countries from preferred study destination
-    if (contact.preferred_study_destination) {
+    if (contact?.academic_profile?.preferred_study_destination) {
       const mappedCountry = mapStudyDestinationToFilter(
-        contact.preferred_study_destination
+        contact?.academic_profile?.preferred_study_destination
       );
       if (mappedCountry) {
         autoFilters.supportedCountries = mappedCountry;
@@ -248,7 +250,7 @@ export function LoanFilters({
 
     if (!isInterestRateDefault) {
       finalFilters.interestRateMin = interestRateRange[0];
-      finalFilters.interestRateMax = interestRateRange[1];
+      // finalFilters.interestRateMax = interestRateRange[1];
     }
 
     if (!isLoanAmountDefault) {
@@ -303,9 +305,9 @@ export function LoanFilters({
     if (filters.maxLoanAmount)
       apiFilters.loan_amount_max = filters.maxLoanAmount;
     if (filters.interestRateMin)
-      apiFilters.interest_rate_min = filters.interestRateMin;
-    if (filters.interestRateMax)
-      apiFilters.interest_rate_max = filters.interestRateMax;
+      apiFilters.interest_rate = filters.interestRateMin;
+    // if (filters.interestRateMax)
+    //   apiFilters.interest_rate_max = filters.interestRateMax;
     if (filters.collateralRequired)
       apiFilters.collateral_required = filters.collateralRequired;
     if (filters.guarantorRequired)

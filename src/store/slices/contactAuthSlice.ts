@@ -19,6 +19,24 @@ export interface Contact {
   utm_campaign?: string;
   utm_source?: string;
   utm_medium?: string;
+  personal_information: {
+    city_current_address: string | null;
+    city_permanent_address: string | null;
+    country_current_address: string | null;
+    country_permanent_address: string | null;
+    current_address: string | null;
+    date_of_birth: string | null;
+    first_name: string | null;
+    gender: string | null;
+    last_name: string | null;
+    nationality: string | null;
+    permanent_address: string | null;
+    phone_number: string | null;
+    pincode_current_address: string | null;
+    pincode_permanent_address: string | null;
+    state_current_address: string | null;
+    state_permanent_address: string | null;
+  };
 }
 
 // Student interface
@@ -48,7 +66,7 @@ export interface ContactAuthData {
 // Updated state interface
 interface ContactAuthState {
   isLoading: boolean;
-  data: ContactAuthData | null;  // ✅ Changed to match API structure
+  data: ContactAuthData | null; // ✅ Changed to match API structure
   error: string | null;
   isSigningUp: boolean;
   isLoggingIn: boolean;
@@ -85,9 +103,7 @@ export const signup = createAsyncThunk(
       }
       return response?.data?.data;
     } catch (err: any) {
-      return rejectWithValue(
-        err.message || "Failed to sign up"
-      );
+      return rejectWithValue(err.message || "Failed to sign up");
     }
   }
 );
@@ -106,9 +122,7 @@ export const login = createAsyncThunk(
       }
       return response.data?.data;
     } catch (err: any) {
-      return rejectWithValue(
-        err.message || "Failed to log in"
-      );
+      return rejectWithValue(err.message || "Failed to log in");
     }
   }
 );
@@ -126,9 +140,7 @@ export const updateUser = createAsyncThunk(
       }
       return response.data?.data;
     } catch (err: any) {
-      return rejectWithValue(
-        err.message || "Failed to update user"
-      );
+      return rejectWithValue(err.message || "Failed to update user");
     }
   }
 );

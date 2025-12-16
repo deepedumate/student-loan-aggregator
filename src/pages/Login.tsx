@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import type { RootState } from "@/store";
+import OtpInput from "react-otp-input";
 import {
   setIsTyping,
   setCountryCode,
@@ -10,7 +11,7 @@ import {
   setOtpCountdown,
   updateFormData,
 } from "@/store/slices/chatSlice";
-import { login, signup as signupUser } from "@/store/slices/contactAuthSlice";
+import { login } from "@/store/slices/contactAuthSlice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -68,30 +69,10 @@ const countryCodes = [
   { code: "+27", country: "South Africa", flag: "🇿🇦", iso: "ZA", length: 9 },
 ];
 
-const callingCodeMap: { [key: string]: string } = {
-  "1": "+1",
-  "27": "+27",
-  "33": "+33",
-  "34": "+34",
-  "39": "+39",
-  "44": "+44",
-  "49": "+49",
-  "60": "+60",
-  "61": "+61",
-  "62": "+62",
-  "65": "+65",
-  "66": "+66",
-  "81": "+81",
-  "86": "+86",
-  "91": "+91",
-  "971": "+971",
-};
-
 export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // ✅ ALL state from Redux - NO local useState
   const countryCode = useSelector((state: RootState) => state.chat.countryCode);
   const userInput = useSelector((state: RootState) => state.chat.userInput);
   const phoneValidation = useSelector(
@@ -103,79 +84,6 @@ export default function Login() {
   const formData = useSelector((state: RootState) => state.chat.formData);
   const isTyping = useSelector((state: RootState) => state.chat.isTyping);
 
-  // Helper function to prepare contact payload for signup
-  // const prepareContactPayload = (formData: any) => {
-  //   const phoneNumber = formData.phone.replace(/\+/g, "");
-  //   const submissionDate = new Date().toISOString();
-  //   const userAgent =
-  //     typeof navigator !== "undefined" ? navigator.userAgent : "";
-  //   const referrer = typeof document !== "undefined" ? document.referrer : "";
-
-  //   const payload: Record<string, any> = {
-  //     phoneNumber,
-  //     utm_campaign: "login",
-  //     formType: "login",
-  //     submissionDate,
-  //     userAgent,
-  //     referrer,
-  //   };
-
-  //   // Only add optional fields if they exist in formData
-  //   if (formData.studyLevel) {
-  //     const mapping: Record<string, string> = {
-  //       undergraduate: "Bachelors",
-  //       graduate_mba: "Masters",
-  //       graduate_masters: "Masters",
-  //       phd: "PhD",
-  //     };
-  //     payload.levelOfEducation =
-  //       mapping[formData.studyLevel] || formData.studyLevel;
-  //   }
-
-  //   if (formData.studyDestination) {
-  //     payload.studyDestination = formData.studyDestination;
-  //   }
-
-  //   if (formData.loanAmount) {
-  //     payload.loanAmount = formData.loanAmount.toString();
-  //   }
-
-  //   if (formData.currency) {
-  //     payload.baseCurrency = formData.currency;
-  //     payload.studyDestinationCurrency = formData.currency;
-  //     payload.selectedLoanCurrency = formData.currency;
-  //   }
-
-  //   if (formData.intendedMonth) {
-  //     const monthNames = [
-  //       "January",
-  //       "February",
-  //       "March",
-  //       "April",
-  //       "May",
-  //       "June",
-  //       "July",
-  //       "August",
-  //       "September",
-  //       "October",
-  //       "November",
-  //       "December",
-  //     ];
-  //     payload.intakeMonth = monthNames[formData.intendedMonth - 1];
-  //   }
-
-  //   if (formData.intendedYear) {
-  //     payload.intakeYear = formData.intendedYear.toString();
-  //   }
-
-  //   if (formData.loanType) {
-  //     payload.loanPreference =
-  //       formData.loanType === "secured" ? "Secured" : "Unsecured";
-  //   }
-
-  //   return payload;
-  // };
-
   const prepareContactPayload = (formData: any) => {
     const phoneNumber = formData.phone.replace(/\+/g, "");
     const payload: LoginPayload = {
@@ -184,10 +92,8 @@ export default function Login() {
     return payload;
   };
 
-  // Validate phone number in real-time and update Redux
   useEffect(() => {
     if (!userInput || formData.phone) {
-      // Don't validate if we already have a phone (OTP step) or no input
       return;
     }
 
@@ -220,11 +126,9 @@ export default function Login() {
       return;
     }
 
-    // Valid phone number
     dispatch(setPhoneValidation({ isValid: true }));
   }, [userInput, countryCode, formData.phone, dispatch]);
 
-  // OTP countdown timer
   useEffect(() => {
     if (otpCountdown > 0) {
       const timer = setTimeout(() => {
@@ -272,12 +176,9 @@ export default function Login() {
         throw error;
       }
 
-      console.log("OTP send response:", data);
-
-      // Save phone to Redux
       dispatch(updateFormData({ phone: fullPhoneNumber }));
-      dispatch(setUserInput("")); // ✅ Clear input for OTP entry
-      dispatch(setPhoneValidation(null)); // Clear validation
+      dispatch(setUserInput(""));
+      dispatch(setPhoneValidation(null));
       dispatch(setOtpCountdown(60));
 
       toast.success("OTP sent to your WhatsApp!");
@@ -305,20 +206,13 @@ export default function Login() {
         data: { otp: userInput, phone: fullPhoneNumber },
       });
 
-      console.log("OTP verification response:", { data, error });
-
       if (error) {
         throw error;
       }
 
       if (data && data.valid) {
-        // ✅ OTP verified successfully - now save contact data
         try {
-          // Prepare contact payload
           const contactPayload = prepareContactPayload(formData);
-          console.log("Saving contact data:", contactPayload);
-
-          // Call signup thunk to save contact data
           const result = await dispatch(login(contactPayload) as any);
 
           if (result.payload) {
@@ -330,9 +224,8 @@ export default function Login() {
           console.error("Error saving contact:", contactError);
         }
 
-        // Continue with login success regardless of contact save result
         toast.success("Login successful!");
-        dispatch(setUserInput("")); // ✅ Clear OTP input
+        dispatch(setUserInput(""));
         navigate("/loan-application");
       } else {
         const errorMessage = data?.message || "Invalid OTP. Please try again.";
@@ -349,8 +242,8 @@ export default function Login() {
   };
 
   const handleChangeNumber = () => {
-    dispatch(setUserInput("")); // ✅ Clear input
-    dispatch(updateFormData({ phone: "" })); // ✅ Clear phone to go back to phone input
+    dispatch(setUserInput(""));
+    dispatch(updateFormData({ phone: "" }));
     dispatch(setPhoneValidation(null));
     dispatch(setOtpCountdown(0));
   };
@@ -379,8 +272,44 @@ export default function Login() {
     }
   };
 
-  // Determine if phone is valid for UI display
   const isPhoneValid = phoneValidation?.isValid ?? null;
+
+  // ✅ OTP Input Styles
+  const getOtpInputStyle = (isFilled: boolean, isFocused: boolean) => {
+    const isDark = document.documentElement.classList.contains("dark");
+
+    return {
+      width: "3rem",
+      height: "3.5rem",
+      fontSize: "1.5rem",
+      fontWeight: "700",
+      textAlign: "center" as const,
+      border: isFilled
+        ? "2px solid hsl(217 91% 60%)"
+        : "2px solid hsl(var(--border))",
+      borderRadius: "0.75rem",
+      backgroundColor: isFilled
+        ? isDark
+          ? "hsl(217 91% 60% / 0.15)"
+          : "hsl(217 91% 60% / 0.08)"
+        : isDark
+        ? "hsl(222 47% 11%)"
+        : "hsl(0 0% 100%)",
+      color: isFilled
+        ? isDark
+          ? "hsl(0 0% 100%)"
+          : "hsl(217 91% 60%)"
+        : isDark
+        ? "hsl(0 0% 98%)"
+        : "hsl(222 20% 15%)",
+      transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+      outline: "none",
+      boxShadow: isFocused
+        ? "0 0 0 3px hsl(217 91% 60% / 0.15), 0 4px 6px -1px rgba(0, 0, 0, 0.1)"
+        : "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+      transform: isFocused ? "scale(1.05)" : "scale(1)",
+    };
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-background dark:to-gray-950 flex items-center justify-center p-4">
@@ -463,71 +392,6 @@ export default function Login() {
                       If you requested multiple OTPs, use only the latest one
                     </li>
                   </ul>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="network">
-                <AccordionTrigger className="text-left text-gray-900 dark:text-white">
-                  Network error or server issues
-                </AccordionTrigger>
-                <AccordionContent className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                  <p className="font-medium">Troubleshooting steps:</p>
-                  <ul className="list-disc list-inside space-y-1 ml-2">
-                    <li>
-                      Check your internet connection (WiFi or mobile data)
-                    </li>
-                    <li>Try switching between WiFi and mobile data</li>
-                    <li>Refresh the page and try again</li>
-                    <li>Clear your browser cache and cookies</li>
-                    <li>Try using a different browser or incognito mode</li>
-                    <li>Disable VPN or proxy if enabled</li>
-                  </ul>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="country-code">
-                <AccordionTrigger className="text-left text-gray-900 dark:text-white">
-                  Wrong country code or phone number format
-                </AccordionTrigger>
-                <AccordionContent className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                  <p className="font-medium">Ensure correct format:</p>
-                  <ul className="list-disc list-inside space-y-1 ml-2">
-                    <li>Select the correct country code from the dropdown</li>
-                    <li>Enter only the phone number without country code</li>
-                    <li>
-                      Don&apos;t include spaces, dashes, or special characters
-                    </li>
-                    <li>For India: +91 followed by 10-digit number</li>
-                    <li>For USA/Canada: +1 followed by 10-digit number</li>
-                    <li>
-                      Check if your number has the expected digit count for your
-                      country
-                    </li>
-                  </ul>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="still-issues">
-                <AccordionTrigger className="text-left text-gray-900 dark:text-white">
-                  Still having issues?
-                </AccordionTrigger>
-                <AccordionContent className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                  <p className="font-medium">Contact support:</p>
-                  <p>
-                    If you&apos;ve tried all the steps above and still
-                    can&apos;t login, please contact our support team with:
-                  </p>
-                  <ul className="list-disc list-inside space-y-1 ml-2">
-                    <li>Your phone number (country code + number)</li>
-                    <li>The exact error message you&apos;re seeing</li>
-                    <li>Time when you tried to login</li>
-                    <li>
-                      Screenshots if possible (without showing the OTP code)
-                    </li>
-                  </ul>
-                  <p className="mt-3 text-muted-foreground">
-                    Our team will help you resolve the issue within 24 hours.
-                  </p>
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
@@ -653,7 +517,7 @@ export default function Login() {
             </>
           ) : (
             <>
-              <div className="space-y-3 animate-fade-in">
+              <div className="space-y-4 animate-fade-in">
                 <div className="bg-gray-50 dark:bg-muted/50 rounded-lg p-3 text-center border border-gray-200 dark:border-border/50">
                   <p className="text-xs text-gray-600 dark:text-muted-foreground">
                     OTP sent to
@@ -663,26 +527,51 @@ export default function Login() {
                   </p>
                 </div>
 
+                {/* ✅ OTP Input with Inline Styles */}
                 <div className="space-y-2">
-                  <Label
-                    htmlFor="otp"
-                    className="text-gray-900 dark:text-foreground"
-                  >
+                  <Label className="text-gray-900 dark:text-foreground text-center block">
                     Enter OTP
                   </Label>
-                  <Input
-                    id="otp"
-                    type="text"
-                    placeholder="123456"
-                    maxLength={6}
-                    value={userInput}
-                    onChange={(e) => {
-                      dispatch(setUserInput(e.target.value.replace(/\D/g, "")));
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      gap: "1rem",
                     }}
-                    onKeyPress={(e) => e.key === "Enter" && handleVerifyOtp()}
-                    disabled={isTyping}
-                    className="text-center text-2xl tracking-widest font-display bg-white dark:bg-background border-gray-300 dark:border-border transition-all duration-300"
-                  />
+                  >
+                    <OtpInput
+                      value={userInput}
+                      onChange={(value) => dispatch(setUserInput(value))}
+                      numInputs={6}
+                      renderInput={(props, index) => {
+                        const isFilled =
+                          userInput[index] !== undefined &&
+                          userInput[index] !== "";
+                        return (
+                          <input
+                            {...props}
+                            disabled={isTyping}
+                            className="mr-2"
+                            style={getOtpInputStyle(isFilled, false)}
+                            onFocus={(e) => {
+                              props.onFocus?.(e);
+                              e.target.style.boxShadow =
+                                "0 0 0 3px hsl(217 91% 60% / 0.15), 0 4px 6px -1px rgba(0, 0, 0, 0.1)";
+                              e.target.style.transform = "scale(1.05)";
+                            }}
+                            onBlur={(e) => {
+                              props.onBlur?.(e);
+                              e.target.style.boxShadow =
+                                "0 1px 2px 0 rgba(0, 0, 0, 0.05)";
+                              e.target.style.transform = "scale(1)";
+                            }}
+                          />
+                        );
+                      }}
+                      shouldAutoFocus
+                      inputType="tel"
+                    />
+                  </div>
                 </div>
               </div>
 
