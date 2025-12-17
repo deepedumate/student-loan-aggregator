@@ -91,8 +91,8 @@ export function LoanFilters({
 
   // ✅ Slider state for interest rate
   const [interestRateRange, setInterestRateRange] = useState<[number, number]>([
-    pendingFilters.interestRateMin || INTEREST_RATE_MIN,
-    pendingFilters.interestRateMax || INTEREST_RATE_MAX,
+    pendingFilters.interestRateMin || INTEREST_RATE_MAX, // Start at MAX (20%)
+    INTEREST_RATE_MAX,
   ]);
 
   // ✅ Slider state for loan amount
@@ -106,7 +106,7 @@ export function LoanFilters({
     if (isOpen) {
       setPendingFilters(filters);
       setInterestRateRange([
-        filters.interestRateMin || INTEREST_RATE_MIN,
+        filters.interestRateMin || INTEREST_RATE_MAX, // Start at MAX
         filters.interestRateMax || INTEREST_RATE_MAX,
       ]);
       setLoanAmountRange([
@@ -507,21 +507,22 @@ export function LoanFilters({
               {/* ✅ Interest Rate Range Slider */}
               <div className="space-y-3">
                 <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                  Interest Rate Range
+                  Maximum Interest Rate
                 </Label>
                 <div className="space-y-4 pt-2">
                   <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">0%</span>
                     <span className="font-medium text-primary">
-                      {interestRateRange[0]}%
-                    </span>
-                    <span className="font-medium text-primary">
-                      {interestRateRange[1]}%
+                      Up to {interestRateRange[0]}%
                     </span>
                   </div>
                   <Slider
-                    value={interestRateRange}
+                    value={[interestRateRange[0]]}
                     onValueChange={(value) =>
-                      setInterestRateRange(value as [number, number])
+                      setInterestRateRange([value[0], INTEREST_RATE_MAX] as [
+                        number,
+                        number
+                      ])
                     }
                     min={INTEREST_RATE_MIN}
                     max={INTEREST_RATE_MAX}
@@ -529,7 +530,7 @@ export function LoanFilters({
                     className="w-full"
                   />
                   <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>{INTEREST_RATE_MIN}%</span>
+                    <span>0%</span>
                     <span>{INTEREST_RATE_MAX}%</span>
                   </div>
                 </div>
@@ -538,21 +539,22 @@ export function LoanFilters({
               {/* ✅ Loan Amount Range Slider */}
               <div className="space-y-3">
                 <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                  Loan Amount Range
+                  Maximum Loan Amount
                 </Label>
                 <div className="space-y-4 pt-2">
                   <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">₹0</span>
                     <span className="font-medium text-primary">
-                      {formatCurrency(loanAmountRange[0])}
-                    </span>
-                    <span className="font-medium text-primary">
-                      {formatCurrency(loanAmountRange[1])}
+                      Up to {formatCurrency(loanAmountRange[0])}
                     </span>
                   </div>
                   <Slider
-                    value={loanAmountRange}
+                    value={[loanAmountRange[0]]}
                     onValueChange={(value) =>
-                      setLoanAmountRange(value as [number, number])
+                      setLoanAmountRange([value[0], LOAN_AMOUNT_MAX] as [
+                        number,
+                        number
+                      ])
                     }
                     min={LOAN_AMOUNT_MIN}
                     max={LOAN_AMOUNT_MAX}

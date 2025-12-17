@@ -42,61 +42,60 @@ const queryClient = new QueryClient();
 const App = () => (
   <Provider store={store}>
     <HelmetProvider>
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light">
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route element={<HomeLayout />}>
-                <Route path="/" element={<Home />} />
-                <Route path="/contact-us" element={<ContactUsPage />} />
-                <Route path="/about-us" element={<AboutPage />} />
-                <Route path="/faq" element={<FAQPage />} />
-                <Route
-                  path="/partner-with-us"
-                  element={<PartnerWithUsPage />}
-                />
-                <Route
-                  path="/showcase-interest"
-                  element={<ShowcaseInterest />}
-                />
-                <Route path="/student-loan" element={<StudentLoan />} />
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider defaultTheme="light">
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route element={<HomeLayout />}>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/contact-us" element={<ContactUsPage />} />
+                  <Route path="/about-us" element={<AboutPage />} />
+                  <Route path="/faq" element={<FAQPage />} />
+                  <Route
+                    path="/partner-with-us"
+                    element={<PartnerWithUsPage />}
+                  />
+                  <Route
+                    path="/showcase-interest"
+                    element={<ShowcaseInterest />}
+                  />
+                  <Route path="/student-loan" element={<StudentLoan />} />
+                </Route>
                 <Route path="/login" element={<Login />} />
-              </Route>
-              {/* Student Portal Routes */}
-              <Route path="/student" element={<StudentLayout />}>
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="applications" element={<Applications />} />
-                <Route path="compare" element={<Compare />} />
-                <Route path="documents" element={<Documents />} />
-                <Route path="notifications" element={<Notifications />} />
-                <Route path="profile" element={<Profile />} />
+                {/* Student Portal Routes */}
+                <Route path="/student" element={<StudentLayout />}>
+                  <Route path="dashboard" element={<Dashboard />} />
+                  <Route path="applications" element={<Applications />} />
+                  <Route path="compare" element={<Compare />} />
+                  <Route path="documents" element={<Documents />} />
+                  <Route path="notifications" element={<Notifications />} />
+                  <Route path="profile" element={<Profile />} />
 
-                {/* Redirect /student to /student/dashboard */}
-                <Route index element={<Navigate to="dashboard" replace />} />
-              </Route>
-              {/* Edu Loan Guide Routes with Header/Footer Layout */}
-              <Route element={<HomeLayout />}>
-                <Route path="/loan-offers" element={<LoanList />} />
-                <Route path="/loan-offers/:id" element={<LoanDetails />} />
-              </Route>
+                  {/* Redirect /student to /student/dashboard */}
+                  <Route index element={<Navigate to="dashboard" replace />} />
+                </Route>
+                {/* Edu Loan Guide Routes with Header/Footer Layout */}
+                <Route element={<HomeLayout />}>
+                  <Route path="/loan-offers" element={<LoanList />} />
+                  <Route path="/loan-offers/:id" element={<LoanDetails />} />
+                </Route>
 
-              {/* AI Loan Path Routes with Minimal Layout */}
-              <Route element={<HomeLayout />}>
-                <Route path="/explore-loans" element={<ExploreLoans />} />
-                <Route path="/loan-application" element={<ChatJourney />} />
-              </Route>
+                {/* AI Loan Path Routes with Minimal Layout */}
+                <Route element={<HomeLayout />}>
+                  <Route path="/explore-loans" element={<ExploreLoans />} />
+                  <Route path="/loan-application" element={<ChatJourney />} />
+                </Route>
 
-
-              {/* 404 Not Found */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+                {/* 404 Not Found */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
     </HelmetProvider>
   </Provider>
 );

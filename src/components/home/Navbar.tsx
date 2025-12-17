@@ -210,19 +210,16 @@ export function Navbar() {
                         <NavigationMenuTrigger
                           className={cn(
                             "h-10 px-5 font-medium rounded-lg transition-all duration-300",
-                            // Light theme - TRANSPARENT DEFAULT
-                            "bg-transparent text-foreground border border-transparent",
-                            "hover:bg-accent hover:text-accent-foreground hover:border-border/50",
-                            // CLICKED/OPEN STATE - Blue background
-                            "data-[state=open]:bg-primary/10 data-[state=open]:text-primary data-[state=open]:border-primary/20",
-                            // Dark theme
-                            "dark:bg-transparent dark:text-foreground dark:border-transparent",
-                            "dark:hover:bg-accent dark:hover:text-accent-foreground dark:hover:border-border/50",
-                            "dark:data-[state=open]:bg-primary/20 dark:data-[state=open]:text-primary-foreground dark:data-[state=open]:border-primary/30",
+                            // Same styling for BOTH light and dark themes
+                            "bg-primary text-primary-foreground border border-primary",
+                            // HOVER STATE
+                            "hover:bg-primary/90 hover:text-primary-foreground hover:border-primary/90",
+                            // CLICKED/OPEN STATE
+                            "data-[state=open]:bg-primary/90 data-[state=open]:text-primary-foreground data-[state=open]:border-primary/90",
                             // Icon color
-                            "[&_svg]:text-muted-foreground",
-                            "hover:[&_svg]:text-accent-foreground",
-                            "data-[state=open]:[&_svg]:text-primary dark:data-[state=open]:[&_svg]:text-primary-foreground",
+                            "[&_svg]:text-primary-foreground",
+                            "hover:[&_svg]:text-primary-foreground",
+                            "data-[state=open]:[&_svg]:text-primary-foreground",
                             // Active/pressed state
                             "active:scale-95",
                             // Focus state

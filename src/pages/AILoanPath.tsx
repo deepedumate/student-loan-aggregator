@@ -1239,447 +1239,497 @@ const ChatJourney = () => {
         <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-radial from-primary/20 to-transparent rounded-full blur-3xl -z-10 opacity-30 dark:opacity-20"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-radial from-accent/20 to-transparent rounded-full blur-3xl -z-10 opacity-20 dark:opacity-15"></div>
         <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-gradient-radial from-blue-400/10 to-transparent rounded-full blur-3xl -z-10 opacity-20 dark:opacity-10"></div>
-       
-      {/* <div className="flex flex-col h-screen relative"> */}
-      <div className="flex-1 overflow-hidden relative">
-        {step !== "loans" ? (
-          <>
-            <ScrollArea className="flex-1 h-full">
-              <div className="pb-8">
-                {messages.map((msg, idx) => {
-                  const canEdit =
-                    msg.isUser &&
-                    msg.step &&
-                    step !== "welcome" &&
-                    idx < messages.length - 1;
-                  return (
-                    <ChatBubble
-                      key={msg.id || idx}
-                      message={msg.text}
-                      isUser={msg.isUser}
-                      canEdit={canEdit}
-                      onEdit={() => msg.id && handleEditMessage(msg.id)}
-                    />
-                  );
-                })}
 
-                {isTyping && <ChatBubble message="" isUser={false} isTyping />}
+        {/* <div className="flex flex-col h-screen relative"> */}
+        <div className="flex-1  relative">
+          {step !== "loans" ? (
+            <>
+              <ScrollArea className="h-full">
+                <div className="pb-8">
+                  {messages.map((msg, idx) => {
+                    const canEdit =
+                      msg.isUser &&
+                      msg.step &&
+                      step !== "welcome" &&
+                      idx < messages.length - 1;
+                    return (
+                      <ChatBubble
+                        key={msg.id || idx}
+                        message={msg.text}
+                        isUser={msg.isUser}
+                        canEdit={canEdit}
+                        onEdit={() => msg.id && handleEditMessage(msg.id)}
+                      />
+                    );
+                  })}
 
-                {/* Interactive Elements - Inside chat window */}
-                <div className="max-w-3xl mx-auto px-4">
-                  {step === "welcome" && !isTyping && (
-                    <div className="flex flex-col items-center py-10 space-y-6">
-                      {/* Hero CTA Section */}
-                      <div className="text-center space-y-3 max-w-md">
-                        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium">
-                          <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                          12+ Partner Lenders
-                        </div>
-                        <p className="text-muted-foreground text-base">
-                          Compare rates from top education loan providers in under 2 minutes
-                        </p>
-                      </div>
-                      <Button
-                        onClick={async () => {
-                          await addTypingMessage(
-                            "What level of study are you pursuing?"
-                          );
-                          dispatch(setStep("study-level"));
-                        }}
-                        className="gradient-primary px-6 py-3 text-base font-semibold rounded-lg transition-all duration-300 hover:shadow-glow transform hover:scale-105 active:scale-95"
-                      >
-                        Get Started
-                        <ChevronRight className="ml-2 h-5 w-5" />
-                      </Button>
-                    {/* Trust Indicators */}
-                      <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1.5">
-                          <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                          <span>No fees</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                          <span>Instant comparison</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                          <span>Best rates</span>
-                        </div>
-                      </div>
-                    </div>
+                  {isTyping && (
+                    <ChatBubble message="" isUser={false} isTyping />
                   )}
 
-                  {step === "study-level" && !isTyping && (
-                        // <div className="grid gap-2 py-4">
-                          <OptionsGrid
-                            options={[
-                              {
-                                value: "undergraduate",
-                                label: "Undergraduate",
-                                icon: <GraduationCap className="w-5 h-5" />,
-                                description: "Bachelor's degree programs"
-                              },
-                              {
-                                value: "graduate_mba",
-                                label: "MBA",
-                                icon: <Building2 className="w-5 h-5" />,
-                                description: "Master of Business Administration",
-                                // badge: "Popular"
-                              },
-                              {
-                                value: "graduate_masters",
-                                label: "Specialised Masters",
-                                icon: <GraduationCap className="w-5 h-5" />,
-                                description: "Master's degree programs"
-                              },
-                              {
-                                value: "phd",
-                                label: "PhD",
-                                icon: <GraduationCap className="w-5 h-5" />,
-                                description: "Doctoral degree programs"
-                              },
-                            ]}
-                            onSelect={handleStudyLevel}
-                            selectedValue={formData.studyLevel}
-                            columns={2}
-                          />
-                        // </div>
-                  )}
-
-                  {step === "admit-status" && !isTyping && (
-                        // <div className="grid gap-2 py-4">
-                          <OptionsGrid
-                            options={[
-                              { value: "applied", label: "Applied", description: "Application submitted" },
-                              { value: "admitted", label: "Admitted", description: "Offer received", 
-                                // badge: "Congrats!" 
-                              },
-                              { value: "yet_to_apply", label: "Yet to Apply", description: "Planning to apply" },
-                              { value: "deferred", label: "Deferred", description: "Postponed admission" },
-                            ]}
-                            onSelect={handleAdmitStatus}
-                            selectedValue={formData.admitStatus}
-                            columns={2}
-                          />
-                        // </div>
-                  )}
-
-                  {step === "intended-date" && !isTyping && (
-                    <div className={"grid gap-3 py-4 ml-[3.25rem] lg:ml-[3.75rem]"}>
-                      <IntendedDateCard onSelect={handleIntendedDate} />
-                    </div>
-                  )}
-
-                  {step === "programs" && !isTyping && programData?.data?.programs && (
-                    <ProgramSelector
-                      programs={programData.data.programs}
-                      currencyDisplayMode={currencyDisplayMode}
-                      onCurrencyDisplayModeChange={(mode) => dispatch(setCurrencyDisplayMode(mode))}
-                      preferredCurrency={preferredCurrency}
-                      onPreferredCurrencyChange={(currency) => dispatch(setPreferredCurrency(currency))}
-                      formCurrency={formData.currency}
-                      onProgramSelect={handleProgramSelect}
-                      onOtherProgramClick={handleOtherProgramClick}
-                      isOtherProgramSelected={isOtherProgramSelected}
-                      customProgramName={customProgramName}
-                      onCustomProgramNameChange={(name) => dispatch(setCustomProgramName(name))}
-                      onCustomProgramSubmit={handleCustomProgramSubmit}
-                      onCustomProgramCancel={() => {
-                        dispatch(setIsOtherProgramSelected(false));
-                        dispatch(setCustomProgramName(""));
-                      }}
-                      formatCurrencyWithConversion={formatCurrencyWithConversion}
-                      isLoading={false} // Set to true when fetching custom program details
-                    />
-                  )}
-
-                  {step === "university" && !isTyping && (
-                    <div className="relative py-4">
-                      <div className="flex gap-2">
-                        <div className="relative flex-1">
-                          <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                          <Input
-                            ref={universityInputRef}
-                            type="text"
-                            placeholder="Start typing university name..."
-                            value={userInput}
-                            onChange={(e) =>
-                              handleUniversityInputChange(e.target.value)
-                            }
-                            onKeyPress={(e) =>
-                              e.key === "Enter" && handleUniversitySearch()
-                            }
-                            className="pl-10 h-12 rounded-lg transition-all duration-300 focus:shadow-sm hover:border-primary/40"
-                          />
-                          {isLoadingSuggestions && (
-                            <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
-                            </div>
-                          )}
+                  {/* Interactive Elements - Inside chat window */}
+                  <div className="max-w-3xl mx-auto px-4">
+                    {step === "welcome" && !isTyping && (
+                      <div className="flex flex-col items-center py-10 space-y-6">
+                        {/* Hero CTA Section */}
+                        <div className="text-center space-y-3 max-w-md">
+                          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium">
+                            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                            12+ Partner Lenders
+                          </div>
+                          <p className="text-muted-foreground text-base">
+                            Compare rates from top education loan providers in
+                            under 2 minutes
+                          </p>
                         </div>
                         <Button
-                          onClick={() => handleUniversitySearch()}
-                          disabled={!userInput.trim()}
-                          className="gradient-primary px-6 h-12 rounded-lg font-semibold transition-all duration-300 hover:shadow-glow transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                          onClick={async () => {
+                            await addTypingMessage(
+                              "What level of study are you pursuing?"
+                            );
+                            dispatch(setStep("study-level"));
+                          }}
+                          className="gradient-primary px-6 py-3 text-base font-semibold rounded-lg transition-all duration-300 hover:shadow-glow transform hover:scale-105 active:scale-95"
                         >
-                          Search
+                          Get Started
+                          <ChevronRight className="ml-2 h-5 w-5" />
                         </Button>
-                      </div>
-
-                      {showSuggestions && universitySuggestions.length > 0 && (
-                        <Card className="absolute bottom-full left-0 right-0 mb-1 bg-card border border-border rounded-lg shadow-lg z-50 max-h-60 overflow-auto">
-                          <div className="py-1">
-                            {universitySuggestions.map((suggestion, idx) => (
-                              <div
-                                key={idx}
-                                className="px-4 py-3 hover:bg-primary/10 cursor-pointer transition-colors duration-200 border-b border-border last:border-0"
-                                onClick={() =>
-                                  handleSuggestionSelect(suggestion)
-                                }
-                              >
-                                <div className="flex items-center gap-2">
-                                  <Building2 className="w-4 h-4 text-primary" />
-                                  <span className="text-sm">
-                                    {suggestion?.name}
-                                  </span>
-                                </div>
-                              </div>
-                            ))}
+                        {/* Trust Indicators */}
+                        <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-1.5">
+                            <svg
+                              className="w-4 h-4 text-green-500"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            <span>No fees</span>
                           </div>
-                        </Card>
+                          <div className="flex items-center gap-1.5">
+                            <svg
+                              className="w-4 h-4 text-green-500"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            <span>Instant comparison</span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <svg
+                              className="w-4 h-4 text-green-500"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            <span>Best rates</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {step === "study-level" && !isTyping && (
+                      // <div className="grid gap-2 py-4">
+                      <OptionsGrid
+                        options={[
+                          {
+                            value: "undergraduate",
+                            label: "Undergraduate",
+                            icon: <GraduationCap className="w-5 h-5" />,
+                            description: "Bachelor's degree programs",
+                          },
+                          {
+                            value: "graduate_mba",
+                            label: "MBA",
+                            icon: <Building2 className="w-5 h-5" />,
+                            description: "Master of Business Administration",
+                            // badge: "Popular"
+                          },
+                          {
+                            value: "graduate_masters",
+                            label: "Specialised Masters",
+                            icon: <GraduationCap className="w-5 h-5" />,
+                            description: "Master's degree programs",
+                          },
+                          {
+                            value: "phd",
+                            label: "PhD",
+                            icon: <GraduationCap className="w-5 h-5" />,
+                            description: "Doctoral degree programs",
+                          },
+                        ]}
+                        onSelect={handleStudyLevel}
+                        selectedValue={formData.studyLevel}
+                        columns={2}
+                      />
+                      // </div>
+                    )}
+
+                    {step === "admit-status" && !isTyping && (
+                      // <div className="grid gap-2 py-4">
+                      <OptionsGrid
+                        options={[
+                          {
+                            value: "applied",
+                            label: "Applied",
+                            description: "Application submitted",
+                          },
+                          {
+                            value: "admitted",
+                            label: "Admitted",
+                            description: "Offer received",
+                            // badge: "Congrats!"
+                          },
+                          {
+                            value: "yet_to_apply",
+                            label: "Yet to Apply",
+                            description: "Planning to apply",
+                          },
+                          {
+                            value: "deferred",
+                            label: "Deferred",
+                            description: "Postponed admission",
+                          },
+                        ]}
+                        onSelect={handleAdmitStatus}
+                        selectedValue={formData.admitStatus}
+                        columns={2}
+                      />
+                      // </div>
+                    )}
+
+                    {step === "intended-date" && !isTyping && (
+                      <div
+                        className={
+                          "grid gap-3 py-4 ml-[3.25rem] lg:ml-[3.75rem]"
+                        }
+                      >
+                        <IntendedDateCard onSelect={handleIntendedDate} />
+                      </div>
+                    )}
+
+                    {step === "programs" &&
+                      !isTyping &&
+                      programData?.data?.programs && (
+                        <ProgramSelector
+                          programs={programData.data.programs}
+                          currencyDisplayMode={currencyDisplayMode}
+                          onCurrencyDisplayModeChange={(mode) =>
+                            dispatch(setCurrencyDisplayMode(mode))
+                          }
+                          preferredCurrency={preferredCurrency}
+                          onPreferredCurrencyChange={(currency) =>
+                            dispatch(setPreferredCurrency(currency))
+                          }
+                          formCurrency={formData.currency}
+                          onProgramSelect={handleProgramSelect}
+                          onOtherProgramClick={handleOtherProgramClick}
+                          isOtherProgramSelected={isOtherProgramSelected}
+                          customProgramName={customProgramName}
+                          onCustomProgramNameChange={(name) =>
+                            dispatch(setCustomProgramName(name))
+                          }
+                          onCustomProgramSubmit={handleCustomProgramSubmit}
+                          onCustomProgramCancel={() => {
+                            dispatch(setIsOtherProgramSelected(false));
+                            dispatch(setCustomProgramName(""));
+                          }}
+                          formatCurrencyWithConversion={
+                            formatCurrencyWithConversion
+                          }
+                          isLoading={false} // Set to true when fetching custom program details
+                        />
                       )}
+
+                    {step === "university" && !isTyping && (
+                      <div className="relative py-4">
+                        <div className="flex gap-2">
+                          <div className="relative flex-1">
+                            <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                            <Input
+                              ref={universityInputRef}
+                              type="text"
+                              placeholder="Start typing university name..."
+                              value={userInput}
+                              onChange={(e) =>
+                                handleUniversityInputChange(e.target.value)
+                              }
+                              onKeyPress={(e) =>
+                                e.key === "Enter" && handleUniversitySearch()
+                              }
+                              className="pl-10 h-12 rounded-lg transition-all duration-300 focus:shadow-sm hover:border-primary/40"
+                            />
+                            {isLoadingSuggestions && (
+                              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
+                              </div>
+                            )}
+                          </div>
+                          <Button
+                            onClick={() => handleUniversitySearch()}
+                            disabled={!userInput.trim()}
+                            className="gradient-primary px-6 h-12 rounded-lg font-semibold transition-all duration-300 hover:shadow-glow transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                          >
+                            Search
+                          </Button>
+                        </div>
+
+                        {showSuggestions &&
+                          universitySuggestions.length > 0 && (
+                            <Card className="absolute bottom-full left-0 right-0 mb-1 bg-card border border-border rounded-lg shadow-lg z-50 max-h-60 overflow-auto">
+                              <div className="py-1">
+                                {universitySuggestions.map(
+                                  (suggestion, idx) => (
+                                    <div
+                                      key={idx}
+                                      className="px-4 py-3 hover:bg-primary/10 cursor-pointer transition-colors duration-200 border-b border-border last:border-0"
+                                      onClick={() =>
+                                        handleSuggestionSelect(suggestion)
+                                      }
+                                    >
+                                      <div className="flex items-center gap-2">
+                                        <Building2 className="w-4 h-4 text-primary" />
+                                        <span className="text-sm">
+                                          {suggestion?.name}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            </Card>
+                          )}
+                      </div>
+                    )}
+
+                    {step === "loan-amount" &&
+                      !isTyping &&
+                      costBreakdown &&
+                      totalProgramCost && (
+                        <div className="py-4 space-y-3 max-w-lg mx-auto">
+                          {/* Compact Cost Breakdown - Horizontal Layout */}
+                          <div className="animate-fade-in">
+                            <CompactCostBreakdownCard {...costBreakdown} />
+                          </div>
+
+                          {/* Streamlined Loan Amount Input */}
+                          <div
+                            className="animate-fade-in"
+                            style={{ animationDelay: "100ms" }}
+                          >
+                            <StreamlinedLoanAmountInput
+                              totalCost={parseFloat(totalProgramCost)}
+                              currency={formData.currency}
+                              value={userInput}
+                              onChange={(value) =>
+                                dispatch(setUserInput(value))
+                              }
+                              onSubmit={handleLoanAmount}
+                            />
+                          </div>
                         </div>
                       )}
 
-                  {step === "loan-amount" && !isTyping && costBreakdown && totalProgramCost && (
-                    <div className="py-4 space-y-3 max-w-lg mx-auto">
-                      {/* Compact Cost Breakdown - Horizontal Layout */}
-                      <div className="animate-fade-in">
-                        <CompactCostBreakdownCard {...costBreakdown} />
-                      </div>
-
-                      {/* Streamlined Loan Amount Input */}
-                      <div className="animate-fade-in" style={{ animationDelay: '100ms' }}>
-                        <StreamlinedLoanAmountInput
-                          totalCost={parseFloat(totalProgramCost)}
-                          currency={formData.currency}
-                          value={userInput}
-                          onChange={(value) => dispatch(setUserInput(value))}
-                          onSubmit={handleLoanAmount}
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {step === "loan-type" && !isTyping && (
-                    <div className="flex py-4">
-                      <div className="grid grid-cols-2 gap-3">
-                        <Card
-                          className="p-3 cursor-pointer hover:border-primary/50 transition-all duration-300 bg-card transform hover:-translate-y-0.5 hover:shadow-md group"
-                          onClick={() => handleLoanType("secured")}
-                        >
-                          <div className="flex flex-col items-center text-center gap-2">
-                            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-                              <Shield className="w-5 h-5 text-white" />
-                            </div>
-                            <div>
-                              <h4 className="font-semibold text-sm transition-colors duration-300 group-hover:text-primary">
-                                Secured Loan
-                              </h4>
-                              <p className="text-xs text-muted-foreground">
-                                (with collateral)
+                    {step === "loan-type" && !isTyping && (
+                      <div className="flex py-4">
+                        <div className="grid grid-cols-2 gap-3">
+                          <Card
+                            className="p-3 cursor-pointer hover:border-primary/50 transition-all duration-300 bg-card transform hover:-translate-y-0.5 hover:shadow-md group"
+                            onClick={() => handleLoanType("secured")}
+                          >
+                            <div className="flex flex-col items-center text-center gap-2">
+                              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
+                                <Shield className="w-5 h-5 text-white" />
+                              </div>
+                              <div>
+                                <h4 className="font-semibold text-sm transition-colors duration-300 group-hover:text-primary">
+                                  Secured Loan
+                                </h4>
+                                <p className="text-xs text-muted-foreground">
+                                  (with collateral)
+                                </p>
+                              </div>
+                              <p className="text-[10px] text-muted-foreground leading-tight">
+                                Eg: Property, Land, Fixed Deposits
                               </p>
                             </div>
-                            <p className="text-[10px] text-muted-foreground leading-tight">
-                              Eg: Property, Land, Fixed Deposits
-                            </p>
-                          </div>
-                        </Card>
+                          </Card>
 
-                        <Card
-                          className="p-3 cursor-pointer hover:border-accent/50 transition-all duration-300 bg-card transform hover:-translate-y-0.5 hover:shadow-md group"
-                          onClick={() => handleLoanType("unsecured")}
-                        >
-                          <div className="flex flex-col items-center text-center gap-2">
-                            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent to-accent/80 flex items-center justify-center">
-                              <Zap className="w-5 h-5 text-white" />
-                            </div>
-                            <div>
-                              <h4 className="font-semibold text-sm transition-colors duration-300 group-hover:text-accent">
-                                Unsecured Loan
-                              </h4>
-                              <p className="text-xs text-muted-foreground">
-                                (without collateral)
+                          <Card
+                            className="p-3 cursor-pointer hover:border-accent/50 transition-all duration-300 bg-card transform hover:-translate-y-0.5 hover:shadow-md group"
+                            onClick={() => handleLoanType("unsecured")}
+                          >
+                            <div className="flex flex-col items-center text-center gap-2">
+                              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent to-accent/80 flex items-center justify-center">
+                                <Zap className="w-5 h-5 text-white" />
+                              </div>
+                              <div>
+                                <h4 className="font-semibold text-sm transition-colors duration-300 group-hover:text-accent">
+                                  Unsecured Loan
+                                </h4>
+                                <p className="text-xs text-muted-foreground">
+                                  (without collateral)
+                                </p>
+                              </div>
+                              <p className="text-[10px] text-muted-foreground leading-tight">
+                                No assets required
                               </p>
                             </div>
-                            <p className="text-[10px] text-muted-foreground leading-tight">
-                              No assets required
-                            </p>
-                          </div>
-                        </Card>
+                          </Card>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {/* Verified Step Action Buttons - Styled as Edumate message */}
-                  {step === "verified" && !isTyping && (
-                    <div className="flex justify-start py-6">
-                      <div className="max-w-2xl w-full">
-                        <div className="flex items-start gap-3">
-                          {/* <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-md">
+                    {/* Verified Step Action Buttons - Styled as Edumate message */}
+                    {step === "verified" && !isTyping && (
+                      <div className="flex justify-start py-6">
+                        <div className="max-w-2xl w-full">
+                          <div className="flex items-start gap-3">
+                            {/* <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-md">
                             <GraduationCap className="w-4 h-4 text-white" />
                           </div> */}
-                          <div className="flex-1">
-                            {/* <div className="text-xs font-medium text-orange-600 dark:text-orange-400 mb-2">EDUMATE</div> */}
-                            <div className="grid gap-4">
-                              {/* Success Indicator */}
-                              <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400 mb-4">
-                                <CheckCircle2 className="w-5 h-5" />
-                                <span className="font-medium">
-                                  Profile verified successfully
-                                </span>
+                            <div className="flex-1">
+                              {/* <div className="text-xs font-medium text-orange-600 dark:text-orange-400 mb-2">EDUMATE</div> */}
+                              <div className="grid gap-4">
+                                {/* Success Indicator */}
+                                <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400 mb-4">
+                                  <CheckCircle2 className="w-5 h-5" />
+                                  <span className="font-medium">
+                                    Profile verified successfully
+                                  </span>
+                                </div>
+
+                                {/* Check Eligible Loans Button - Primary CTA */}
+                                <button
+                                  onClick={handleCheckEligibleLoans}
+                                  className="group w-full flex items-center justify-between gap-4 p-6 rounded-xl bg-gradient-to-br from-primary to-primary/90 hover:from-primary/95 hover:to-primary/85 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
+                                >
+                                  <div className="flex items-center gap-4">
+                                    <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                                      <Wallet className="h-7 w-7 text-white" />
+                                    </div>
+                                    <div className="text-left">
+                                      <h3 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
+                                        Check Eligible Loans
+                                        <Sparkles className="h-4 w-4 text-yellow-300" />
+                                      </h3>
+                                      <p className="text-sm text-white/90">
+                                        View personalized offers from 12+
+                                        lenders
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <ArrowRight className="h-6 w-6 text-white group-hover:translate-x-1 transition-transform flex-shrink-0" />
+                                </button>
+
+                                {/* Calculate Monthly Repayment Button - Secondary CTA */}
+                                <button
+                                  onClick={handleCalculateRepayment}
+                                  className="group w-full flex items-center justify-between gap-4 p-6 rounded-xl border-2 border-accent bg-accent/5 hover:bg-accent/10 hover:border-accent/60 transition-all duration-200 transform hover:-translate-y-0.5"
+                                >
+                                  <div className="flex items-center gap-4">
+                                    <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-accent/15 group-hover:bg-accent/25 transition-colors">
+                                      <Calculator className="h-7 w-7 text-accent" />
+                                    </div>
+                                    <div className="text-left">
+                                      <h3 className="text-lg font-semibold text-foreground mb-1">
+                                        Calculate Monthly Repayment
+                                      </h3>
+                                      <p className="text-sm text-muted-foreground">
+                                        Plan your EMI with our smart calculator
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <ArrowRight className="h-6 w-6 text-accent group-hover:translate-x-1 transition-transform flex-shrink-0" />
+                                </button>
                               </div>
-
-                              {/* Check Eligible Loans Button - Primary CTA */}
-                              <button
-                                onClick={handleCheckEligibleLoans}
-                                className="group w-full flex items-center justify-between gap-4 p-6 rounded-xl bg-gradient-to-br from-primary to-primary/90 hover:from-primary/95 hover:to-primary/85 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
-                              >
-                                <div className="flex items-center gap-4">
-                                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-                                    <Wallet className="h-7 w-7 text-white" />
-                                  </div>
-                                  <div className="text-left">
-                                    <h3 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
-                                      Check Eligible Loans
-                                      <Sparkles className="h-4 w-4 text-yellow-300" />
-                                    </h3>
-                                    <p className="text-sm text-white/90">
-                                      View personalized offers from 12+ lenders
-                                    </p>
-                                  </div>
-                                </div>
-                                <ArrowRight className="h-6 w-6 text-white group-hover:translate-x-1 transition-transform flex-shrink-0" />
-                              </button>
-
-                              {/* Calculate Monthly Repayment Button - Secondary CTA */}
-                              <button
-                                onClick={handleCalculateRepayment}
-                                className="group w-full flex items-center justify-between gap-4 p-6 rounded-xl border-2 border-accent bg-accent/5 hover:bg-accent/10 hover:border-accent/60 transition-all duration-200 transform hover:-translate-y-0.5"
-                              >
-                                <div className="flex items-center gap-4">
-                                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-accent/15 group-hover:bg-accent/25 transition-colors">
-                                    <Calculator className="h-7 w-7 text-accent" />
-                                  </div>
-                                  <div className="text-left">
-                                    <h3 className="text-lg font-semibold text-foreground mb-1">
-                                      Calculate Monthly Repayment
-                                    </h3>
-                                    <p className="text-sm text-muted-foreground">
-                                      Plan your EMI with our smart calculator
-                                    </p>
-                                  </div>
-                                </div>
-                                <ArrowRight className="h-6 w-6 text-accent group-hover:translate-x-1 transition-transform flex-shrink-0" />
-                              </button>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {step === "otp" && !isTyping && !formData.phone && (
-                    <div className="space-y-2">
-                      <div className="flex gap-2">
-                        <Select
-                          value={countryCode}
-                          onValueChange={(value) =>
-                            dispatch(setCountryCode(value))
-                          }
-                        >
-                          <SelectTrigger className="w-32 h-12 rounded-lg">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="+91">🇮🇳 +91</SelectItem>
-                            <SelectItem value="+1">🇺🇸 +1</SelectItem>
-                            <SelectItem value="+44">🇬🇧 +44</SelectItem>
-                            <SelectItem value="+61">🇦🇺 +61</SelectItem>
-                            <SelectItem value="+86">🇨🇳 +86</SelectItem>
-                            <SelectItem value="+81">🇯🇵 +81</SelectItem>
-                            <SelectItem value="+82">🇰🇷 +82</SelectItem>
-                            <SelectItem value="+65">🇸🇬 +65</SelectItem>
-                            <SelectItem value="+971">🇦🇪 +971</SelectItem>
-                            <SelectItem value="+966">🇸🇦 +966</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <div className="relative flex-1">
-                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground transition-colors duration-300 peer-focus:text-primary" />
-                          <Input
-                            type="tel"
-                            placeholder={
-                              countryCode === "+91"
-                                ? "Enter 10-digit number"
-                                : "Enter phone number"
+                    {step === "otp" && !isTyping && !formData.phone && (
+                      <div className="space-y-2">
+                        <div className="flex gap-2">
+                          <Select
+                            value={countryCode}
+                            onValueChange={(value) =>
+                              dispatch(setCountryCode(value))
                             }
-                            value={userInput}
-                            onChange={(e) =>
-                              handlePhoneInputChange(e.target.value)
-                            }
-                            onKeyPress={(e) =>
-                              e.key === "Enter" && handlePhoneSubmit()
-                            }
-                            className={`pl-10 h-12 rounded-lg peer transition-all duration-300 focus:shadow-sm ${
-                              phoneValidation === null || userInput === ""
-                                ? "hover:border-primary/40"
-                                : phoneValidation.isValid
-                                ? "border-green-500 focus:border-green-500 hover:border-green-600"
-                                : "border-red-500 focus:border-red-500 hover:border-red-600"
-                            }`}
-                          />
+                          >
+                            <SelectTrigger className="w-32 h-12 rounded-lg">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="+91">🇮🇳 +91</SelectItem>
+                              <SelectItem value="+1">🇺🇸 +1</SelectItem>
+                              <SelectItem value="+44">🇬🇧 +44</SelectItem>
+                              <SelectItem value="+61">🇦🇺 +61</SelectItem>
+                              <SelectItem value="+86">🇨🇳 +86</SelectItem>
+                              <SelectItem value="+81">🇯🇵 +81</SelectItem>
+                              <SelectItem value="+82">🇰🇷 +82</SelectItem>
+                              <SelectItem value="+65">🇸🇬 +65</SelectItem>
+                              <SelectItem value="+971">🇦🇪 +971</SelectItem>
+                              <SelectItem value="+966">🇸🇦 +966</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <div className="relative flex-1">
+                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground transition-colors duration-300 peer-focus:text-primary" />
+                            <Input
+                              type="tel"
+                              placeholder={
+                                countryCode === "+91"
+                                  ? "Enter 10-digit number"
+                                  : "Enter phone number"
+                              }
+                              value={userInput}
+                              onChange={(e) =>
+                                handlePhoneInputChange(e.target.value)
+                              }
+                              onKeyPress={(e) =>
+                                e.key === "Enter" && handlePhoneSubmit()
+                              }
+                              className={`pl-10 h-12 rounded-lg peer transition-all duration-300 focus:shadow-sm ${
+                                phoneValidation === null || userInput === ""
+                                  ? "hover:border-primary/40"
+                                  : phoneValidation.isValid
+                                  ? "border-green-500 focus:border-green-500 hover:border-green-600"
+                                  : "border-red-500 focus:border-red-500 hover:border-red-600"
+                              }`}
+                            />
+                          </div>
+                          <Button
+                            onClick={handlePhoneSubmit}
+                            disabled={!phoneValidation?.isValid || !userInput}
+                            className="gradient-primary px-6 h-12 rounded-lg font-semibold transition-all duration-300 hover:shadow-glow transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                          >
+                            Send OTP
+                          </Button>
                         </div>
-                        <Button
-                          onClick={handlePhoneSubmit}
-                          disabled={!phoneValidation?.isValid || !userInput}
-                          className="gradient-primary px-6 h-12 rounded-lg font-semibold transition-all duration-300 hover:shadow-glow transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                        >
-                          Send OTP
-                        </Button>
-                      </div>
-                      {phoneValidation && userInput && (
-                        <div
-                          className={`text-sm px-3 py-2 rounded-lg transition-all duration-300 ${
-                            phoneValidation.isValid
-                              ? "text-green-600 bg-green-50 dark:bg-green-950/30 dark:text-green-400"
-                              : "text-red-600 bg-red-50 dark:bg-red-950/30 dark:text-red-400"
-                          }`}
-                        >
-                          {phoneValidation.isValid ? (
-                            <span className="flex items-center gap-2">
-                              <svg
-                                className="w-4 h-4"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M5 13l4 4L19 7"
-                                />
-                              </svg>
-                              Valid phone number
-                            </span>
-                          ) : (
-                            phoneValidation.error && (
+                        {phoneValidation && userInput && (
+                          <div
+                            className={`text-sm px-3 py-2 rounded-lg transition-all duration-300 ${
+                              phoneValidation.isValid
+                                ? "text-green-600 bg-green-50 dark:bg-green-950/30 dark:text-green-400"
+                                : "text-red-600 bg-red-50 dark:bg-red-950/30 dark:text-red-400"
+                            }`}
+                          >
+                            {phoneValidation.isValid ? (
                               <span className="flex items-center gap-2">
                                 <svg
                                   className="w-4 h-4"
@@ -1691,84 +1741,102 @@ const ChatJourney = () => {
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
                                     strokeWidth={2}
-                                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    d="M5 13l4 4L19 7"
                                   />
                                 </svg>
-                                {phoneValidation.error}
+                                Valid phone number
                               </span>
-                            )
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {step === "otp" && !isTyping && formData.phone && (
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between px-3 py-2 bg-muted/50 rounded-lg">
-                        <div className="flex items-center gap-2">
-                          <Phone className="w-4 h-4 text-muted-foreground" />
-                          <span className="text-sm font-medium">
-                            {formData.phone}
-                          </span>
-                        </div>
-                        <Button
-                          onClick={handleEditPhone}
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 text-xs text-primary hover:text-primary/80"
-                        >
-                          Edit
-                        </Button>
-                      </div>
-                      <div className="flex gap-2">
-                        <Input
-                          type="text"
-                          placeholder="Enter 6-digit OTP..."
-                          value={userInput}
-                          onChange={(e) =>
-                            dispatch(setUserInput(e.target.value))
-                          }
-                          onKeyPress={(e) =>
-                            e.key === "Enter" && handleOTPVerify()
-                          }
-                          maxLength={6}
-                          className="flex-1 h-12 px-4 rounded-lg text-center tracking-widest text-lg font-semibold transition-all duration-300 focus:shadow-sm hover:border-primary/40"
-                        />
-                        <Button
-                          onClick={handleOTPVerify}
-                          className="gradient-primary px-6 h-12 rounded-lg font-semibold transition-all duration-300 hover:shadow-glow transform hover:scale-105 active:scale-95"
-                        >
-                          Verify
-                        </Button>
-                      </div>
-                      <div className="flex items-center justify-center gap-2 text-sm">
-                        {otpCountdown > 0 ? (
-                          <span className="text-muted-foreground">
-                            Resend OTP in{" "}
-                            <span className="font-semibold text-foreground">
-                              {otpCountdown}s
-                            </span>
-                          </span>
-                        ) : (
-                          <Button
-                            onClick={handleResendOTP}
-                            // variant="ghost"
-                            className="text-primary bg-transparent hover:text-primary/80 hover:bg-primary hover:text-white font-semibold"
-                          >
-                            Resend OTP
-                          </Button>
+                            ) : (
+                              phoneValidation.error && (
+                                <span className="flex items-center gap-2">
+                                  <svg
+                                    className="w-4 h-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    />
+                                  </svg>
+                                  {phoneValidation.error}
+                                </span>
+                              )
+                            )}
+                          </div>
                         )}
                       </div>
-                    </div>
-                  )}
-                </div>
-                <div ref={messagesEndRef} />
-              </div>
-            </ScrollArea>
+                    )}
 
-            {/* Fixed Bottom Bar - visible when a conversation has started */}
-            {/* <div className="absolute bottom-0 left-0 right-0 border-t border-border bg-background/80 backdrop-blur-lg z-10">
+                    {step === "otp" && !isTyping && formData.phone && (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between px-3 py-2 bg-muted/50 rounded-lg">
+                          <div className="flex items-center gap-2">
+                            <Phone className="w-4 h-4 text-muted-foreground" />
+                            <span className="text-sm font-medium">
+                              {formData.phone}
+                            </span>
+                          </div>
+                          <Button
+                            onClick={handleEditPhone}
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 text-xs text-primary hover:text-primary/80"
+                          >
+                            Edit
+                          </Button>
+                        </div>
+                        <div className="flex gap-2">
+                          <Input
+                            type="text"
+                            placeholder="Enter 6-digit OTP..."
+                            value={userInput}
+                            onChange={(e) =>
+                              dispatch(setUserInput(e.target.value))
+                            }
+                            onKeyPress={(e) =>
+                              e.key === "Enter" && handleOTPVerify()
+                            }
+                            maxLength={6}
+                            className="flex-1 h-12 px-4 rounded-lg text-center tracking-widest text-lg font-semibold transition-all duration-300 focus:shadow-sm hover:border-primary/40"
+                          />
+                          <Button
+                            onClick={handleOTPVerify}
+                            className="gradient-primary px-6 h-12 rounded-lg font-semibold transition-all duration-300 hover:shadow-glow transform hover:scale-105 active:scale-95"
+                          >
+                            Verify
+                          </Button>
+                        </div>
+                        <div className="flex items-center justify-center gap-2 text-sm">
+                          {otpCountdown > 0 ? (
+                            <span className="text-muted-foreground">
+                              Resend OTP in{" "}
+                              <span className="font-semibold text-foreground">
+                                {otpCountdown}s
+                              </span>
+                            </span>
+                          ) : (
+                            <Button
+                              onClick={handleResendOTP}
+                              // variant="ghost"
+                              className="text-primary bg-transparent hover:text-primary/80 hover:bg-primary hover:text-white font-semibold"
+                            >
+                              Resend OTP
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <div ref={messagesEndRef} />
+                </div>
+              </ScrollArea>
+
+              {/* Fixed Bottom Bar - visible when a conversation has started */}
+              {/* <div className="absolute bottom-0 left-0 right-0 border-t border-border bg-background/80 backdrop-blur-lg z-10">
               <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-2">
                   <ThemeToggle />
@@ -1790,36 +1858,36 @@ const ChatJourney = () => {
                 </div>
               </div>
             </div> */}
-          </>
-        ) : (
-          <div className="flex-1 overflow-auto p-6">
-            <div className="max-w-5xl mx-auto">
-              <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-6 border border-border rounded-lg bg-card">
-                <div>
-                  <h2 className="text-2xl font-display font-bold mb-2 text-foreground">
-                    Your Loan Matches
-                  </h2>
-                  <p className="text-muted-foreground">
-                    Found{" "}
-                    <span className="font-semibold text-accent">
-                      {mockLoans.length}
-                    </span>{" "}
-                    products matching your profile
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 text-xs font-medium text-green-600 bg-green-50 dark:bg-green-950/30 dark:text-green-400 px-3 py-1.5 rounded-full">
-                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                    Live rates
-                  </span>
+            </>
+          ) : (
+            <div className="flex-1 overflow-auto p-6">
+              <div className="max-w-5xl mx-auto">
+                <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-6 border border-border rounded-lg bg-card">
+                  <div>
+                    <h2 className="text-2xl font-display font-bold mb-2 text-foreground">
+                      Your Loan Matches
+                    </h2>
+                    <p className="text-muted-foreground">
+                      Found{" "}
+                      <span className="font-semibold text-accent">
+                        {mockLoans.length}
+                      </span>{" "}
+                      products matching your profile
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-green-600 bg-green-50 dark:bg-green-950/30 dark:text-green-400 px-3 py-1.5 rounded-full">
+                      <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                      Live rates
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
+        {/* </div> */}
       </div>
-    {/* </div> */}
-    </div>
     </>
   );
 };

@@ -274,20 +274,20 @@ export default function Login() {
 
   const isPhoneValid = phoneValidation?.isValid ?? null;
 
-  // ✅ OTP Input Styles
+  // ✅ Fixed Mobile Responsive OTP Input Styles
   const getOtpInputStyle = (isFilled: boolean, isFocused: boolean) => {
     const isDark = document.documentElement.classList.contains("dark");
 
     return {
-      width: "3rem",
-      height: "3.5rem",
-      fontSize: "1.5rem",
+      width: "clamp(2rem, 7vw, 3rem)", // ✅ Even smaller for mobile
+      height: "clamp(2.5rem, 9vw, 3.5rem)", // ✅ Proportional height
+      fontSize: "clamp(1rem, 4vw, 1.5rem)", // ✅ Smaller font on mobile
       fontWeight: "700",
       textAlign: "center" as const,
       border: isFilled
         ? "2px solid hsl(217 91% 60%)"
         : "2px solid hsl(var(--border))",
-      borderRadius: "0.75rem",
+      borderRadius: "0.5rem",
       backgroundColor: isFilled
         ? isDark
           ? "hsl(217 91% 60% / 0.15)"
@@ -308,12 +308,13 @@ export default function Login() {
         ? "0 0 0 3px hsl(217 91% 60% / 0.15), 0 4px 6px -1px rgba(0, 0, 0, 0.1)"
         : "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
       transform: isFocused ? "scale(1.05)" : "scale(1)",
+      flexShrink: 0,
     };
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-background dark:to-gray-950 flex items-center justify-center p-4">
-      <div className="absolute top-4 right-4 flex gap-2">
+    <div className="relative z-10 mx-auto pt-6 sm:pt-12 md:pt-16 lg:pt-16 min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-background dark:to-gray-950 flex items-center justify-center p-2 sm:p-4 overflow-x-hidden">
+      <div className="absolute top-4 right-4 hidden sm:flex gap-2">
         <Dialog>
           <DialogTrigger asChild>
             <Button
@@ -401,22 +402,22 @@ export default function Login() {
         <ThemeToggle />
       </div>
 
-      <Card className="w-full max-w-md shadow-xl animate-[fade-in_0.4s_ease-out,scale-in_0.3s_ease-out] bg-white dark:bg-card border-gray-200 dark:border-border">
-        <CardHeader className="space-y-2 text-center">
-          <div className="mx-auto mb-4">
+      <Card className="w-full max-w-md shadow-xl animate-[fade-in_0.4s_ease-out,scale-in_0.3s_ease-out] bg-white dark:bg-card border-gray-200 dark:border-border overflow-hidden">
+        <CardHeader className="space-y-2 text-center px-4 sm:px-6 pt-6 sm:pt-8">
+          <div className="mx-auto mb-2 sm:mb-4">
             <Logo size="lg" />
           </div>
-          <CardTitle className="text-2xl font-display text-gray-900 dark:text-white">
+          <CardTitle className="text-xl sm:text-2xl font-display text-gray-900 dark:text-white">
             Welcome Back
           </CardTitle>
-          <CardDescription className="text-gray-600 dark:text-muted-foreground">
+          <CardDescription className="text-sm sm:text-base text-gray-600 dark:text-muted-foreground">
             {formData.phone
               ? "Enter the 6-digit OTP sent to your WhatsApp"
               : "Enter your phone number to get started"}
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-5 px-3 sm:px-6 pb-6 sm:pb-8">
           {!formData.phone ? (
             <>
               <div className="space-y-2">
@@ -518,59 +519,65 @@ export default function Login() {
           ) : (
             <>
               <div className="space-y-4 animate-fade-in">
-                <div className="bg-gray-50 dark:bg-muted/50 rounded-lg p-3 text-center border border-gray-200 dark:border-border/50">
+                <div className="bg-gray-50 dark:bg-muted/50 rounded-lg p-2 sm:p-3 text-center border border-gray-200 dark:border-border/50">
                   <p className="text-xs text-gray-600 dark:text-muted-foreground">
                     OTP sent to
                   </p>
-                  <p className="text-sm font-medium mt-1 text-gray-900 dark:text-foreground">
+                  <p className="text-sm sm:text-base font-medium mt-1 text-gray-900 dark:text-foreground break-all">
                     {formData.phone}
                   </p>
                 </div>
 
-                {/* ✅ OTP Input with Inline Styles */}
-                <div className="space-y-2">
-                  <Label className="text-gray-900 dark:text-foreground text-center block">
+                {/* ✅ Fixed Mobile Responsive OTP Input */}
+                <div className="space-y-4">
+                  <Label className="text-gray-900 dark:text-foreground text-center block text-sm sm:text-base">
                     Enter OTP
                   </Label>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      gap: "1rem",
-                    }}
-                  >
-                    <OtpInput
-                      value={userInput}
-                      onChange={(value) => dispatch(setUserInput(value))}
-                      numInputs={6}
-                      renderInput={(props, index) => {
-                        const isFilled =
-                          userInput[index] !== undefined &&
-                          userInput[index] !== "";
-                        return (
-                          <input
-                            {...props}
-                            disabled={isTyping}
-                            className="mr-2"
-                            style={getOtpInputStyle(isFilled, false)}
-                            onFocus={(e) => {
-                              props.onFocus?.(e);
-                              e.target.style.boxShadow =
-                                "0 0 0 3px hsl(217 91% 60% / 0.15), 0 4px 6px -1px rgba(0, 0, 0, 0.1)";
-                              e.target.style.transform = "scale(1.05)";
-                            }}
-                            onBlur={(e) => {
-                              props.onBlur?.(e);
-                              e.target.style.boxShadow =
-                                "0 1px 2px 0 rgba(0, 0, 0, 0.05)";
-                              e.target.style.transform = "scale(1)";
-                            }}
-                          />
-                        );
+                  <div className="flex justify-center items-center w-full py-2 overflow-x-hidden">
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: "clamp(0.25rem, 1vw, 0.75rem)", // ✅ Tighter gap for mobile
+                        width: "100%",
+                        maxWidth: "360px",
+                        padding: "0 0.25rem",
                       }}
-                      shouldAutoFocus
-                      inputType="tel"
-                    />
+                    >
+                      <OtpInput
+                        value={userInput}
+                        onChange={(value) => dispatch(setUserInput(value))}
+                        numInputs={6}
+                        renderInput={(props, index) => {
+                          const isFilled =
+                            userInput[index] !== undefined &&
+                            userInput[index] !== "";
+                          return (
+                            <input
+                              {...props}
+                              disabled={isTyping}
+                              style={getOtpInputStyle(isFilled, false)}
+                              className="mr-2"
+                              onFocus={(e) => {
+                                props.onFocus?.(e);
+                                e.target.style.boxShadow =
+                                  "0 0 0 3px hsl(217 91% 60% / 0.15), 0 4px 6px -1px rgba(0, 0, 0, 0.1)";
+                                e.target.style.transform = "scale(1.05)";
+                              }}
+                              onBlur={(e) => {
+                                props.onBlur?.(e);
+                                e.target.style.boxShadow =
+                                  "0 1px 2px 0 rgba(0, 0, 0, 0.05)";
+                                e.target.style.transform = "scale(1)";
+                              }}
+                            />
+                          );
+                        }}
+                        shouldAutoFocus
+                        inputType="tel"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -590,10 +597,10 @@ export default function Login() {
                 )}
               </Button>
 
-              <div className="flex items-center justify-between text-sm animate-fade-in">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-0 text-sm animate-fade-in">
                 <Button
                   variant="link"
-                  className="p-0 h-auto transition-all duration-200 hover:scale-105 text-primary"
+                  className="p-0 h-auto transition-all duration-200 hover:scale-105 text-primary text-sm sm:text-base"
                   onClick={handleChangeNumber}
                   disabled={isTyping}
                 >
@@ -602,7 +609,7 @@ export default function Login() {
 
                 <Button
                   variant="link"
-                  className="p-0 h-auto transition-all duration-200 hover:scale-105 text-primary"
+                  className="p-0 h-auto transition-all duration-200 hover:scale-105 text-primary text-sm sm:text-base"
                   onClick={handleResendOtp}
                   disabled={isTyping || otpCountdown > 0}
                 >

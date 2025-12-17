@@ -457,7 +457,7 @@ export default function LoanList() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background relative z-10 mx-auto pt-16 sm:pt-28 lg:pt-16 pb-16">
       {/* Hero Header */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-accent/10 border-b border-border/50">
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />
