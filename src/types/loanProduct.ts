@@ -218,6 +218,7 @@ export interface LoanProduct {
   deleted_on: string | null;
   source: string | null;
   key_features: string[];
+  application_process: string[];
   lender: HSLender | null;
   eligibility_criteria: EligibilityCriteria | null;
   financial_terms: FinancialTerms | null;

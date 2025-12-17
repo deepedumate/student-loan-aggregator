@@ -451,11 +451,11 @@ export default function LoanList() {
   };
 
   return (
-    <div className="min-h-screen bg-background relative z-10 mx-auto pt-16 sm:pt-28 lg:pt-16 pb-16">
+    <div className="min-h-screen bg-background relative z-10 mx-auto pt-20 sm:pt-28 lg:pt-16 pb-8 sm:pb-16 w-full">
       {/* Hero Header */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-accent/10 border-b border-border/50">
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12 lg:py-16">
           <div className="flex items-start gap-4 mb-6">
             <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary-light text-primary-foreground shadow-lg">
               <GraduationCap className="w-8 h-8" />
